@@ -69,10 +69,7 @@ class MainContainer : AppCompatActivity() {
         })
 
         setupViewPager(fragment_container)
-
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-
-
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
@@ -80,10 +77,9 @@ class MainContainer : AppCompatActivity() {
         fragmentHome = TreeFragment()
         fragmentStat = StatisticFragment()
         fragmentGallery = GalleryFragment()
-        viewPagerAdapter.addFragment(fragmentHome)
         viewPagerAdapter.addFragment(fragmentStat)
+        viewPagerAdapter.addFragment(fragmentHome)
         viewPagerAdapter.addFragment(fragmentGallery)
         viewPager.adapter = viewPagerAdapter
-        //fragmentHome.initChrono()
     }
 }

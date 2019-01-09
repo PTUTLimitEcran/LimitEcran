@@ -14,17 +14,37 @@ import com.lpiem.ptut_limit_ecran.limitecran.TreeFragment
 class Singleton(context: Context) {
     init {
         initSingleton(context)
+    }
 
+    /**
+     * Create an instance of the [Chronometer] class
+     * @param chronoFragment instance of the activity which the chrono will run
+     */
+    fun initChronometer(chronoFragment: TreeFragment){
+        chronometer = Chronometer(chronoFragment)
+    }
+
+    /**
+     * Start the chronometer
+     */
+    fun startChronometer(){
+        chronometer.initChrono()
+        chronometer.startChrono()
     }
 
     companion object{
         private lateinit var notification: NotificationCompat.Builder
         private lateinit var notificationManager: NotificationManager
+
         private lateinit var context: Context
         private lateinit var resources: Resources
+
         private var initialized: Boolean=false
+
         private lateinit var singleton: Singleton
+
         private lateinit var chronometer: Chronometer
+
         fun getInstance(context: Context):Singleton{
             if(initialized == true){
                 return this.singleton
@@ -66,8 +86,20 @@ class Singleton(context: Context) {
             this.notification = NotificationCompat.Builder(this.context, resources.getString(R.string.channelId))
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
                 .setContentTitle(resources.getString(R.string.app_name))
+                .setOngoing(true)
                 .setContentText(resources.getString(R.string.channel_description))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         }
+    }
+
+    var Chronometer:Chronometer
+        get() = chronometer
+        set(value){
+            chronometer = value
+        }
+
+    fun updateNotification(updateTimeText: String){
+        notification!!.setContentText("Temps écoulé : "+updateTimeText)
+        notificationManager!!.notify(0, notification!!.build())
     }
 }
