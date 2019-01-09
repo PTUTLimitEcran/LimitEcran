@@ -10,13 +10,10 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.Toast
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import kotlinx.android.synthetic.main.activity_main_container.*
-import processing.android.CompatUtils
-import processing.android.PFragment
 import processing.core.PApplet
 
 
@@ -79,16 +76,19 @@ class MainContainer : AppCompatActivity() {
             }
         })
 
-        setupViewPager(fragment_container)
-
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+
+        requestStoragePermission()
+
+
+
 
 
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
         val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
-        fragmentHome = TreeFragment()
+        fragmentHome = TreeFragment.newInstance(sketch = sketch as Sketch, param2 = null)
         fragmentStat = StatisticFragment()
         fragmentGallery = GalleryFragment()
         viewPagerAdapter.addFragment(fragmentStat)
@@ -113,11 +113,11 @@ class MainContainer : AppCompatActivity() {
             REQUEST_WRITE_STORAGE -> {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    drawTheTree()
+                    initSketch()
                 } else {
                     Toast.makeText(
                         this,
-                        "Storage permission is required for sending picture by eMail",
+                        "Storage permission is required for saving picture in gallery",
                         Toast.LENGTH_LONG
                     )
                         .show()
@@ -133,21 +133,14 @@ class MainContainer : AppCompatActivity() {
 
     }
 
-    fun drawTheTree() {
-
-        frame = FrameLayout(this)
-        frame.id = CompatUtils.getUniqueViewId()
-        setContentView(
-            frame, ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-        )
+    fun initSketch() {
 
         sketch = Sketch()
 
-        val fragment = PFragment(sketch)
-        fragment.setView(frame, this)
+
+
+        setupViewPager(fragment_container)
+
     }
 
     private fun requestStoragePermission() {

@@ -1,19 +1,20 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.graphics.Color
-import android.util.Log
-import processing.core.PApplet
-import java.util.*
 import android.os.Environment
+import android.util.Log
 import com.lpiem.melkius.testprocessing.LeafDirection
 import com.lpiem.melkius.testprocessing.Node
+import processing.core.PApplet
+import java.io.Serializable
+import java.util.*
 
 
-class Sketch: PApplet() {
+class Sketch: PApplet(), Serializable {
 
 
     override fun settings() {
-        size(900, 2000)
+        size(1000, 2000)
         //fullScreen(1)
     }
 
@@ -44,7 +45,7 @@ class Sketch: PApplet() {
         //val gram = "[C[C]]"
         val gram = "[C[L[C[L[L]C[LCR]]C[R]]]R[C[LCR]]]"
 
-        val source = Node('s', 800f, 2000f)
+        val source = Node('s', 800f, 1900f)
 
         var currentLeaf = LeafDirection.SOURCE
 
