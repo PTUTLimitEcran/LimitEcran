@@ -1,5 +1,6 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
+import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -12,9 +13,9 @@ import kotlinx.android.synthetic.main.fragment_chronometer.view.*
 import kotlinx.android.synthetic.main.fragment_tree.*
 import kotlinx.android.synthetic.main.fragment_tree.view.*
 import android.content.Context.LAYOUT_INFLATER_SERVICE
+import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat.getSystemService
-
-
+import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -31,10 +32,23 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class TreeFragment : Fragment() {
+class TreeFragment() : Fragment() {
     private lateinit var chronometer: Chronometer
-    private lateinit var chronometerTextView: TextView
     private lateinit var viewOfLayout:View
+    private lateinit var notification: NotificationCompat.Builder
+    private lateinit var notificationManager: NotificationManager
+    private lateinit var singleton: Singleton
+
+    var Notifications:NotificationCompat.Builder
+        get() = this.notification
+        set(newValue){
+            this.notification = newValue
+        }
+    var NotificationManager:NotificationManager
+        get() = this.notificationManager
+        set(newValue){
+            this.notificationManager = newValue
+        }
 
     var Chronometer : Chronometer
         get() = this.chronometer
@@ -77,6 +91,7 @@ class TreeFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        this.singleton = Singleton(activity!!.applicationContext)
     }
 
     /**

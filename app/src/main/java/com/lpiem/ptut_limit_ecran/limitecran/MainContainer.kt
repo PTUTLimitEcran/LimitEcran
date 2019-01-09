@@ -1,11 +1,14 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
+import android.app.NotificationManager
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
+import android.support.v4.app.NotificationCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
+import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import kotlinx.android.synthetic.main.activity_main_container.*
 
 
@@ -16,6 +19,7 @@ class MainContainer : AppCompatActivity() {
     private lateinit var fragmentHome: TreeFragment
     private lateinit var fragmentStat: StatisticFragment
     private lateinit var fragmentGallery: GalleryFragment
+    private val singleton: Singleton = Singleton.getInstance(this)
 
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
