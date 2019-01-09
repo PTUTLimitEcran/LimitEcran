@@ -1,12 +1,21 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
+import android.app.NotificationManager
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import com.lpiem.ptut_limit_ecran.limitecran.Model.Chronometer
+import kotlinx.android.synthetic.main.fragment_chronometer.view.*
+import kotlinx.android.synthetic.main.fragment_tree.*
+import kotlinx.android.synthetic.main.fragment_tree.view.*
+import android.content.Context.LAYOUT_INFLATER_SERVICE
+import android.support.v4.app.NotificationCompat
+import android.support.v4.content.ContextCompat.getSystemService
+import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -23,7 +32,34 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class TreeFragment : Fragment() {
+class TreeFragment() : Fragment() {
+    private lateinit var chronometer: Chronometer
+    private lateinit var viewOfLayout:View
+    private lateinit var notification: NotificationCompat.Builder
+    private lateinit var notificationManager: NotificationManager
+    private lateinit var singleton: Singleton
+
+    var Notifications:NotificationCompat.Builder
+        get() = this.notification
+        set(newValue){
+            this.notification = newValue
+        }
+    var NotificationManager:NotificationManager
+        get() = this.notificationManager
+        set(newValue){
+            this.notificationManager = newValue
+        }
+
+    var Chronometer : Chronometer
+        get() = this.chronometer
+        set(newValue) {
+            this.chronometer = newValue
+        }
+    /*var MainActivity : MainActivity
+        get() = this.mainActivity
+        set(newValue) {
+            this.mainActivity = newValue
+        }*/
 
     companion object {
         /**
@@ -55,17 +91,34 @@ class TreeFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        this.singleton = Singleton(activity!!.applicationContext)
+    }
+
+    /**
+     * Initialize the chronometer
+     */
+    fun initChrono(){
+        chronometer = Chronometer(this)
+        chronometer.initChrono()
+        chronometer.startChrono()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+        initChrono()
+        viewOfLayout = inflater!!.inflate(R.layout.fragment_tree, container, false)
         return inflater.inflate(R.layout.fragment_tree, container, false)
     }
 
 
-
-
+    /**
+     * Update chronometer
+     */
+    fun updateTextView(updateTimeText : String){
+        var currentChrono = currentChronometerTime
+        println(currentChronometerTime.text)
+        currentChrono.text = updateTimeText
+    }
 }
