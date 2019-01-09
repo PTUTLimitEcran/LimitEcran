@@ -5,18 +5,14 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.NotificationCompat
-import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
-   // private val notificationManager : NotificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     private lateinit var chronoFragment:ChronometerFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        chronoFragment = chronometerFragment as ChronometerFragment
-        chronoFragment.initChrono(this)
         val handler = Handler()
         handler.postDelayed(
             {
@@ -24,7 +20,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
             }
             , 2000L)
-
     }
 
     private fun initComponents(){
@@ -43,8 +38,8 @@ class MainActivity : AppCompatActivity() {
     /**
      * Update time in the notification
      */
-    /*fun updateNotification(updateTimeText : String){
-        this.notifications.setContentText(updateTimeText)
-        this.notificationManager.notify(0, this.notifications.build())
-    }*/
+    fun updateNotification(updateTimeText : String){
+        /*this.notifications.setContentText(updateTimeText)
+        this.notificationManager.notify(0, this.notifications.build())*/
+    }
 }

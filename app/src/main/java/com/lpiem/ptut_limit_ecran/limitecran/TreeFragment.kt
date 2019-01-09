@@ -1,12 +1,20 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import com.lpiem.ptut_limit_ecran.limitecran.Model.Chronometer
+import kotlinx.android.synthetic.main.fragment_chronometer.view.*
+import kotlinx.android.synthetic.main.fragment_tree.*
+import kotlinx.android.synthetic.main.fragment_tree.view.*
+import android.content.Context.LAYOUT_INFLATER_SERVICE
+import android.support.v4.content.ContextCompat.getSystemService
+
+
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -24,6 +32,20 @@ private const val ARG_PARAM2 = "param2"
  *
  */
 class TreeFragment : Fragment() {
+    private lateinit var chronometer: Chronometer
+    private lateinit var chronometerTextView: TextView
+    private lateinit var viewOfLayout:View
+
+    var Chronometer : Chronometer
+        get() = this.chronometer
+        set(newValue) {
+            this.chronometer = newValue
+        }
+    /*var MainActivity : MainActivity
+        get() = this.mainActivity
+        set(newValue) {
+            this.mainActivity = newValue
+        }*/
 
     companion object {
         /**
@@ -57,11 +79,31 @@ class TreeFragment : Fragment() {
         }
     }
 
+    /**
+     * Initialize the chronometer
+     */
+    fun initChrono(){
+        chronometer = Chronometer(this)
+        chronometer.initChrono()
+        chronometer.startChrono()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+        initChrono()
+        viewOfLayout = inflater!!.inflate(R.layout.fragment_tree, container, false)
         return inflater.inflate(R.layout.fragment_tree, container, false)
+    }
+
+
+    /**
+     * Update chronometer
+     */
+    fun updateTextView(updateTimeText : String){
+        var currentChrono = currentChronometerTime
+        println(currentChronometerTime.text)
+        currentChrono.text = updateTimeText
     }
 }

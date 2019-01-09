@@ -80,5 +80,6 @@ class MainContainer : AppCompatActivity() {
         viewPagerAdapter.addFragment(fragmentStat)
         viewPagerAdapter.addFragment(fragmentGallery)
         viewPager.adapter = viewPagerAdapter
+        //fragmentHome.initChrono()
     }
 }

@@ -1,35 +1,41 @@
 package com.lpiem.ptut_limit_ecran.limitecran.Model
 
+import android.os.Handler
 import android.os.SystemClock
-import com.lpiem.ptut_limit_ecran.limitecran.ChronometerFragment
 import com.lpiem.ptut_limit_ecran.limitecran.MainActivity
+import com.lpiem.ptut_limit_ecran.limitecran.TreeFragment
 
-class Chronometer(chronometerFragment: ChronometerFragment, mainActivity: MainActivity){
-    private var milliseconds : Long = 0
+class Chronometer(treeFragment: TreeFragment){
+    private var milliseconds : Long = 0L
     private var seconds : Int = 0
     private var minutes : Int = 0
     private var hours : Int = 0
     private var startTime = 0L
     private var timeSwapBuff = 0L
     private var updateTime = 0L
-    private val chronometerFragment:ChronometerFragment = chronometerFragment
+    private val treeFragment:TreeFragment = treeFragment
 
-    private val mainActivity: MainActivity = mainActivity
+    //private val mainActivity: MainActivity = mainActivity
 
-    private val timerHandler = android.os.Handler()
-    private val timerRunnable = object : Runnable {
-        override fun run() {
-        milliseconds = SystemClock.uptimeMillis() - startTime
-        updateTime = timeSwapBuff + milliseconds
-        var seconds = (updateTime / 1000).toInt()
-        var minutes = seconds / 60
-        seconds %= 60
-        hours = minutes / 60
-        minutes %= 60
-        timerHandler.postDelayed(this, 0)
-        chronometerFragment.updateTextView(formatTimeIntoText(seconds, minutes, hours))
-        //mainActivity.updateNotification(formatTimeIntoText(seconds, minutes, hours))
+    private var timerHandler = Handler()
+    private var timerRunnable: Runnable? = null
+
+    fun initChrono() {
+        startTime = SystemClock.uptimeMillis()
+        this.timerRunnable = object : Runnable {
+            override fun run() {
+                milliseconds = SystemClock.uptimeMillis() - startTime
+                updateTime = timeSwapBuff + milliseconds
+                seconds = (updateTime / 1000).toInt()
+                minutes = seconds / 60
+                seconds %= 60
+                hours = minutes / 60
+                minutes %= 60
+                timerHandler.postDelayed(this, 0)
+                treeFragment.updateTextView(formatTimeIntoText(seconds,minutes,hours))
+            }
         }
+        //treeFragment.initChrono(mainActivity)
     }
 
     var MilliSeconds : Long
@@ -58,7 +64,8 @@ class Chronometer(chronometerFragment: ChronometerFragment, mainActivity: MainAc
     }
 
     fun stopChrono(){
-
+        this.timeSwapBuff += this.milliseconds
+        timerHandler.removeCallbacks(timerRunnable)
     }
 
     fun formatTimeIntoText(seconds: Int, minutes: Int, hours: Int): String {

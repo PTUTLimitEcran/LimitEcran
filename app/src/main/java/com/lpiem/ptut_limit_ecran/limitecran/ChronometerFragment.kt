@@ -76,7 +76,8 @@ class ChronometerFragment() : Fragment() {
 
     fun initChrono(mainActivity: MainActivity){
         this.mainActivity = mainActivity
-        chronometer = Chronometer(this,mainActivity)
+        //chronometer = Chronometer(this,mainActivity)
+        chronometer.initChrono()
         chronometer.startChrono()
     }
 
@@ -85,7 +86,6 @@ class ChronometerFragment() : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         viewOfLayout = inflater!!.inflate(R.layout.fragment_chronometer, container, false)
-        println(viewOfLayout.currentChronometer.text)
         return viewOfLayout
     }
 
