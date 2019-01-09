@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var notificationManager: NotificationManager
     private lateinit var singleton: Singleton
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -33,6 +34,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
             }
             , 2000L)
+
+
     }
 
     private fun createNotificationChannel() {
@@ -69,4 +72,7 @@ class MainActivity : AppCompatActivity() {
         this.notification.setContentText(updateTimeText)
         this.notificationManager.notify(0, this.notification.build())
     }
+
+
+
 }
