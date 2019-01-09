@@ -12,6 +12,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+        <fragment
+                android:id="@+id/chronometerFragment"
+                android:layout_width="match_parent"
+                android:layout_height="93dp"
+                android:name="com.lpiem.ptut_limit_ecran.limitecran.ChronometerFragment"/>
     </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

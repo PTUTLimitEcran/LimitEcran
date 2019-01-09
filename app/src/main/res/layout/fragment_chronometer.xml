@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".ChronometerFragment">
+
+    <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="147dp">
+
+        <TextView
+                android:text="@string/defaultCurrentChronometerValue"
+                android:layout_width="356dp"
+                android:layout_height="51dp"
+                android:gravity="center"
+                android:id="@+id/currentChronometer" app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="14dp" app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="16dp" app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="14dp" android:layout_marginBottom="15dp"
+                app:layout_constraintBottom_toTopOf="@+id/weeklyChronometer"/>
+        <TextView
+                android:text="@string/defaultWeeklyChronometerValue"
+                android:layout_width="339dp"
+                android:layout_height="38dp"
+                android:gravity="center"
+                android:id="@+id/weeklyChronometer" app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="22dp" app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="23dp" android:layout_marginTop="15dp"
+                app:layout_constraintTop_toBottomOf="@+id/currentChronometer" android:layout_marginBottom="27dp"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+    </android.support.constraint.ConstraintLayout>
+</FrameLayout>
