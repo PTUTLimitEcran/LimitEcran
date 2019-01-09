@@ -9,7 +9,6 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main_container.*
 
 
-
 class MainContainer : AppCompatActivity() {
 
     private var prevMenuItem: MenuItem? = null
