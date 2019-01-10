@@ -2,7 +2,6 @@ package com.lpiem.ptut_limit_ecran.limitecran.Model
 
 import android.os.Handler
 import android.os.SystemClock
-import com.lpiem.ptut_limit_ecran.limitecran.MainActivity
 import com.lpiem.ptut_limit_ecran.limitecran.TreeFragment
 
 class Chronometer(treeFragment: TreeFragment){
@@ -16,7 +15,7 @@ class Chronometer(treeFragment: TreeFragment){
     private val treeFragment:TreeFragment = treeFragment
     private var hasChronometerStarted:Boolean=false
 
-    //private val mainActivity: MainActivity = mainActivity
+    //private val mainActivity: SplashScreenActivity = mainActivity
 
     private var timerHandler = Handler()
     private var timerRunnable: Runnable? = null

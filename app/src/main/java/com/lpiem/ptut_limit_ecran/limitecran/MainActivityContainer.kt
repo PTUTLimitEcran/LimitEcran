@@ -13,13 +13,13 @@ import kotlinx.android.synthetic.main.activity_main_container.*
 
 
 
-class MainContainer : AppCompatActivity() {
+class MainActivityContainer : AppCompatActivity() {
 
     private var prevMenuItem: MenuItem? = null
     private lateinit var fragmentHome: TreeFragment
     private lateinit var fragmentStat: StatisticFragment
     private lateinit var fragmentGallery: GalleryFragment
-    private val singleton: Singleton = Singleton.getInstance(this)
+    private lateinit var singleton: Singleton
 
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -45,6 +45,7 @@ class MainContainer : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_container)
+        this.singleton = Singleton.getInstance(this)
 
         fragment_container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
