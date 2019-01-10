@@ -1,21 +1,18 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.app.NotificationManager
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.NotificationCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.FrameLayout
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Chronometer
-import kotlinx.android.synthetic.main.fragment_chronometer.view.*
-import kotlinx.android.synthetic.main.fragment_tree.*
-import kotlinx.android.synthetic.main.fragment_tree.view.*
-import android.content.Context.LAYOUT_INFLATER_SERVICE
-import android.support.v4.app.NotificationCompat
-import android.support.v4.content.ContextCompat.getSystemService
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
+import kotlinx.android.synthetic.main.fragment_tree.*
+import processing.android.PFragment
+import java.io.Serializable
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -32,7 +29,9 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class TreeFragment() : Fragment() {
+class TreeFragment() : PFragment() {
+    private lateinit var chronometer: Chronometer
+
     private lateinit var viewOfLayout:View
     private lateinit var singleton: Singleton
 
@@ -41,29 +40,29 @@ class TreeFragment() : Fragment() {
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
          *
-         * @param param1 Parameter 1.
+         * @param sketch Parameter 1.
          * @param param2 Parameter 2.
          * @return A new instance of fragment TreeFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(sketch: Sketch, param2: String?) =
             TreeFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
+                    putSerializable(ARG_PARAM1, sketch)
                     putString(ARG_PARAM2, param2)
                 }
             }
     }
 
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
+    private var param1: Serializable? = null
     private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
+            param1 = it.getSerializable(ARG_PARAM1) as Sketch
             param2 = it.getString(ARG_PARAM2)
         }
         this.singleton = Singleton(activity!!.applicationContext)
@@ -73,6 +72,7 @@ class TreeFragment() : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         viewOfLayout = inflater!!.inflate(R.layout.fragment_tree, container, false)
         this.singleton.initChronometer(this)
         if(this.singleton.Chronometer.ChronometerStartStatus==false){
@@ -81,8 +81,41 @@ class TreeFragment() : Fragment() {
         return inflater.inflate(R.layout.fragment_tree, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val sketch = Sketch()
+
+        val frame = FrameLayout(context)
+        frame.id = R.id.sketch_frame
+        val pFragment = PFragment(sketch)
+        pFragment.setView(frame, activity)
+        //frame.id = R.id.sketch_frame//CompatUtils.getUniqueViewId()
+
+        //val frame: FrameLayout? = activity?.findViewById(R.id.sketch_frame)
+
+//        activity?.setContentView(
+//            sketch_frame, ViewGroup.LayoutParams(
+//                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT_WRAP,
+//                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT_WRAP
+////                ViewGroup.LayoutParams.WRAP_CONTENT,
+////                ViewGroup.LayoutParams.WRAP_CONTENT
+//            )
+//        )
+
+//        val fragment = PFragment(sketch)
+//        fragment.setView(sketch_frame, activity)
+
+        initChrono()
+    }
+
+    /**
+     * Initialize the chronometer
+     */
+    fun initChrono(){
+        chronometer = Chronometer(this)
+        chronometer.initChrono()
+        chronometer.startChrono()
     }
 
     /**
