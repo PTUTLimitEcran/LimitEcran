@@ -27,11 +27,16 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class TreeFragment() : PFragment() {
+class TreeFragment : PFragment(), OrderToSaveImage {
+
+
+
     private lateinit var chronometer: Chronometer
 
     private lateinit var viewOfLayout:View
     private lateinit var singleton: Singleton
+    private lateinit var saveImage: SaveImage
+    private lateinit var orderToSaveImage: OrderToSaveImage
 
     companion object {
         /**
@@ -73,6 +78,7 @@ class TreeFragment() : PFragment() {
             param2 = it.getString(ARG_PARAM2)
         }
         this.singleton = Singleton(activity!!.applicationContext)
+        orderToSaveImage = this
     }
 
     override fun onCreateView(
@@ -82,7 +88,7 @@ class TreeFragment() : PFragment() {
 
         viewOfLayout = inflater!!.inflate(R.layout.fragment_tree, container, false)
         this.singleton.initChronometer(this)
-        if(this.singleton.Chronometer.ChronometerStartStatus==false){
+        if(!this.singleton.Chronometer.ChronometerStartStatus){
             this.singleton.startChronometer()
         }
         return inflater.inflate(R.layout.fragment_tree, container, false)
@@ -91,7 +97,7 @@ class TreeFragment() : PFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val sketch = Sketch()
+        val sketch = Sketch(orderToSaveImage)
 
         val frame = FrameLayout(context)
         frame.id = R.id.sketch_frame
@@ -113,6 +119,8 @@ class TreeFragment() : PFragment() {
 //        val fragment = PFragment(sketch)
 //        fragment.setView(sketch_frame, activity)
 
+
+
         initChrono()
     }
 
@@ -126,5 +134,10 @@ class TreeFragment() : PFragment() {
 
     fun updateNotification(updateTimeText: String){
         this.singleton.updateNotification(updateTimeText)
+    }
+
+    override fun saveIt(save: SaveImage) {
+        saveImage = save
+        button_save.setOnClickListener { saveImage.savePictureToStorage(true) }
     }
 }

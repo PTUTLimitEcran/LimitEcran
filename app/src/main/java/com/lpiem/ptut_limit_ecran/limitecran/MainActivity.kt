@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(getString(R.string.channelId), name, importance).apply {
                 description = descriptionText
+                enableVibration(false)
             }
             // Register the channel with the system
             val notificationManager: NotificationManager =
@@ -62,6 +63,7 @@ class MainActivity : AppCompatActivity() {
         .setSmallIcon(R.drawable.ic_notifications_black_24dp)
             .setContentTitle(getString(R.string.app_name))
             .setContentText(getString(R.string.channel_description))
+            .setVibrate(longArrayOf(0L))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
     }
 
@@ -72,7 +74,5 @@ class MainActivity : AppCompatActivity() {
         this.notification.setContentText(updateTimeText)
         this.notificationManager.notify(0, this.notification.build())
     }
-
-
 
 }

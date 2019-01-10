@@ -27,6 +27,7 @@ class MainContainer : AppCompatActivity() {
     private var sketch: PApplet? = null
     private val REQUEST_WRITE_STORAGE = 0
     private lateinit var frame: FrameLayout
+    private var viewPagerAdapter: ViewPagerAdapter? = null
 
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -82,13 +83,13 @@ class MainContainer : AppCompatActivity() {
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
-        val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
-        fragmentHome = TreeFragment.newInstance(sketch = sketch as Sketch, param2 = null)
+        if (viewPagerAdapter == null) viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
+        fragmentHome = TreeFragment()
         fragmentStat = StatisticFragment()
         fragmentGallery = GalleryFragment()
-        viewPagerAdapter.addFragment(fragmentStat)
-        viewPagerAdapter.addFragment(fragmentHome)
-        viewPagerAdapter.addFragment(fragmentGallery)
+        viewPagerAdapter?.addFragment(fragmentStat)
+        viewPagerAdapter?.addFragment(fragmentHome)
+        viewPagerAdapter?.addFragment(fragmentGallery)
         viewPager.adapter = viewPagerAdapter
     }
 
@@ -127,8 +128,10 @@ class MainContainer : AppCompatActivity() {
     }
 
     fun initSketch() {
-        sketch = Sketch()
-        setupViewPager(fragment_container)
+        sketch = Sketch(null)
+        if (viewPagerAdapter == null) {
+            setupViewPager(fragment_container)
+        }
     }
 
     private fun requestStoragePermission() {
