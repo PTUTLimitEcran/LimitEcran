@@ -14,11 +14,18 @@ class Chronometer(treeFragment: TreeFragment){
     private var timeSwapBuff = 0L
     private var updateTime = 0L
     private val treeFragment:TreeFragment = treeFragment
+    private var hasChronometerStarted:Boolean=false
 
     //private val mainActivity: MainActivity = mainActivity
 
     private var timerHandler = Handler()
     private var timerRunnable: Runnable? = null
+
+    var ChronometerStartStatus:Boolean
+    get() = this.hasChronometerStarted
+    set(value){
+        this.hasChronometerStarted=value
+    }
 
     fun initChrono() {
         startTime = SystemClock.uptimeMillis()
@@ -33,9 +40,10 @@ class Chronometer(treeFragment: TreeFragment){
                 minutes %= 60
                 timerHandler.postDelayed(this, 0)
                 treeFragment.updateTextView(formatTimeIntoText(seconds,minutes,hours))
+                treeFragment.updateNotification(formatTimeIntoText(seconds,minutes,hours))
+                hasChronometerStarted = true
             }
         }
-        //treeFragment.initChrono(mainActivity)
     }
 
     var MilliSeconds : Long

@@ -79,11 +79,6 @@ class MainContainer : AppCompatActivity() {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         requestStoragePermission()
-
-
-
-
-
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
@@ -95,7 +90,6 @@ class MainContainer : AppCompatActivity() {
         viewPagerAdapter.addFragment(fragmentHome)
         viewPagerAdapter.addFragment(fragmentGallery)
         viewPager.adapter = viewPagerAdapter
-        //fragmentHome.initChrono()
     }
 
 
@@ -130,17 +124,11 @@ class MainContainer : AppCompatActivity() {
 
     public override fun onNewIntent(intent: Intent) {
         sketch?.onNewIntent(intent)
-
     }
 
     fun initSketch() {
-
         sketch = Sketch()
-
-
-
         setupViewPager(fragment_container)
-
     }
 
     private fun requestStoragePermission() {
