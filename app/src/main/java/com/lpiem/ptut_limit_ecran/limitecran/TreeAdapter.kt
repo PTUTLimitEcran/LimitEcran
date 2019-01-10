@@ -5,22 +5,24 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.tree_day_ressource_layout.view.*
+import kotlinx.android.synthetic.main.tree_list_ressource_layout.view.*
 import android.util.Log
+import com.lpiem.ptut_limit_ecran.limitecran.Model.TreeImage
 import java.util.*
 
 
-class TreeAdapter(val treeCollection : ArrayList<Sketch>, val context: Context) : RecyclerView.Adapter<ViewHolder>() {
+class TreeAdapter(val treeCollection : List<List<TreeImage>>, val context: Context) : RecyclerView.Adapter<TreeAdapter.ViewHolder>() {
     private val FROM_LOW_TO_HIGH = 0
     private val FROM_HIGHT_TO_LOW = 1
     private val SORT_BY_DATE  = 0
     private val SORT_BY_SIZE  = 1
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(context).inflate(R.layout.tree_day_ressource_layout, p0, false))
+    override fun onCreateViewHolder(viewGroup: ViewGroup, index: Int): ViewHolder {
+        return ViewHolder(LayoutInflater.from(context).inflate(R.layout.tree_list_ressource_layout, viewGroup, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, index: Int) {
-        holder?.treeCollection?.text = treeCollection.get(index).formatDate()
+        holder?.treeDateTextView?.text = treeCollection[index][0].formatDate()
+        holder?.treeCollectionsByDate.adapter = SingleDayTreeListAdapter(treeCollection[index],context)
     }
 
     // Gets the number of animals in the list
@@ -28,29 +30,13 @@ class TreeAdapter(val treeCollection : ArrayList<Sketch>, val context: Context) 
         return treeCollection.size
     }
 
-    fun filterTree(mode: Int, filterType: Int):Int{
-        Collections.sort(treeCollection, object : Comparator<Sketch> {
-            override fun compare(lhs: Sketch, rhs: Sketch): Int {
-                // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
-                when (mode) {
-                    FROM_HIGHT_TO_LOW ->
-                        return filterSort(filterType, lhs, rhs)
-                    FROM_LOW_TO_HIGH ->
-                        return filterSort(filterType, lhs, rhs)
-                    else-> return sortingError()
-                }
-            }
-        })
-        return -2
-    }
-
     private fun filterSort(
         filterType: Int,
-        lhs: Sketch,
-        rhs: Sketch
+        lhs: TreeImage,
+        rhs: TreeImage
     ): Int {
         when (filterType) {
-            SORT_BY_DATE -> return sortDates(lhs.TreeDate, rhs.TreeDate)
+            SORT_BY_DATE -> return sortDates(lhs.FileDate, rhs.FileDate)
             SORT_BY_SIZE -> return sortBySize(0, 0)
             else -> return sortingError()
         }
@@ -68,9 +54,9 @@ class TreeAdapter(val treeCollection : ArrayList<Sketch>, val context: Context) 
         Log.e("Sorting", "No sorting possible")
         return -2
     }
-}
+    class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {
+        val treeDateTextView = view.treeListDate
+        val treeCollectionsByDate = view.dailyTreeListRecyclerView
+    }
 
-class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {
-    val treeCollection = view.treeList
-    val treeListRecyclerView = view.dailyTreeListRecyclerView
 }

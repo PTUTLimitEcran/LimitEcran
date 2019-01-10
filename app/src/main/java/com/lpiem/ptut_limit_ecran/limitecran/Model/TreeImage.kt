@@ -1,6 +1,20 @@
 package com.lpiem.ptut_limit_ecran.limitecran.Model
 
-class TreeImage{
-    private val loadingTreeImageRegex: String = "^wonder_tree{1}.{0,}[.png]{1}"
+import java.util.*
 
+class TreeImage(filePath:String, fileDate: Date){
+    private val filePath = filePath
+    private val fileDate = fileDate
+
+    var FilePath:String = ""
+    get() = filePath
+
+    var FileDate:Date = Date()
+    get() = fileDate
+
+    fun formatDate():String{
+        return fileDate.day.toString()+"/"+
+               fileDate.month.toString()+"/"+
+               fileDate.year.toString()
+    }
 }

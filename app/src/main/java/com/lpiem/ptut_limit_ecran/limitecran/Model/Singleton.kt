@@ -5,13 +5,24 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.res.Resources
 import android.os.Build
+import android.os.Environment
 import android.support.v4.app.NotificationCompat
 import com.lpiem.ptut_limit_ecran.limitecran.R
 import com.lpiem.ptut_limit_ecran.limitecran.TreeFragment
+import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class Singleton(context: Context) {
     init {
         initSingleton(context)
+    }
+
+    var TreeList:HashMap<Date, TreeImage>
+    get() = treeList
+    set(newValue){
+        treeList = newValue
     }
 
     /**
@@ -33,9 +44,11 @@ class Singleton(context: Context) {
     companion object{
         private lateinit var notification: NotificationCompat.Builder
         private lateinit var notificationManager: NotificationManager
+        private lateinit var treeList: HashMap<Date, TreeImage>
 
         private lateinit var context: Context
         private lateinit var resources: Resources
+        var loadingTreeImageRegex: String = "^wonder_tree{1}.{0,}[.png]{1}"
 
         private var initialized: Boolean=false
 
@@ -53,12 +66,24 @@ class Singleton(context: Context) {
             }
         }
 
+        fun importImageList(){
+            treeList = HashMap()
+            val fileNameRegex = Regex(loadingTreeImageRegex)
+            val directory = File(Environment.getExternalStorageDirectory().absolutePath)
+            val list = directory.listFiles()
+            for(i in 0..list.size){
+                if(fileNameRegex.matches(list[0].name)){
+                    treeList[Date(list[i].lastModified())] = TreeImage(list[i].name, Date(list[i].lastModified()))
+                }
+            }
+        }
+
         fun initSingleton(context: Context){
-            //this.chronometer = Chronometer()
             this.context = context
             this.resources = context.resources
             this.createNotification()
             this.createNotificationChannel()
+            this.importImageList()
         }
 
         fun createNotificationChannel() {

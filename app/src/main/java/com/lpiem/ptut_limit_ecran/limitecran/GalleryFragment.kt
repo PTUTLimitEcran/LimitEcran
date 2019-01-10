@@ -7,7 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
-import com.lpiem.ptut_limit_ecran.limitecran.R.id.dailyTreeListRecyclerView
+import com.lpiem.ptut_limit_ecran.limitecran.Model.TreeImage
+import java.util.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -61,6 +62,15 @@ class GalleryFragment : Fragment() {
 
     }
 
+    fun convertHashmapToArrayList():ArrayList<ArrayList<TreeImage>>{
+        val treeList = ArrayList<ArrayList<TreeImage>>()
+        val dateTreeIterator = this.singleton.TreeList.iterator()
+        while(dateTreeIterator.hasNext()){
+            val imageTreeIterator = dateTreeIterator.next()
+            
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -68,7 +78,7 @@ class GalleryFragment : Fragment() {
         // Inflate the layout for this fragment
         val recyclerView = activity!!.findViewById<RecyclerView>(R.id.dailyTreeListRecyclerView)
         recyclerView?.adapter = TreeAdapter(ArrayList(),activity!!.applicationContext)
-        return inflater.inflate(R.layout.fragment_galery, container, false)
+        return inflater.inflate(R.layout.fragment_gallery, container, false)
     }
 
 }
