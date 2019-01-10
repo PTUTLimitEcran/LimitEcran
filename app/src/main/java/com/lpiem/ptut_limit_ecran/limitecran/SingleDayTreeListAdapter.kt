@@ -1,6 +1,7 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.content.Context
+import android.os.Environment
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -19,8 +20,9 @@ class SingleDayTreeListAdapter(val treeCollection : List<TreeImage>, val context
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, index: Int) {
-        Glide.with(context)
-            .load(treeCollection[index].FilePath)
+        Glide.with(viewHolder.treeImage)
+            .load(Environment.getExternalStorageDirectory().absolutePath+"/LimitEcran/"+treeCollection[index].FilePath)
+            .thumbnail(0.2f)
             .into(viewHolder.treeImage)
     }
 

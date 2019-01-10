@@ -1,6 +1,8 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.content.Context
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +10,11 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.tree_list_ressource_layout.view.*
 import android.util.Log
 import com.lpiem.ptut_limit_ecran.limitecran.Model.TreeImage
+import kotlinx.android.synthetic.main.fragment_gallery.*
 import java.util.*
 
 
-class TreeAdapter(val treeCollection : List<List<TreeImage>>, val context: Context) : RecyclerView.Adapter<TreeAdapter.ViewHolder>() {
+class TreeAdapter(var treeCollection : List<List<TreeImage>>, val context: Context) : RecyclerView.Adapter<TreeAdapter.ViewHolder>() {
     private val FROM_LOW_TO_HIGH = 0
     private val FROM_HIGHT_TO_LOW = 1
     private val SORT_BY_DATE  = 0
@@ -22,6 +25,8 @@ class TreeAdapter(val treeCollection : List<List<TreeImage>>, val context: Conte
 
     override fun onBindViewHolder(holder: ViewHolder, index: Int) {
         holder?.treeDateTextView?.text = treeCollection[index][0].formatDate()
+        holder?.treeCollectionsByDate.setLayoutManager(LinearLayoutManager(context!!))
+        holder?.treeCollectionsByDate.setItemAnimator(DefaultItemAnimator())
         holder?.treeCollectionsByDate.adapter = SingleDayTreeListAdapter(treeCollection[index],context)
     }
 
@@ -56,7 +61,7 @@ class TreeAdapter(val treeCollection : List<List<TreeImage>>, val context: Conte
     }
     class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {
         val treeDateTextView = view.treeListDate
-        val treeCollectionsByDate = view.dailyTreeListRecyclerView
+        val treeCollectionsByDate = view.treeListRecyclerView
     }
 
 }

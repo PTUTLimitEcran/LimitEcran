@@ -2,13 +2,19 @@ package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import com.lpiem.ptut_limit_ecran.limitecran.Model.TreeImage
-import java.util.*
+import kotlinx.android.synthetic.main.fragment_gallery.*
+import kotlin.collections.ArrayList
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.DefaultItemAnimator
+
+
+
+
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -47,8 +53,6 @@ class GalleryFragment : Fragment() {
                 }
             }
     }
-
-    // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
@@ -60,15 +64,35 @@ class GalleryFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
 
+        treeAdapter = TreeAdapter(convertHashmapToArrayList(),context!!)
+        treeAdapter.treeCollection = convertHashmapToArrayList()
     }
 
+    private lateinit var treeAdapter:TreeAdapter
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        treeAdapter.treeCollection = convertHashmapToArrayList()
+        treeAdapter.notifyDataSetChanged()
+        treeListRecyclerView.setLayoutManager(LinearLayoutManager(context!!))
+        treeListRecyclerView.setItemAnimator(DefaultItemAnimator())
+        treeListRecyclerView.adapter = TreeAdapter(convertHashmapToArrayList(),activity!!.applicationContext)
+    }
+
+    /**
+     * Import the Hashmap from the [Singleton] class and transform it into a [Hashmap] object
+     */
     fun convertHashmapToArrayList():ArrayList<ArrayList<TreeImage>>{
         val treeList = ArrayList<ArrayList<TreeImage>>()
+
         val dateTreeIterator = this.singleton.TreeList.iterator()
+
         while(dateTreeIterator.hasNext()){
-            val imageTreeIterator = dateTreeIterator.next()
-            
+            val imageTreeIterator = dateTreeIterator.next().value
+            treeList.add(imageTreeIterator)
         }
+        return treeList
     }
 
     override fun onCreateView(
@@ -76,8 +100,8 @@ class GalleryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val recyclerView = activity!!.findViewById<RecyclerView>(R.id.dailyTreeListRecyclerView)
-        recyclerView?.adapter = TreeAdapter(ArrayList(),activity!!.applicationContext)
+        treeAdapter = TreeAdapter(convertHashmapToArrayList(),context!!)
+
         return inflater.inflate(R.layout.fragment_gallery, container, false)
     }
 

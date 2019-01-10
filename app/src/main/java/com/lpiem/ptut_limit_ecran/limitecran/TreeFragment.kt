@@ -91,21 +91,6 @@ class TreeFragment() : PFragment() {
         frame.id = R.id.sketch_frame
         val pFragment = PFragment(sketch)
         pFragment.setView(frame, activity)
-        //frame.id = R.id.sketch_frame//CompatUtils.getUniqueViewId()
-
-        //val frame: FrameLayout? = activity?.findViewById(R.id.sketch_frame)
-
-//        activity?.setContentView(
-//            sketch_frame, ViewGroup.LayoutParams(
-//                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT_WRAP,
-//                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT_WRAP
-////                ViewGroup.LayoutParams.WRAP_CONTENT,
-////                ViewGroup.LayoutParams.WRAP_CONTENT
-//            )
-//        )
-
-//        val fragment = PFragment(sketch)
-//        fragment.setView(sketch_frame, activity)
 
         initChrono()
     }

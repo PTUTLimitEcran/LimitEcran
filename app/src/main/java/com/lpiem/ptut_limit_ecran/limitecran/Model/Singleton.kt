@@ -19,7 +19,7 @@ class Singleton(context: Context) {
         initSingleton(context)
     }
 
-    var TreeList:HashMap<Date, TreeImage>
+    var TreeList:HashMap<Date, ArrayList<TreeImage>>
     get() = treeList
     set(newValue){
         treeList = newValue
@@ -44,7 +44,7 @@ class Singleton(context: Context) {
     companion object{
         private lateinit var notification: NotificationCompat.Builder
         private lateinit var notificationManager: NotificationManager
-        private lateinit var treeList: HashMap<Date, TreeImage>
+        private lateinit var treeList: HashMap<Date, ArrayList<TreeImage>>
 
         private lateinit var context: Context
         private lateinit var resources: Resources
@@ -68,14 +68,21 @@ class Singleton(context: Context) {
 
         fun importImageList(){
             treeList = HashMap()
-            val fileNameRegex = Regex(loadingTreeImageRegex)
-            val directory = File(Environment.getExternalStorageDirectory().absolutePath)
-            val list = directory.listFiles()
-            for(i in 0..list.size){
-                if(fileNameRegex.matches(list[0].name)){
-                    treeList[Date(list[i].lastModified())] = TreeImage(list[i].name, Date(list[i].lastModified()))
+            val list = File(Environment.getExternalStorageDirectory().absolutePath+"/LimitEcran/").listFiles()
+            print(list.toString())
+            for(i in 0 until list.size){
+                if(Regex(loadingTreeImageRegex).matches(list[i].name)){
+                    if(!isDateIndexAlreadyPresentInArray(Date(list[i].lastModified()))){
+                        treeList[Date(list[i].lastModified())] = ArrayList()
+                    }
+                    treeList[Date(list[i].lastModified())]!!.add(TreeImage(list[i].name, Date(list[i].lastModified())))
                 }
             }
+            print("hfkdshf")
+        }
+
+        private fun isDateIndexAlreadyPresentInArray(date:Date):Boolean{
+            return if(treeList.containsKey(date))true else false
         }
 
         fun initSingleton(context: Context){
@@ -107,7 +114,7 @@ class Singleton(context: Context) {
 
         fun createNotification(){
             this.notification = NotificationCompat.Builder(this.context, resources.getString(R.string.channelId))
-                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+                .setSmallIcon(R.drawable.ic_phonelink_erase_black_24dp)
                 .setContentTitle(resources.getString(R.string.app_name))
                 .setOngoing(true)
                 .setContentText(resources.getString(R.string.channel_description))
@@ -122,7 +129,7 @@ class Singleton(context: Context) {
         }
 
     fun updateNotification(updateTimeText: String){
-        notification!!.setContentText("Temps écoulé : "+updateTimeText)
-        notificationManager!!.notify(0, notification!!.build())
+        notification.setContentText("Temps écoulé : $updateTimeText")
+        notificationManager.notify(0, notification!!.build())
     }
 }
