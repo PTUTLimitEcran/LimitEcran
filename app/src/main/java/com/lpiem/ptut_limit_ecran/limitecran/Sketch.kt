@@ -7,6 +7,7 @@ import com.lpiem.melkius.testprocessing.LeafDirection
 import com.lpiem.melkius.testprocessing.Node
 import processing.core.PApplet
 import java.io.Serializable
+import java.text.DateFormat
 import java.util.*
 
 
@@ -24,8 +25,10 @@ class Sketch: PApplet(), Serializable {
 
 
     override fun draw() {
+
+        background(context.resources.getColor(R.color.colorBackground))
         readAndDraw()
-        save(Environment.getExternalStorageDirectory().toString()+"/LimitEcran/wonder_tree.png")
+        save(Environment.getExternalStorageDirectory().absolutePath + "/LimitEcran/wonder_tree${DateFormat.getDateInstance().format(DateFormat.HOUR_OF_DAY0_FIELD)}.png")
         noLoop()
     }
 
