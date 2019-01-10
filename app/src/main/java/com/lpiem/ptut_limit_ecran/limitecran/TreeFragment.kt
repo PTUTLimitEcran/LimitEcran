@@ -29,6 +29,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class TreeFragment() : PFragment() {
     private lateinit var chronometer: Chronometer
+
     private lateinit var viewOfLayout:View
     private lateinit var singleton: Singleton
 
@@ -79,8 +80,6 @@ class TreeFragment() : PFragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        //val sketch = savedInstanceState?.get(ARG_PARAM1) as PApplet?
-
         viewOfLayout = inflater!!.inflate(R.layout.fragment_tree, container, false)
         this.singleton.initChronometer(this)
         if(this.singleton.Chronometer.ChronometerStartStatus==false){
@@ -102,7 +101,6 @@ class TreeFragment() : PFragment() {
 
         //val frame: FrameLayout? = activity?.findViewById(R.id.sketch_frame)
 
-
 //        activity?.setContentView(
 //            sketch_frame, ViewGroup.LayoutParams(
 //                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT_WRAP,
@@ -112,12 +110,10 @@ class TreeFragment() : PFragment() {
 //            )
 //        )
 
-
 //        val fragment = PFragment(sketch)
 //        fragment.setView(sketch_frame, activity)
 
         initChrono()
-
     }
 
     /**
