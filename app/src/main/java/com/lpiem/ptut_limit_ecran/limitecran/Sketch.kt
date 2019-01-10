@@ -11,7 +11,13 @@ import java.text.DateFormat
 import java.util.*
 
 
-class Sketch: PApplet(), Serializable {
+class Sketch(date:Date): PApplet(), Serializable {
+    private var creationDate: Date = date
+        var TreeDate:Date
+        get() = this.creationDate
+        set(value){
+            this.creationDate = value
+        }
 
 
     override fun settings() {
@@ -21,6 +27,12 @@ class Sketch: PApplet(), Serializable {
 
     override fun setup() {
 
+    }
+
+    fun formatDate():String{
+        return creationDate.day.toString() +"/"+
+                creationDate.day.toString() +"/"+
+                creationDate.day.toString()
     }
 
 
@@ -99,12 +111,12 @@ class Sketch: PApplet(), Serializable {
         return when (currentLeaf) {
             LeafDirection.SOURCE -> Node(
                 nodeValue,
-                stack.peek().coordX -200f,
+                stack.peek().coordX - 200f,
                 stack.peek().coordY - 200f
             )
             LeafDirection.LEFT -> Node(
                 nodeValue,
-                stack.peek().coordX -120f,
+                stack.peek().coordX - 120f,
                 stack.peek().coordY - 200f
             )
             LeafDirection.RIGHT -> Node(

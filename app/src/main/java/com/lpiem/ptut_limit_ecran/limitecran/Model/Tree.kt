@@ -3,8 +3,8 @@ package com.lpiem.ptut_limit_ecran.limitecran.Model
 import java.util.Date
 
 class Tree(creationDate:Date) {
-    private var treeCreationDate: Date = creationDate
     private var size:Int = 0
+    private var treeCreationDate: Date = creationDate
 
     var TreeDate: Date
     get() = this.treeCreationDate

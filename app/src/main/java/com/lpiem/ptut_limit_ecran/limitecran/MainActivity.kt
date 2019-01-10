@@ -26,7 +26,6 @@ class MainActivity : AppCompatActivity() {
         this.createNotificationChannel()
         this.singleton = Singleton.getInstance(this)
 
-
         val handler = Handler()
         handler.postDelayed(
             {

@@ -15,6 +15,7 @@ import android.widget.Toast
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import kotlinx.android.synthetic.main.activity_main_container.*
 import processing.core.PApplet
+import java.util.*
 
 
 class MainActivityContainer : AppCompatActivity() {
@@ -128,7 +129,7 @@ class MainActivityContainer : AppCompatActivity() {
     }
 
     fun initSketch() {
-        sketch = Sketch()
+        sketch = Sketch(Date())
         setupViewPager(fragment_container)
     }
 

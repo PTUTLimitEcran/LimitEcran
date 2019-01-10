@@ -5,14 +5,16 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.lpiem.ptut_limit_ecran.limitecran.Model.Tree
 import kotlinx.android.synthetic.main.tree_day_ressource_layout.view.*
-import android.R.attr.data
-import android.R.attr.data
+import android.util.Log
 import java.util.*
 
 
-class TreeAdapter(val treeCollection : ArrayList<Tree>, val context: Context) : RecyclerView.Adapter<ViewHolder>() {
+class TreeAdapter(val treeCollection : ArrayList<Sketch>, val context: Context) : RecyclerView.Adapter<ViewHolder>() {
+    private val FROM_LOW_TO_HIGH = 0
+    private val FROM_HIGHT_TO_LOW = 1
+    private val SORT_BY_DATE  = 0
+    private val SORT_BY_SIZE  = 1
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(context).inflate(R.layout.tree_day_ressource_layout, p0, false))
     }
@@ -26,25 +28,49 @@ class TreeAdapter(val treeCollection : ArrayList<Tree>, val context: Context) : 
         return treeCollection.size
     }
 
-    fun filterTreeListByCreationDate(mode: Int, filterType: Int){
-        Collections.sort(treeCollection, object : Comparator<Tree> {
-            override fun compare(lhs: Tree, rhs: Tree): Int {
+    fun filterTree(mode: Int, filterType: Int):Int{
+        Collections.sort(treeCollection, object : Comparator<Sketch> {
+            override fun compare(lhs: Sketch, rhs: Sketch): Int {
                 // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
                 when (mode) {
-                    0 ->
-                        when(filterType){
-
-                        }
-                    1 -> println("Number too low")
-                    else -> println("Number too high")
+                    FROM_HIGHT_TO_LOW ->
+                        return filterSort(filterType, lhs, rhs)
+                    FROM_LOW_TO_HIGH ->
+                        return filterSort(filterType, lhs, rhs)
+                    else-> return sortingError()
                 }
-                return if (lhs.TreeDate.before(rhs.TreeDate)) -1 else if (rhs.TreeDate.before(lhs.TreeDate)) 1 else 0
             }
         })
+        return -2
+    }
+
+    private fun filterSort(
+        filterType: Int,
+        lhs: Sketch,
+        rhs: Sketch
+    ): Int {
+        when (filterType) {
+            SORT_BY_DATE -> return sortDates(lhs.TreeDate, rhs.TreeDate)
+            SORT_BY_SIZE -> return sortBySize(0, 0)
+            else -> return sortingError()
+        }
+    }
+
+    fun sortDates(d1:Date, d2:Date):Int{
+        return if(d1.before(d2)) -1 else if (d2.before(d1)) 1 else 0
+    }
+
+    fun sortBySize(s1: Int, s2:Int):Int{
+        return if(s1<s2)-1 else if (s2<s1) 1 else 0
+    }
+
+    private fun sortingError():Int {
+        Log.e("Sorting", "No sorting possible")
+        return -2
     }
 }
 
 class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {
     val treeCollection = view.treeList
-    val treeListRecyclerView = view.treeListRecyclerView
+    val treeListRecyclerView = view.dailyTreeListRecyclerView
 }

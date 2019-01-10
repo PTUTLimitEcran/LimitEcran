@@ -13,6 +13,7 @@ import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import kotlinx.android.synthetic.main.fragment_tree.*
 import processing.android.PFragment
 import java.io.Serializable
+import java.util.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -84,7 +85,7 @@ class TreeFragment() : PFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val sketch = Sketch()
+        val sketch = Sketch(Date())
 
         val frame = FrameLayout(context)
         frame.id = R.id.sketch_frame
