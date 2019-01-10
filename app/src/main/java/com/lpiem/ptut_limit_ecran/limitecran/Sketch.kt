@@ -29,18 +29,13 @@ class Sketch(date:Date): PApplet(), Serializable {
 
     }
 
-    fun formatDate():String{
-        return creationDate.day.toString() +"/"+
-                creationDate.day.toString() +"/"+
-                creationDate.day.toString()
-    }
-
 
     override fun draw() {
 
         background(context.resources.getColor(R.color.colorPrimary))
         readAndDraw()
-        save(Environment.getExternalStorageDirectory().absolutePath + "/LimitEcran/wonder_tree${DateFormat.getDateInstance().format(DateFormat.HOUR_OF_DAY0_FIELD)}.png")
+        val randomNumber = Random().nextInt(56464)
+        save(Environment.getExternalStorageDirectory().absolutePath + "/LimitEcran/wonder_tree$randomNumber.png")
         noLoop()
     }
 

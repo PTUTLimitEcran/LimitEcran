@@ -72,10 +72,14 @@ class Singleton(context: Context) {
             print(list.toString())
             for(i in 0 until list.size){
                 if(Regex(loadingTreeImageRegex).matches(list[i].name)){
-                    if(!isDateIndexAlreadyPresentInArray(Date(list[i].lastModified()))){
-                        treeList[Date(list[i].lastModified())] = ArrayList()
+                    val date = Date(list[i].lastModified())
+                    date.minutes = 0
+                    date.seconds = 0
+                    date.hours = 0
+                    if(!isDateIndexAlreadyPresentInArray(date)){
+                        treeList[date] = ArrayList()
                     }
-                    treeList[Date(list[i].lastModified())]!!.add(TreeImage(list[i].name, Date(list[i].lastModified())))
+                    treeList[date]!!.add(TreeImage(list[i].name, date))
                 }
             }
             print("hfkdshf")

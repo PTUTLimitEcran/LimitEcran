@@ -25,7 +25,7 @@ class TreeAdapter(var treeCollection : List<List<TreeImage>>, val context: Conte
 
     override fun onBindViewHolder(holder: ViewHolder, index: Int) {
         holder?.treeDateTextView?.text = treeCollection[index][0].formatDate()
-        holder?.treeCollectionsByDate.setLayoutManager(LinearLayoutManager(context!!))
+        holder?.treeCollectionsByDate.setLayoutManager(LinearLayoutManager(context!!, LinearLayoutManager.HORIZONTAL, false))
         holder?.treeCollectionsByDate.setItemAnimator(DefaultItemAnimator())
         holder?.treeCollectionsByDate.adapter = SingleDayTreeListAdapter(treeCollection[index],context)
     }

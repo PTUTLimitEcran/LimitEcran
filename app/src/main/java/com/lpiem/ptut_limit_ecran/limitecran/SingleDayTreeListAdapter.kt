@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
+import com.bumptech.glide.GlideBuilder
 import com.lpiem.ptut_limit_ecran.limitecran.Model.TreeImage
 import kotlinx.android.synthetic.main.single_day_tree_ressource_list.view.*
 
@@ -22,7 +23,7 @@ class SingleDayTreeListAdapter(val treeCollection : List<TreeImage>, val context
     override fun onBindViewHolder(viewHolder: ViewHolder, index: Int) {
         Glide.with(viewHolder.treeImage)
             .load(Environment.getExternalStorageDirectory().absolutePath+"/LimitEcran/"+treeCollection[index].FilePath)
-            .thumbnail(0.2f)
+            .thumbnail(0.6f)
             .into(viewHolder.treeImage)
     }
 
