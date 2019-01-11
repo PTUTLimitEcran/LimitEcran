@@ -1,12 +1,14 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
+import android.app.usage.UsageStatsManager
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import kotlinx.android.synthetic.main.usage_stats.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -23,7 +25,27 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class StatisticFragment : Fragment() {
+class StatisticFragment : Fragment(), AdapterView.OnItemSelectedListener {
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+
+    private var mInflater: LayoutInflater = requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    private var mUsageStatsManager: UsageStatsManager = requireContext().getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+    private val mPm = requireContext().packageManager
+
+    /*mUsageStatsManager = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
+        mInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mPm = getPackageManager();
+
+        Spinner typeSpinner = (Spinner) findViewById(R.id.typeSpinner);
+        typeSpinner.setOnItemSelectedListener(this);
+
+        ListView listView = (ListView) findViewById(R.id.pkg_list);
+        mAdapter = new UsageStatsAdapter();
+        listView.setAdapter(mAdapter);*/
 
     companion object {
         /**
@@ -65,6 +87,19 @@ class StatisticFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_statistic, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        typeSpinner.onItemSelectedListener = this
+        val mAdapter = UsageStatsAdapter(context!!)
+        pkg_list.adapter = mAdapter
+
+    }
+
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
 
 

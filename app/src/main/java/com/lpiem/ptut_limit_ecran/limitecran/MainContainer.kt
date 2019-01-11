@@ -1,11 +1,15 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.Manifest
+import android.app.AppOpsManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Process
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.AppOpsManagerCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -17,7 +21,8 @@ import kotlinx.android.synthetic.main.activity_main_container.*
 import processing.core.PApplet
 
 
-class MainContainer : AppCompatActivity() {
+class
+MainContainer : AppCompatActivity() {
 
     private var prevMenuItem: MenuItem? = null
     private lateinit var fragmentHome: TreeFragment
@@ -129,6 +134,7 @@ class MainContainer : AppCompatActivity() {
     fun initSketch() {
         sketch = Sketch()
         setupViewPager(fragment_container)
+        checkForPermission(applicationContext)
     }
 
     private fun requestStoragePermission() {
@@ -137,5 +143,11 @@ class MainContainer : AppCompatActivity() {
             arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
             REQUEST_WRITE_STORAGE
         )
+    }
+
+    private fun checkForPermission(context: Context): Boolean {
+        val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+        val mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
+        return mode == AppOpsManagerCompat.MODE_ALLOWED
     }
 }
