@@ -16,7 +16,6 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
-import android.widget.FrameLayout
 import android.widget.RemoteViews
 import android.widget.Toast
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
@@ -78,9 +77,12 @@ class MainActivityContainer : AppCompatActivity() {
         this.singleton.NotificationChannel!!.notify(0, this.singleton.Notification!!.build())
     }
 
+    /**
+     * Create the notification
+     */
     fun createNotification(){
-        val notificationCompat = RemoteViews(BuildConfig.APPLICATION_ID, R.layout.notification_small)
-        val notificationExpanded = RemoteViews(BuildConfig.APPLICATION_ID,R.layout.notification_large)
+        val smallNotification = RemoteViews(packageName, R.layout.notification_small)
+        val largeNotification = RemoteViews(packageName, R.layout.notification_large)
         this.singleton.Notification = NotificationCompat.Builder(this, getString(R.string.channelId))
             .setSmallIcon(R.drawable.ic_phonelink_erase_black_24dp)
             .setContentTitle(getString(R.string.app_name))
@@ -88,8 +90,8 @@ class MainActivityContainer : AppCompatActivity() {
             .setUsesChronometer(true)
             .setContentText(getString(R.string.channel_description))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setCustomContentView(notificationCompat)
-            .setCustomBigContentView(notificationExpanded)
+            .setCustomContentView(smallNotification)
+            .setCustomBigContentView(largeNotification)
     }
 
 
