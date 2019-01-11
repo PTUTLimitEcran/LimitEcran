@@ -23,7 +23,6 @@ class SingleDayTreeListAdapter(val treeCollection : List<TreeImage>, val context
     override fun onBindViewHolder(viewHolder: ViewHolder, index: Int) {
         Glide.with(viewHolder.treeImage)
             .load(Environment.getExternalStorageDirectory().absolutePath+"/LimitEcran/"+treeCollection[index].FilePath)
-            .thumbnail(0.6f)
             .into(viewHolder.treeImage)
     }
 

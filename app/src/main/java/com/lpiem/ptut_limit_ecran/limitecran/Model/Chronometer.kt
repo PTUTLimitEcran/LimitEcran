@@ -39,7 +39,6 @@ class Chronometer(treeFragment: TreeFragment){
                 minutes %= 60
                 timerHandler.postDelayed(this, 0)
                 treeFragment.updateTextView(formatTimeIntoText(seconds,minutes,hours))
-                treeFragment.updateNotification(formatTimeIntoText(seconds,minutes,hours))
                 hasChronometerStarted = true
             }
         }

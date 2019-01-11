@@ -4,13 +4,15 @@ import android.content.Context
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.tree_list_ressource_layout.view.*
 import android.util.Log
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import com.lpiem.ptut_limit_ecran.limitecran.Model.TreeImage
-import kotlinx.android.synthetic.main.fragment_gallery.*
 import java.util.*
 
 
@@ -19,14 +21,18 @@ class TreeAdapter(var treeCollection : List<List<TreeImage>>, val context: Conte
     private val FROM_HIGHT_TO_LOW = 1
     private val SORT_BY_DATE  = 0
     private val SORT_BY_SIZE  = 1
+    private val singleton : Singleton = Singleton.getInstance(context)
     override fun onCreateViewHolder(viewGroup: ViewGroup, index: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(context).inflate(R.layout.tree_list_ressource_layout, viewGroup, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, index: Int) {
         holder?.treeDateTextView?.text = treeCollection[index][0].formatDate()
-        holder?.treeCollectionsByDate.setLayoutManager(LinearLayoutManager(context!!, LinearLayoutManager.HORIZONTAL, false))
-        holder?.treeCollectionsByDate.setItemAnimator(DefaultItemAnimator())
+
+
+        holder?.treeCollectionsByDate.layoutManager = StaggeredGridLayoutManager(3,LinearLayoutManager.VERTICAL)
+        holder?.treeCollectionsByDate.itemAnimator  = DefaultItemAnimator()
+
         holder?.treeCollectionsByDate.adapter = SingleDayTreeListAdapter(treeCollection[index],context)
     }
 

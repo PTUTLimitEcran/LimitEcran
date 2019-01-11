@@ -1,16 +1,23 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.Manifest
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.NotificationCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
 import android.widget.FrameLayout
+import android.widget.RemoteViews
 import android.widget.Toast
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import kotlinx.android.synthetic.main.activity_main_container.*
@@ -27,7 +34,6 @@ class MainActivityContainer : AppCompatActivity() {
     private lateinit var singleton: Singleton
     private var sketch: PApplet? = null
     private val REQUEST_WRITE_STORAGE = 0
-    private lateinit var frame: FrameLayout
 
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -50,11 +56,49 @@ class MainActivityContainer : AppCompatActivity() {
         false
     }
 
+    fun createNotificationChannel() {
+        this.singleton.NotificationChannel = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(
+                NotificationChannel(
+                    getString(R.string.channelId),
+                    getString(R.string.app_name),
+                    NotificationManager.IMPORTANCE_LOW
+                ).apply {
+                    description = getString(R.string.channel_description)
+                })
+        }
+        this.singleton.Notification.setDefaults(Notification.DEFAULT_LIGHTS or Notification.DEFAULT_SOUND)
+            .setVibrate(longArrayOf(0L)) // Passing null here silently fails
+        this.singleton.NotificationChannel!!.notify(0, this.singleton.Notification!!.build())
+    }
+
+    fun createNotification(){
+        val notificationCompat = RemoteViews(BuildConfig.APPLICATION_ID, R.layout.notification_small)
+        val notificationExpanded = RemoteViews(BuildConfig.APPLICATION_ID,R.layout.notification_large)
+        this.singleton.Notification = NotificationCompat.Builder(this, getString(R.string.channelId))
+            .setSmallIcon(R.drawable.ic_phonelink_erase_black_24dp)
+            .setContentTitle(getString(R.string.app_name))
+            .setOngoing(true)
+            .setUsesChronometer(true)
+            .setContentText(getString(R.string.channel_description))
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setCustomContentView(notificationCompat)
+            .setCustomBigContentView(notificationExpanded)
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_container)
         this.singleton = Singleton.getInstance(this)
+        this.createNotification()
+        this.createNotificationChannel()
 
         fragment_container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -131,6 +175,8 @@ class MainActivityContainer : AppCompatActivity() {
     fun initSketch() {
         sketch = Sketch(Date())
         setupViewPager(fragment_container)
+        this.singleton.startChronometer()
+        this.singleton.loadImages()
     }
 
     private fun requestStoragePermission() {

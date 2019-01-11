@@ -111,8 +111,4 @@ class TreeFragment() : PFragment() {
         print(currentChronometerTime)
         currentChronometerTime.text = updateTimeText
     }
-
-    fun updateNotification(updateTimeText: String){
-        this.singleton.updateNotification(updateTimeText)
-    }
 }

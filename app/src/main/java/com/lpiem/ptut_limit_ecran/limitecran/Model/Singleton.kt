@@ -1,12 +1,17 @@
 package com.lpiem.ptut_limit_ecran.limitecran.Model
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.res.Resources
 import android.os.Build
 import android.os.Environment
+import android.support.constraint.ConstraintLayout
 import android.support.v4.app.NotificationCompat
+import android.widget.Button
+import android.widget.RemoteViews
+import com.lpiem.ptut_limit_ecran.limitecran.BuildConfig
 import com.lpiem.ptut_limit_ecran.limitecran.R
 import com.lpiem.ptut_limit_ecran.limitecran.TreeFragment
 import java.io.File
@@ -23,6 +28,18 @@ class Singleton(context: Context) {
     get() = treeList
     set(newValue){
         treeList = newValue
+    }
+
+    var Notification:NotificationCompat.Builder
+    get() = notification
+    set(newValue){
+        notification = newValue
+    }
+
+    var NotificationChannel:NotificationManager
+    get() = notificationManager
+    set(newValue){
+        notificationManager = newValue
     }
 
     /**
@@ -68,8 +85,7 @@ class Singleton(context: Context) {
 
         fun importImageList(){
             treeList = HashMap()
-            val list = File(Environment.getExternalStorageDirectory().absolutePath+"/LimitEcran/").listFiles()
-            print(list.toString())
+            val list = File(Environment.getExternalStorageDirectory().absolutePath+"/LimitEcran").listFiles()
             for(i in 0 until list.size){
                 if(Regex(loadingTreeImageRegex).matches(list[i].name)){
                     val date = Date(list[i].lastModified())
@@ -82,7 +98,6 @@ class Singleton(context: Context) {
                     treeList[date]!!.add(TreeImage(list[i].name, date))
                 }
             }
-            print("hfkdshf")
         }
 
         private fun isDateIndexAlreadyPresentInArray(date:Date):Boolean{
@@ -92,38 +107,11 @@ class Singleton(context: Context) {
         fun initSingleton(context: Context){
             this.context = context
             this.resources = context.resources
-            this.createNotification()
-            this.createNotificationChannel()
-            this.importImageList()
         }
+    }
 
-        fun createNotificationChannel() {
-            notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            // Create the NotificationChannel, but only on API 26+ because
-            // the NotificationChannel class is new and not in the support library
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val name = resources.getString(R.string.app_name)
-                val descriptionText = resources.getString(R.string.channel_description)
-                val importance = NotificationManager.IMPORTANCE_DEFAULT
-                val channel = NotificationChannel(resources.getString(R.string.channelId), name, importance).apply {
-                    description = descriptionText
-                }
-                // Register the channel with the system
-                val notificationManager: NotificationManager =
-                    context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                notificationManager.createNotificationChannel(channel)
-            }
-            this.notificationManager!!.notify(0, this.notification!!.build())
-        }
-
-        fun createNotification(){
-            this.notification = NotificationCompat.Builder(this.context, resources.getString(R.string.channelId))
-                .setSmallIcon(R.drawable.ic_phonelink_erase_black_24dp)
-                .setContentTitle(resources.getString(R.string.app_name))
-                .setOngoing(true)
-                .setContentText(resources.getString(R.string.channel_description))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-        }
+    fun loadImages(){
+        importImageList()
     }
 
     var Chronometer:Chronometer
@@ -131,9 +119,4 @@ class Singleton(context: Context) {
         set(value){
             chronometer = value
         }
-
-    fun updateNotification(updateTimeText: String){
-        notification.setContentText("Temps écoulé : $updateTimeText")
-        notificationManager.notify(0, notification!!.build())
-    }
 }
