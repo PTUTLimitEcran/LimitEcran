@@ -107,6 +107,15 @@ class MainActivityContainer : AppCompatActivity() {
             .setCustomBigContentView(largeNotification)
     }
 
+    override fun onPause() {
+        super.onPause()
+        finish()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        finish()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -143,16 +152,6 @@ class MainActivityContainer : AppCompatActivity() {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         requestStoragePermission()
-    }
-
-    override fun onAttachedToWindow() {
-        val window = window
-        window.addFlags(
-            WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                    or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                    or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                    or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-        )
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
@@ -215,11 +214,16 @@ class MainActivityContainer : AppCompatActivity() {
         )
     }
 
-
     /**
      * Function about managing activity before screen lock
      */
     private fun registerBroadcastReceiver(){
+        window.addFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                    or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or
+            WindowManager.LayoutParams.FLAG_FULLSCREEN or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                    or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+        )
         val intentFilter = IntentFilter()
         /** System Defined Broadcast */
         intentFilter.addAction(Intent.ACTION_USER_PRESENT)
@@ -238,7 +242,7 @@ class MainActivityContainer : AppCompatActivity() {
                     action == Intent.ACTION_SCREEN_ON ||
                     action == Context.FINGERPRINT_SERVICE
                 )
-                    if (keyguardManager.inKeyguardRestrictedInputMode()) {
+                    if (keyguardManager.isKeyguardLocked) {
                         Log.d("Screen", "Screen locked")
                         if (!singleton.IsRunning) {
                             singleton.IsRunning = true
@@ -263,9 +267,7 @@ class MainActivityContainer : AppCompatActivity() {
      */
     private fun changeStateofChrono(isChronometerRunning : Boolean){
         if(!isChronometerRunning){
-            val timePassed = chrono.base
             chrono.stop()
-            //chrono.contentDescription = timePassed.toString()
         }else{
             chrono.start()
         }

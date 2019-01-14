@@ -114,7 +114,7 @@ class Singleton(context: Context) {
         }
 
         private fun isDateIndexAlreadyPresentInArray(date:Date):Boolean{
-            return if(treeList.containsKey(date))true else false
+            return (treeList.containsKey(date))
         }
 
         fun initSingleton(context: Context){
