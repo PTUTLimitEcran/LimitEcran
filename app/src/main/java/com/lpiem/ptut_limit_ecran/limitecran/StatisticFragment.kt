@@ -40,6 +40,7 @@ class StatisticFragment : Fragment(), AdapterView.OnItemSelectedListener, PassCo
     private lateinit var mInflater: LayoutInflater
     private lateinit var mUsageStatsManager: UsageStatsManager
     private lateinit var mPm: PackageManager
+    private lateinit var mAdapter: UsageStatsAdapter
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -103,14 +104,15 @@ class StatisticFragment : Fragment(), AdapterView.OnItemSelectedListener, PassCo
         super.onViewCreated(view, savedInstanceState)
 
         typeSpinner.onItemSelectedListener = this
-        val mAdapter = UsageStatsAdapter(appContext)
+        mAdapter = UsageStatsAdapter(appContext)
         pkg_list.adapter = mAdapter
 
     }
 
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        return
+        mAdapter.sortList(position)
+        //parent?.refreshDrawableState()
     }
 
 
