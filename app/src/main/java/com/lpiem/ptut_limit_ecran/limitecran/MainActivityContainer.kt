@@ -1,14 +1,18 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.Manifest
+import android.app.KeyguardManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.NotificationCompat
@@ -16,10 +20,13 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
+import android.view.WindowManager
+import android.widget.Chronometer
 import android.widget.RemoteViews
 import android.widget.Toast
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import kotlinx.android.synthetic.main.activity_main_container.*
+import kotlinx.android.synthetic.main.notification_large.*
 import processing.core.PApplet
 import java.util.*
 
@@ -33,6 +40,8 @@ class MainActivityContainer : AppCompatActivity() {
     private lateinit var singleton: Singleton
     private var sketch: PApplet? = null
     private val REQUEST_WRITE_STORAGE = 0
+    private lateinit var smallNotification: RemoteViews
+    private lateinit var largeNotification: RemoteViews
 
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -81,8 +90,9 @@ class MainActivityContainer : AppCompatActivity() {
      * Create the notification
      */
     fun createNotification(){
-        val smallNotification = RemoteViews(packageName, R.layout.notification_small)
-        val largeNotification = RemoteViews(packageName, R.layout.notification_large)
+        smallNotification = RemoteViews(packageName, R.layout.notification_small)
+        largeNotification = RemoteViews(packageName, R.layout.notification_large)
+        largeNotification.setChronometer(R.id.chronometerNotification,SystemClock.elapsedRealtime(),null,true)
         this.singleton.Notification = NotificationCompat.Builder(this, getString(R.string.channelId))
             .setSmallIcon(R.drawable.ic_phonelink_erase_black_24dp)
             .setContentTitle(getString(R.string.app_name))
@@ -101,6 +111,7 @@ class MainActivityContainer : AppCompatActivity() {
         this.singleton = Singleton.getInstance(this)
         this.createNotification()
         this.createNotificationChannel()
+        this.registerBroadcastReceiver()
 
         fragment_container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -127,6 +138,16 @@ class MainActivityContainer : AppCompatActivity() {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         requestStoragePermission()
+    }
+
+    override fun onAttachedToWindow() {
+        val window = window
+        window.addFlags(
+            WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                    or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                    or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                    or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+        )
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
@@ -187,5 +208,50 @@ class MainActivityContainer : AppCompatActivity() {
             arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
             REQUEST_WRITE_STORAGE
         )
+    }
+
+
+    private fun registerBroadcastReceiver(){
+        val intentFilter = IntentFilter()
+        /** System Defined Broadcast */
+        intentFilter.addAction(Intent.ACTION_USER_PRESENT);
+        intentFilter.addAction(Intent.ACTION_USER_UNLOCKED);
+        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+
+        val screenOnOffReceiver = object: BroadcastReceiver(){
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val action = intent?.action
+
+                val keyguardManager = context?.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+                if (action == Intent.ACTION_USER_PRESENT ||
+                    action == Intent.ACTION_USER_UNLOCKED ||
+                    action == Intent.ACTION_SCREEN_OFF ||
+                    action == Intent.ACTION_SCREEN_ON ||
+                    action == Context.FINGERPRINT_SERVICE
+                )
+                    if (keyguardManager.inKeyguardRestrictedInputMode()) {
+                        Log.d("Screen", "Screen locked")
+                        if (singleton.IsRunning == false) {
+                            singleton.IsRunning = true
+                            pauseChronometer(singleton.IsRunning)
+
+                        }
+                    } else {
+                        Log.d("Screen", "Screen unlocked")
+                        if (singleton.IsRunning == true) {
+                            singleton.IsRunning = false
+                            pauseChronometer(singleton.IsRunning)
+                        }
+                    }
+            }
+        }
+        applicationContext.registerReceiver(screenOnOffReceiver, intentFilter)
+    }
+
+    private fun pauseChronometer(isChronometerRunning : Boolean){
+        val chronometer = findViewById<Chronometer>(R.id.chronometerNotification)
+        val timeDifference = chronometer.base - SystemClock.elapsedRealtime()
+        largeNotification.setChronometer(R.id.chronometerNotification, SystemClock.elapsedRealtime() + timeDifference,null, isChronometerRunning)
     }
 }
