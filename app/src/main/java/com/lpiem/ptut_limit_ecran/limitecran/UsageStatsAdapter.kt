@@ -31,8 +31,8 @@ class UsageStatsAdapter(private var context: Context): BaseAdapter() {
     private val mLastTimeUsedComparator = LastTimeUsedComparator()
     private val mUsageTimeComparator = UsageTimeComparator()
     private lateinit var mAppLabelComparator: AppNameComparator
-    private val mAppLabelMap = ArrayMap<String, String>()
-    private val mPackageStats = ArrayList<UsageStats>()
+    private var mAppLabelMap = ArrayMap<String, String>()
+    private var mPackageStats = ArrayList<UsageStats>()
     private var mUsageStatsManager: UsageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
     private val mPm = context.packageManager
 
@@ -174,6 +174,7 @@ class UsageStatsAdapter(private var context: Context): BaseAdapter() {
     }
 
     private fun sortList() {
+
         if (mDisplayOrder == _DISPLAY_ORDER_USAGE_TIME) {
             if (localLOGV) Log.i(TAG, "Sorting by usage time")
             Collections.sort(mPackageStats, mUsageTimeComparator)
@@ -184,6 +185,7 @@ class UsageStatsAdapter(private var context: Context): BaseAdapter() {
             if (localLOGV) Log.i(TAG, "Sorting by application name")
             Collections.sort(mPackageStats, mAppLabelComparator)
         }
+
         notifyDataSetChanged()
     }
 
