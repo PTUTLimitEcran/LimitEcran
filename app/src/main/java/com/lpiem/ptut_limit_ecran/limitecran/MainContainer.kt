@@ -40,12 +40,12 @@ MainContainer : AppCompatActivity() {
 
         when (item.itemId) {
             R.id.navigation_stat -> {
-                fragment_container.currentItem = 1
+                fragment_container.currentItem = 0
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_home -> {
                 requestStoragePermission()
-                fragment_container.currentItem = 0
+                fragment_container.currentItem = 1
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_gallery -> {
@@ -98,6 +98,7 @@ MainContainer : AppCompatActivity() {
         viewPagerAdapter.addFragment(fragmentHome)
         viewPagerAdapter.addFragment(fragmentGallery)
         viewPager.adapter = viewPagerAdapter
+        viewPager.currentItem = 1
     }
 
 
@@ -140,6 +141,7 @@ MainContainer : AppCompatActivity() {
         if (!checkForPermission(applicationContext)) {
             startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
         }
+
 
     }
 
