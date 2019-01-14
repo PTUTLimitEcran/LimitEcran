@@ -10,7 +10,6 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
-import android.widget.FrameLayout
 import android.widget.Toast
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import kotlinx.android.synthetic.main.activity_main_container.*
@@ -26,7 +25,6 @@ class MainContainer : AppCompatActivity() {
     private val singleton: Singleton = Singleton.getInstance(this)
     private var sketch: PApplet? = null
     private val REQUEST_WRITE_STORAGE = 0
-    private lateinit var frame: FrameLayout
     private var viewPagerAdapter: ViewPagerAdapter? = null
 
 
@@ -34,12 +32,12 @@ class MainContainer : AppCompatActivity() {
 
         when (item.itemId) {
             R.id.navigation_stat -> {
-                fragment_container.currentItem = 1
+                fragment_container.currentItem = 0
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_home -> {
                 requestStoragePermission()
-                fragment_container.currentItem = 0
+                fragment_container.currentItem = 1
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_gallery -> {
@@ -91,6 +89,7 @@ class MainContainer : AppCompatActivity() {
         viewPagerAdapter?.addFragment(fragmentHome)
         viewPagerAdapter?.addFragment(fragmentGallery)
         viewPager.adapter = viewPagerAdapter
+        viewPager.currentItem = 1
     }
 
 
@@ -128,7 +127,7 @@ class MainContainer : AppCompatActivity() {
     }
 
     fun initSketch() {
-        sketch = Sketch(null)
+        sketch = Sketch(null, "")
         if (viewPagerAdapter == null) {
             setupViewPager(fragment_container)
         }
