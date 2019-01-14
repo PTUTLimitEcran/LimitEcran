@@ -6,12 +6,13 @@ import android.content.Context
 import android.content.res.Resources
 import android.os.Build
 import android.support.v4.app.NotificationCompat
-import android.support.v4.content.ContextCompat.getSystemService
 import com.lpiem.ptut_limit_ecran.limitecran.MainActivity
 import com.lpiem.ptut_limit_ecran.limitecran.R
 import com.lpiem.ptut_limit_ecran.limitecran.TreeFragment
 
 class Singleton(context: Context) {
+
+    private var firstime = true
     init {
         initSingleton(context)
     }
@@ -99,6 +100,10 @@ class Singleton(context: Context) {
         }
 
     fun updateNotification(updateTimeText: String){
+        if (firstime) {
+            notification!!.setOnlyAlertOnce(true)
+            firstime = false
+        }
         notification!!.setContentText("Temps écoulé : "+updateTimeText)
         notificationManager!!.notify(0, notification!!.build())
     }

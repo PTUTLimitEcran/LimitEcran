@@ -120,4 +120,11 @@ class TreeFragment() : PFragment() {
     fun updateNotification(updateTimeText: String){
         this.singleton.updateNotification(updateTimeText)
     }
+
+    fun initChrono(){
+        chronometer = Chronometer(this)
+        chronometer.initChrono()
+        chronometer.startChrono()
+    }
+
 }
