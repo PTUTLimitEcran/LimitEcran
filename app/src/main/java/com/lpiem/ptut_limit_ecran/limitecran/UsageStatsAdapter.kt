@@ -112,7 +112,7 @@ class UsageStatsAdapter(private var context: Context): BaseAdapter() {
             //holder.lastTimeUsed = (TextView) convertView.findViewById(R.id.last_time_used);
             holder.usageTime = viewToReturn.findViewById(R.id.usage_time) as TextView?
             holder.labProgressLayout = viewToReturn.findViewById(R.id.labProgressLayout) as LabProgressLayout?
-            convertView?.tag = holder
+            viewToReturn?.tag = holder
         } else {
             viewToReturn = convertView
             // Get the ViewHolder back to get fast access to the TextView
