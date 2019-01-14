@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Process
+import android.provider.Settings
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.AppOpsManagerCompat
@@ -32,6 +33,7 @@ MainContainer : AppCompatActivity() {
     private var sketch: PApplet? = null
     private val REQUEST_WRITE_STORAGE = 0
     private lateinit var frame: FrameLayout
+
 
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -91,6 +93,7 @@ MainContainer : AppCompatActivity() {
         fragmentHome = TreeFragment.newInstance(sketch = sketch as Sketch, param2 = null)
         fragmentStat = StatisticFragment()
         fragmentGallery = GalleryFragment()
+        fragmentStat.putContext(applicationContext)
         viewPagerAdapter.addFragment(fragmentStat)
         viewPagerAdapter.addFragment(fragmentHome)
         viewPagerAdapter.addFragment(fragmentGallery)
@@ -134,7 +137,10 @@ MainContainer : AppCompatActivity() {
     fun initSketch() {
         sketch = Sketch()
         setupViewPager(fragment_container)
-        checkForPermission(applicationContext)
+        if (!checkForPermission(applicationContext)) {
+            startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+        }
+
     }
 
     private fun requestStoragePermission() {

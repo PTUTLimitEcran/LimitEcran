@@ -2,6 +2,7 @@ package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.app.usage.UsageStatsManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -13,7 +14,7 @@ import kotlinx.android.synthetic.main.usage_stats.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
+private const val ARG_PARAM1 = "context"
 private const val ARG_PARAM2 = "param2"
 
 /**
@@ -25,16 +26,26 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class StatisticFragment : Fragment(), AdapterView.OnItemSelectedListener {
+class StatisticFragment : Fragment(), AdapterView.OnItemSelectedListener, PassContext {
+
+    override fun putContext(context: Context) {
+        appContext = context
+        mInflater = appContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        mUsageStatsManager=  appContext.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        mPm = appContext.packageManager
+    }
+
+
+    private lateinit var appContext: Context
+    private lateinit var mInflater: LayoutInflater
+    private lateinit var mUsageStatsManager: UsageStatsManager
+    private lateinit var mPm: PackageManager
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 
-    private var mInflater: LayoutInflater = requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-    private var mUsageStatsManager: UsageStatsManager = requireContext().getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
-    private val mPm = requireContext().packageManager
 
     /*mUsageStatsManager = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
         mInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -77,6 +88,7 @@ class StatisticFragment : Fragment(), AdapterView.OnItemSelectedListener {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
     }
 
     override fun onCreateView(
@@ -91,14 +103,14 @@ class StatisticFragment : Fragment(), AdapterView.OnItemSelectedListener {
         super.onViewCreated(view, savedInstanceState)
 
         typeSpinner.onItemSelectedListener = this
-        val mAdapter = UsageStatsAdapter(context!!)
+        val mAdapter = UsageStatsAdapter(appContext)
         pkg_list.adapter = mAdapter
 
     }
 
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return
     }
 
 

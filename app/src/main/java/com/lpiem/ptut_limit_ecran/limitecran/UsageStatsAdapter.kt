@@ -94,7 +94,7 @@ class UsageStatsAdapter(private var context: Context): BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         // A ViewHolder keeps references to children views to avoid unneccessary calls
         // to findViewById() on each row.
-        val holder: AppViewHolder
+        val holder: AppViewHolder?
         var viewToReturn: View
 
         // When convertView is not null, we can reuse it directly, there is no need
@@ -107,17 +107,17 @@ class UsageStatsAdapter(private var context: Context): BaseAdapter() {
             // we want to bind data to.
             holder = AppViewHolder()
 
-            holder.Icon = convertView?.findViewById(R.id.Icon) as ImageView
-            holder.pkgName = convertView.findViewById(R.id.package_name) as TextView
+            holder.Icon = viewToReturn.findViewById(R.id.Icon) as ImageView?
+            holder.pkgName = viewToReturn.findViewById(R.id.package_name) as TextView?
             //holder.lastTimeUsed = (TextView) convertView.findViewById(R.id.last_time_used);
-            holder.usageTime = convertView.findViewById(R.id.usage_time) as TextView
-            holder.labProgressLayout = convertView.findViewById(R.id.labProgressLayout) as LabProgressLayout
+            holder.usageTime = viewToReturn.findViewById(R.id.usage_time) as TextView?
+            holder.labProgressLayout = viewToReturn.findViewById(R.id.labProgressLayout) as LabProgressLayout?
             convertView?.tag = holder
         } else {
             viewToReturn = convertView
             // Get the ViewHolder back to get fast access to the TextView
             // and the ImageView.
-            holder = convertView.tag as AppViewHolder
+            holder = convertView.tag as AppViewHolder?
         }
 
         // Bind the data efficiently with the holder
@@ -128,19 +128,19 @@ class UsageStatsAdapter(private var context: Context): BaseAdapter() {
             try {
 
                 val appIcon = context.packageManager.getApplicationIcon(pkgStats.packageName)
-                holder.Icon?.setImageDrawable(appIcon)
+                holder?.Icon?.setImageDrawable(appIcon)
 
             } catch (e: PackageManager.NameNotFoundException) {
                 e.printStackTrace()
             }
 
-            holder.pkgName?.text = label
+            holder?.pkgName?.text = label
             /* holder.lastTimeUsed.setText(DateUtils.formatSameDayTime(pkgStats.getLastTimeUsed(),
                         System.currentTimeMillis(), DateFormat.MEDIUM, DateFormat.MEDIUM));*/
-            holder.usageTime?.text = DateUtils.formatElapsedTime(pkgStats.totalTimeInForeground / 1000)
+            holder?.usageTime?.text = DateUtils.formatElapsedTime(pkgStats.totalTimeInForeground / 1000)
             val totalApp = pkgStats.totalTimeInForeground.toFloat()
             val percent = (totalApp / totalMilli * 100).toInt()/*floatPercent*/
-            holder.labProgressLayout?.setCurrentProgress(percent)
+            holder?.labProgressLayout?.setCurrentProgress(percent)
 
         } else {
             Log.w(TAG, "No usage stats info for package:$position")
