@@ -132,7 +132,4 @@ class Singleton(context: Context) {
         set(value){
             chronometer = value
         }
-
-
-
 }

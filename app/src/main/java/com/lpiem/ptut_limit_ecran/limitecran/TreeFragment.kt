@@ -30,7 +30,7 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class TreeFragment() : PFragment() {
+class TreeFragment : PFragment() {
     private lateinit var chronometer: Chronometer
 
     private lateinit var viewOfLayout:View
@@ -76,7 +76,7 @@ class TreeFragment() : PFragment() {
 
         viewOfLayout = inflater!!.inflate(R.layout.fragment_tree, container, false)
         this.singleton.initChronometer(this)
-        if(this.singleton.Chronometer.ChronometerStartStatus==false){
+        if(!this.singleton.Chronometer.ChronometerStartStatus){
             this.singleton.startChronometer()
         }
         return inflater.inflate(R.layout.fragment_tree, container, false)
@@ -108,7 +108,7 @@ class TreeFragment() : PFragment() {
      * Update chronometer
      */
     fun updateTextView(updateTimeText : String){
-        print(currentChronometerTime)
-        currentChronometerTime.text = updateTimeText
+//        print(currentChronometerTime)
+//        currentChronometerTime.text = updateTimeText
     }
 }

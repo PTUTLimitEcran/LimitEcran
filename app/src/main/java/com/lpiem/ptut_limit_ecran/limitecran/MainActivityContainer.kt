@@ -26,10 +26,8 @@ import android.widget.RemoteViews
 import android.widget.Toast
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import kotlinx.android.synthetic.main.activity_main_container.*
-import kotlinx.android.synthetic.main.notification_large.*
 import processing.core.PApplet
 import java.util.*
-
 
 class MainActivityContainer : AppCompatActivity() {
 
@@ -42,6 +40,7 @@ class MainActivityContainer : AppCompatActivity() {
     private val REQUEST_WRITE_STORAGE = 0
     private lateinit var smallNotification: RemoteViews
     private lateinit var largeNotification: RemoteViews
+    private lateinit var chrono:Chronometer
 
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -64,6 +63,9 @@ class MainActivityContainer : AppCompatActivity() {
         false
     }
 
+    /**
+     * Create an instance of the notification channel
+     */
     fun createNotificationChannel() {
         this.singleton.NotificationChannel = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         // Create the NotificationChannel, but only on API 26+ because
@@ -92,7 +94,8 @@ class MainActivityContainer : AppCompatActivity() {
     fun createNotification(){
         smallNotification = RemoteViews(packageName, R.layout.notification_small)
         largeNotification = RemoteViews(packageName, R.layout.notification_large)
-        largeNotification.setChronometer(R.id.chronometerNotification,SystemClock.elapsedRealtime(),null,true)
+        largeNotification.setChronometer(R.id.largeChronometerNotification,SystemClock.elapsedRealtime(),null,false)
+        smallNotification.setChronometer(R.id.smallNotificationChronometer,SystemClock.elapsedRealtime(),null,false)
         this.singleton.Notification = NotificationCompat.Builder(this, getString(R.string.channelId))
             .setSmallIcon(R.drawable.ic_phonelink_erase_black_24dp)
             .setContentTitle(getString(R.string.app_name))
@@ -109,6 +112,8 @@ class MainActivityContainer : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_container)
         this.singleton = Singleton.getInstance(this)
+        this.chrono = Chronometer(this)
+        this.chrono.stop()
         this.createNotification()
         this.createNotificationChannel()
         this.registerBroadcastReceiver()
@@ -211,13 +216,16 @@ class MainActivityContainer : AppCompatActivity() {
     }
 
 
+    /**
+     * Function about managing activity before screen lock
+     */
     private fun registerBroadcastReceiver(){
         val intentFilter = IntentFilter()
         /** System Defined Broadcast */
-        intentFilter.addAction(Intent.ACTION_USER_PRESENT);
-        intentFilter.addAction(Intent.ACTION_USER_UNLOCKED);
-        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
-        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+        intentFilter.addAction(Intent.ACTION_USER_PRESENT)
+        intentFilter.addAction(Intent.ACTION_USER_UNLOCKED)
+        intentFilter.addAction(Intent.ACTION_SCREEN_ON)
+        intentFilter.addAction(Intent.ACTION_SCREEN_OFF)
 
         val screenOnOffReceiver = object: BroadcastReceiver(){
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -232,16 +240,16 @@ class MainActivityContainer : AppCompatActivity() {
                 )
                     if (keyguardManager.inKeyguardRestrictedInputMode()) {
                         Log.d("Screen", "Screen locked")
-                        if (singleton.IsRunning == false) {
+                        if (!singleton.IsRunning) {
                             singleton.IsRunning = true
-                            pauseChronometer(singleton.IsRunning)
+                            changeStateofChrono(singleton.IsRunning)
 
                         }
                     } else {
                         Log.d("Screen", "Screen unlocked")
-                        if (singleton.IsRunning == true) {
+                        if (singleton.IsRunning) {
                             singleton.IsRunning = false
-                            pauseChronometer(singleton.IsRunning)
+                            changeStateofChrono(singleton.IsRunning)
                         }
                     }
             }
@@ -249,9 +257,21 @@ class MainActivityContainer : AppCompatActivity() {
         applicationContext.registerReceiver(screenOnOffReceiver, intentFilter)
     }
 
-    private fun pauseChronometer(isChronometerRunning : Boolean){
-        val chronometer = findViewById<Chronometer>(R.id.chronometerNotification)
-        val timeDifference = chronometer.base - SystemClock.elapsedRealtime()
-        largeNotification.setChronometer(R.id.chronometerNotification, SystemClock.elapsedRealtime() + timeDifference,null, isChronometerRunning)
+    /**
+     * Pausing/Resume chronometer
+     * @param isChronometerRunning check if the chronometer should run or not
+     */
+    private fun changeStateofChrono(isChronometerRunning : Boolean){
+        if(!isChronometerRunning){
+            val timePassed = chrono.base
+            chrono.stop()
+            //chrono.contentDescription = timePassed.toString()
+        }else{
+            chrono.start()
+        }
+        val timeDifference = chrono.base - SystemClock.elapsedRealtime()
+        largeNotification.setChronometer(R.id.largeChronometerNotification, timeDifference,null, isChronometerRunning)
+        smallNotification.setChronometer(R.id.smallNotificationChronometer, timeDifference,null, isChronometerRunning)
     }
 }
+
