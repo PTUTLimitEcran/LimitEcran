@@ -13,8 +13,8 @@ import com.lpiem.ptut_limit_ecran.limitecran.TreeAdapter
 import kotlinx.android.synthetic.main.multilines_tree_ressource_layout.view.*
 
 class MultiLinesTreeGalleryAdapter(var treeCollection : List<List<TreeImage>>, val context: Context) : RecyclerView.Adapter<TreeAdapter.ViewHolder>()  {
-    override fun onCreateViewHolder(viewGroup: ViewGroup, index: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(context).inflate(R.layout.multilines_tree_ressource_layout, viewGroup, false))
+    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): TreeAdapter.ViewHolder {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun getItemCount(): Int {

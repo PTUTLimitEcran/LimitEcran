@@ -1,42 +1,70 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.graphics.Color
+import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import com.lpiem.melkius.testprocessing.LeafDirection
 import com.lpiem.melkius.testprocessing.Node
 import processing.core.PApplet
 import java.io.Serializable
-import java.text.DateFormat
 import java.util.*
 
 
-class Sketch(date:Date): PApplet(), Serializable {
-    private var creationDate: Date = date
-        var TreeDate:Date
-        get() = this.creationDate
-        set(value){
-            this.creationDate = value
+class Sketch(private var gram: String, private var toSave: Boolean) : PApplet(), Serializable {
+
+    //private lateinit var saveImage: SaveImage
+    //private var toSave = true
+    private var flowerStack: Stack<Node<Char>> = Stack()
+    private var smallOffset = 100f
+    private var bigOffset = 150f
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        //saveImage = this
+        //orderToSaveImage?.saveIt(saveImage)
+    }
+
+//    override fun savePictureToStorage(save: Boolean) {
+//        if (save) {
+//            //toSave = true
+//            //saveThePicture(toSave)
+//        }
+//    }
+
+    private fun saveThePicture(saveTheImage: Boolean) {
+        if (saveTheImage) {
+            save(
+                Environment.getExternalStorageDirectory().absolutePath
+                        + "/LimitEcran/wonder_tree_${(0..10).random()}.png"
+            )
         }
 
+    }
 
     override fun settings() {
-        size(1000, 2000)
+        size(1200, 1900, P3D)
         //fullScreen(1)
     }
 
     override fun setup() {
-
+        frameRate = 1f
     }
 
 
     override fun draw() {
 
-        background(context.resources.getColor(R.color.colorPrimary))
-        readAndDraw()
-        val randomNumber = Random().nextInt(56464)
-        save(Environment.getExternalStorageDirectory().absolutePath + "/LimitEcran/wonder_tree$randomNumber.png")
+        background(Color.WHITE)
+        readAndDraw(gram)
+        saveThePicture(toSave)
         noLoop()
+        //Toast.makeText(activity.applicationContext, "Image Saved !", Toast.LENGTH_SHORT).show()
+//        if (toSave) {
+//            Handler().post {
+//
+//            }
+//
+//        }
     }
 
 
@@ -49,13 +77,9 @@ class Sketch(date:Date): PApplet(), Serializable {
 
     }
 
-    fun readAndDraw() {
-        //val gram = "[L[LR]R[L[R]R[LR]]"
-        //val gram = "[L[LR[LR]]R[L[R]R[LR]]]"
-        //val gram = "[C[C]]"
-        val gram = "[C[L[C[L[L]C[LCR]]C[R]]]R[C[LCR]]]"
+    fun readAndDraw(gram: String) {
 
-        val source = Node('s', 800f, 1900f)
+        val source = Node('S', 620f, 1850f)
 
         var currentLeaf = LeafDirection.SOURCE
 
@@ -79,6 +103,10 @@ class Sketch(date:Date): PApplet(), Serializable {
                     drawLeaf(LeafDirection.CENTER, stack.peek())
                     currentLeaf = LeafDirection.CENTER
                 }
+                gram[j] == LeafDirection.SOURCE.direction -> {
+                    drawLeaf(LeafDirection.SOURCE, stack.peek())
+                    currentLeaf = LeafDirection.SOURCE
+                }
                 gram[j] == '[' -> {
                     val nodeValue = nodeName
                     var newNode: Node<Char>
@@ -96,6 +124,10 @@ class Sketch(date:Date): PApplet(), Serializable {
                 }
             }
         }
+
+        while (!flowerStack.empty()) {
+            drawFlower(flowerStack)
+        }
     }
 
     private fun setNewNode(
@@ -103,40 +135,110 @@ class Sketch(date:Date): PApplet(), Serializable {
         nodeValue: Char,
         stack: Stack<Node<Char>>
     ): Node<Char> {
+
         return when (currentLeaf) {
             LeafDirection.SOURCE -> Node(
                 nodeValue,
-                stack.peek().coordX - 200f,
-                stack.peek().coordY - 200f
+                stack.peek().coordX - bigOffset,
+                stack.peek().coordY - bigOffset
             )
-            LeafDirection.LEFT -> Node(
-                nodeValue,
-                stack.peek().coordX - 120f,
-                stack.peek().coordY - 200f
-            )
-            LeafDirection.RIGHT -> Node(
-                nodeValue,
-                stack.peek().coordX + 120f,
-                stack.peek().coordY - 200f
-            )
+            LeafDirection.LEFT -> {
+                //flowerStack.push(stack.peek())
+                return Node(nodeValue, stack.peek().coordX - smallOffset, stack.peek().coordY - bigOffset)
+            }
+            LeafDirection.RIGHT -> {
+                //flowerStack.push(stack.peek())
+                return Node(nodeValue, stack.peek().coordX + smallOffset, stack.peek().coordY - bigOffset)
+            }
             LeafDirection.CENTER -> Node(
                 nodeValue,
-                stack.peek().coordX ,
-                stack.peek().coordY - 200f)
+                stack.peek().coordX,
+                stack.peek().coordY - bigOffset
+            )
         }
     }
 
     private fun drawLeaf(direction: LeafDirection, node: Node<Char>) {
+
+        smallOffset = (120..150).random().toFloat()
+        bigOffset = (160..200).random().toFloat()
         beginShape()
-        fill(Color.YELLOW)
+        val img = loadImage("frontend_large.jpg")
         when (direction) {
-            LeafDirection.RIGHT -> line(node.coordX, node.coordY, node.coordX + 120f, node.coordY - 200f)
-            LeafDirection.LEFT -> line(node.coordX, node.coordY, node.coordX - 120f, node.coordY - 200f)
-            LeafDirection.CENTER -> line(node.coordX, node.coordY, node.coordX , node.coordY - 200f)
-            LeafDirection.SOURCE -> { }
+            LeafDirection.RIGHT -> {
+                beginShape()
+                noStroke()
+                texture(img)
+                vertex(node.coordX - 6, node.coordY - 6, 0f, 0f)
+                vertex(node.coordX + 6, node.coordY + 6, 0f, 0f)
+                vertex(node.coordX + smallOffset, node.coordY - bigOffset, 0f, 0f)
+                vertex(node.coordX + smallOffset -13f, node.coordY - (bigOffset-6f), 0f, 0f)
+                endShape()
+                //flowerStack.push(Node('f',node.coordX + smallOffset,node.coordY - bigOffset))
+            }
+            LeafDirection.LEFT -> {
+                beginShape()
+                noStroke()
+                texture(img)
+                vertex(node.coordX + 10, node.coordY + 10)
+                vertex(node.coordX - smallOffset + 10, node.coordY - 190)
+                vertex(node.coordX - smallOffset, node.coordY - bigOffset + 20f)
+                vertex(node.coordX - 10, node.coordY + 10)
+                endShape()
+                //flowerStack.push(Node('f', node.coordX , node.coordY ))
+
+                //line(node.coordX, node.coordY, node.coordX - 120f, node.coordY - 200f)
+            }
+            LeafDirection.CENTER -> {
+                beginShape()
+                noStroke()
+                texture(img)
+                vertex(node.coordX + 5, node.coordY)
+                vertex(node.coordX + 5, node.coordY - bigOffset )
+                vertex(node.coordX - 5, node.coordY - bigOffset )
+                vertex(node.coordX - 5, node.coordY)
+                endShape()
+
+                //flowerStack.push(Node('f', node.coordX - bigOffset, node.coordY - bigOffset))
+                //line(node.coordX, node.coordY, node.coordX, node.coordY - 200f)
+            }
+            LeafDirection.SOURCE -> {
+                beginShape()
+                noStroke()
+                texture(img)
+                vertex(node.coordX + 20- bigOffset, node.coordY)
+                vertex(node.coordX + 5- bigOffset, node.coordY - bigOffset )
+                vertex(node.coordX - 5- bigOffset, node.coordY - bigOffset )
+                vertex(node.coordX - 20- bigOffset, node.coordY)
+                endShape()
+                //line(node.coordX - bigOffset, node.coordY, node.coordX - bigOffset, node.coordY - bigOffset)
+            }
         }
+
     }
 
-
+    fun drawFlower(stack: Stack<Node<Char>>) {
+        beginShape()
+        var angle = 0
+        angle += 5
+        val value = (PApplet.cos(PApplet.radians(angle.toFloat())) * 12.0).toFloat()
+        var a = 0
+        fill(Color.parseColor("#${(0..9).random()}${(0..9).random()}${(0..9).random()}${(0..9).random()}${(0..9).random()}${(0..9).random()}"))
+        while (a < 360) {
+            val xOff = PApplet.cos(PApplet.radians(a.toFloat())) * value
+            val yOff = PApplet.sin(PApplet.radians(a.toFloat())) * value
+            ellipse(
+                stack.peek().coordX + smallOffset + xOff,
+                stack.peek().coordY - bigOffset + yOff,
+                value + 30,
+                value + 30
+            )
+            a += 75
+        }
+        fill(125)
+        ellipse(20f, 10f, 2f, 2f)
+        endShape()
+        stack.pop()
+    }
 
 }

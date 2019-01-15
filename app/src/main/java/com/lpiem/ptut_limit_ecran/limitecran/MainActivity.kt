@@ -1,15 +1,11 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.NotificationCompat
-import android.widget.RemoteViews
+import android.support.v7.app.AppCompatActivity
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 
 

@@ -18,7 +18,6 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
-import android.widget.FrameLayout
 import android.widget.Toast
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import kotlinx.android.synthetic.main.activity_main_container.*
@@ -36,7 +35,7 @@ MainContainer : AppCompatActivity() {
     private val singleton: Singleton = Singleton.getInstance(this)
     private var sketch: PApplet? = null
     private val REQUEST_WRITE_STORAGE = 0
-    private lateinit var frame: FrameLayout
+    private var viewPagerAdapter: ViewPagerAdapter? = null
 
 
 
@@ -94,14 +93,14 @@ MainContainer : AppCompatActivity() {
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
-        val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
-        fragmentHome = TreeFragment.newInstance(sketch = sketch as Sketch, param2 = null)
+        if (viewPagerAdapter == null) viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
+        fragmentHome = TreeFragment()
         fragmentStat = StatisticFragment()
         fragmentGallery = GalleryFragment()
         fragmentStat.putContext(applicationContext)
-        viewPagerAdapter.addFragment(fragmentStat)
-        viewPagerAdapter.addFragment(fragmentHome)
-        viewPagerAdapter.addFragment(fragmentGallery)
+        viewPagerAdapter?.addFragment(fragmentStat)
+        viewPagerAdapter?.addFragment(fragmentHome)
+        viewPagerAdapter?.addFragment(fragmentGallery)
         viewPager.adapter = viewPagerAdapter
         viewPager.currentItem = 1
     }
@@ -189,13 +188,13 @@ MainContainer : AppCompatActivity() {
     }
 
     fun initSketch() {
-        sketch = Sketch(Date())
-        setupViewPager(fragment_container)
+        sketch = Sketch("", false)
+        if (viewPagerAdapter == null) {
+            setupViewPager(fragment_container)
+        }
         if (!checkForPermission(applicationContext)) {
             startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
         }
-
-
     }
 
     private fun requestStoragePermission() {

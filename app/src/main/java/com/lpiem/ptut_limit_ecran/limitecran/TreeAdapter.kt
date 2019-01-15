@@ -33,10 +33,10 @@ class TreeAdapter(var treeCollection : List<TreeImage>, val context: Context) : 
         holder?.treeCollectionsByDate.layoutManager = LinearLayoutManager(context)
         holder?.treeCollectionsByDate.itemAnimator  = DefaultItemAnimator()
 
-        holder?.treeCollectionsByDate.adapter = SingleDayTreeListAdapter(filterListBySize()[index],context)
+        //holder?.treeCollectionsByDate.adapter = SingleDayTreeListAdapter([index],context)
     }
 
-    fun filterListBySize():List<List<TreeImage>>{
+    /*fun filterListBySize():List<List<TreeImage>>{
         val display = context.getWindowManager().getDefaultDisplay()
         val size = Point()
         display.getSize(size)
@@ -52,7 +52,7 @@ class TreeAdapter(var treeCollection : List<TreeImage>, val context: Context) : 
             currentIndex++
         }
         return treeOutput
-    }
+    }*/
 
     // Gets the number of animals in the list
     override fun getItemCount(): Int {
