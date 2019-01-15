@@ -23,63 +23,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        this.createNotification()
-        this.createNotificationChannel()
         this.singleton = Singleton.getInstance(this)
 
         val handler = Handler()
         handler.postDelayed(
             {
-            val intent = Intent(applicationContext, MainActivityContainer::class.java)
+            val intent = Intent(applicationContext, MainActivity::class.java)
             startActivity(intent)
             }
             , 2000L)
 
 
     }
-
-    private fun createNotificationChannel() {
-        this.notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.app_name)
-            val descriptionText = getString(R.string.channel_description)
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(getString(R.string.channelId), name, importance).apply {
-                description = descriptionText
-                enableLights(false)
-                enableVibration(false)
-
-            }
-            // Register the channel with the system
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
-        this.notificationManager!!.notify(0, this.notification!!.build())
-    }
-
-    private fun createNotification(){
-        this.notification = NotificationCompat.Builder(this.applicationContext, getString(R.string.channelId))
-        .setSmallIcon(R.drawable.ic_notifications_black_24dp)
-            .setContentTitle(getString(R.string.app_name))
-            .setContentText(getString(R.string.channel_description))
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setVibrate(longArrayOf(0L))
-            .setOnlyAlertOnce(true)
-            .setOngoing(true)
-
-    }
-
-    /**
-     * Update time in the notification
-     */
-    fun updateNotification(updateTimeText : String){
-        this.notification.setContentText(updateTimeText)
-        this.notificationManager.notify(0, this.notification.build())
-    }
-
-
-
 }
