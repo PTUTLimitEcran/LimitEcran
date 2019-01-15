@@ -164,6 +164,7 @@ class TreeFragment : PFragment() {
         this.singleton.updateNotification(updateTimeText)
     }
 
+
 //    override fun saveIt(save: SaveImage) {
 //        saveImage = save
 //    }
@@ -187,6 +188,4 @@ class TreeFragment : PFragment() {
         pFragment.setView(frame, activity)
 
     }
-
-
 }
