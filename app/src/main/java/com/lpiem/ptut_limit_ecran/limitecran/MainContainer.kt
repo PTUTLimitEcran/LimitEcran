@@ -2,6 +2,9 @@ package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.Manifest
 import android.app.AppOpsManager
+import android.app.Fragment
+import android.app.FragmentManager
+import android.app.FragmentTransaction
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -22,12 +25,22 @@ import processing.core.PApplet
 
 
 class
-MainContainer : AppCompatActivity() {
+MainContainer : AppCompatActivity(), ChallengeUpdateManager {
+
+    override fun setNewChallenge() {
+        viewPagerAdapter?.replaceFragment(fragmentChallenge, fragmentHome)
+        viewPagerAdapter?.notifyDataSetChanged()
+        //viewPagerAdapter?.update()
+        var intent:Intent = Intent(applicationContext, MainContainer::class.java )
+        intent.putExtra("challenge", true)
+        startActivity(intent)
+    }
 
     private var prevMenuItem: MenuItem? = null
     private lateinit var fragmentHome: TreeFragment
     private lateinit var fragmentStat: StatisticFragment
     private lateinit var fragmentGallery: GalleryFragment
+    private lateinit var fragmentChallenge: ChallengeFragment
     private val singleton: Singleton = Singleton.getInstance(this)
     private var sketch: PApplet? = null
     private val REQUEST_WRITE_STORAGE = 0
@@ -78,7 +91,7 @@ MainContainer : AppCompatActivity() {
             }
 
             override fun onPageScrollStateChanged(state: Int) {
-
+                viewPagerAdapter?.notifyDataSetChanged()
             }
         })
 
@@ -89,13 +102,20 @@ MainContainer : AppCompatActivity() {
 
     private fun setupViewPager(viewPager: ViewPager) {
         if (viewPagerAdapter == null) viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
+        var challengeManager:ChallengeUpdateManager = this
         fragmentHome = TreeFragment()
         fragmentStat = StatisticFragment()
         fragmentGallery = GalleryFragment()
+        fragmentChallenge = ChallengeFragment.newInstance(challengeManager)
         fragmentStat.putContext(applicationContext)
         viewPagerAdapter?.addFragment(fragmentStat)
-        viewPagerAdapter?.addFragment(fragmentHome)
-        viewPagerAdapter?.addFragment(fragmentGallery)
+        viewPagerAdapter?.addFragment(fragmentChallenge)
+        if(intent.getBooleanExtra("challenge",false)) {
+            viewPagerAdapter?.addFragment(fragmentHome)
+        }
+        else {
+            viewPagerAdapter?.addFragment(fragmentGallery)
+        }
         viewPager.adapter = viewPagerAdapter
         viewPager.currentItem = 1
     }
