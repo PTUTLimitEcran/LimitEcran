@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.tree_list_ressource_layout.view.*
 import android.util.Log
-import com.google.android.flexbox.FlexboxLayoutManager
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import com.lpiem.ptut_limit_ecran.limitecran.Model.TreeImage
 import java.util.*

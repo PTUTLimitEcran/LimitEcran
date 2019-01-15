@@ -1,24 +1,11 @@
 package com.lpiem.ptut_limit_ecran.limitecran.Model
 
-import android.app.KeyguardManager
-import android.app.Notification
-import android.app.NotificationChannel
+
 import android.app.NotificationManager
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.content.res.Resources
-import android.os.Build
 import android.os.Environment
-import android.support.constraint.ConstraintLayout
 import android.support.v4.app.NotificationCompat
-import android.util.Log
-import android.widget.Button
-import android.widget.RemoteViews
-import android.widget.Toast
-import com.lpiem.ptut_limit_ecran.limitecran.BuildConfig
-import com.lpiem.ptut_limit_ecran.limitecran.R
 import com.lpiem.ptut_limit_ecran.limitecran.TreeFragment
 import java.io.File
 import java.util.*
@@ -26,6 +13,8 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class Singleton(context: Context) {
+
+    private var firstime = true
     init {
         initSingleton(context)
     }
@@ -73,11 +62,10 @@ class Singleton(context: Context) {
     companion object{
         private lateinit var notification: NotificationCompat.Builder
         private lateinit var notificationManager: NotificationManager
-        private lateinit var treeList: HashMap<Date, ArrayList<TreeImage>>
+        private var treeList: HashMap<Date, ArrayList<TreeImage>> = HashMap()
         private var isRunning:Boolean = true
 
         private lateinit var context: Context
-        private lateinit var resources: Resources
         var loadingTreeImageRegex: String = "^wonder_tree{1}.{0,}[.png]{1}"
 
         private var initialized: Boolean=false
@@ -119,7 +107,6 @@ class Singleton(context: Context) {
 
         fun initSingleton(context: Context){
             this.context = context
-            this.resources = context.resources
         }
     }
 
