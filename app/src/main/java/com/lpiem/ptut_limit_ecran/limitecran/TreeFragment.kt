@@ -8,8 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.RemoteViews
-import com.lpiem.ptut_limit_ecran.limitecran.Model.Chronometer
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import kotlinx.android.synthetic.main.fragment_tree.*
 import processing.android.PFragment
@@ -22,9 +20,6 @@ private const val ARG_PARAM2 = "param2"
 
 
 class TreeFragment : PFragment(), TimeManagmentInterface{
-
-
-    private lateinit var chronometer: Chronometer
 
     private lateinit var viewOfLayout: View
     private lateinit var singleton: Singleton
@@ -132,8 +127,11 @@ class TreeFragment : PFragment(), TimeManagmentInterface{
 //                }
 //            }
 //        })
+    }
 
-
+    override fun updateNotification(formattedTime: String) {
+        singleton.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono,formattedTime)
+        singleton.NotificationChannel.notify(0,singleton.Notification.build())
     }
 
     override fun updateTextView(formattedTime: String) {

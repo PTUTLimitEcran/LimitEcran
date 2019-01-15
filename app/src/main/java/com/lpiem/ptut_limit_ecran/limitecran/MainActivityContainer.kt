@@ -28,6 +28,7 @@ import kotlinx.android.synthetic.main.fragment_tree.*
 import processing.core.PApplet
 
 
+
 class MainActivityContainer : AppCompatActivity(){
 
     private var prevMenuItem: MenuItem? = null
@@ -39,6 +40,9 @@ class MainActivityContainer : AppCompatActivity(){
     private val REQUEST_WRITE_STORAGE = 0
     private var viewPagerAdapter: ViewPagerAdapter? = null
 
+    companion object {
+        val PACKAGE_NAME = MainActivityContainer::getPackageName
+    }
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
 
@@ -130,8 +134,12 @@ class MainActivityContainer : AppCompatActivity(){
                     action == Intent.ACTION_SCREEN_ON ||
                     action == Context.FINGERPRINT_SERVICE
                 )
-                    if (keyguardManager.isKeyguardLocked) {
+                    if (keyguardManager.isDeviceLocked){
+                        singleton.IsDeviceOn = true
+                    }
+                    else if (keyguardManager.isKeyguardLocked) {
                         Log.d("Screen", "Screen locked")
+                        singleton.IsDeviceOn = false
                         if (!singleton.IsRunning) {
                             singleton.IsRunning = true
                             if(singleton.CurrentCountDownTimer == 0L){
@@ -185,19 +193,10 @@ class MainActivityContainer : AppCompatActivity(){
      * Create the notification
      */
     private fun createNotification() {
-        singleton.SmallRemoteView = RemoteViews(packageName, R.layout.notification_small)
-        singleton.LargeRemoteView = RemoteViews(packageName, R.layout.notification_large)
-        singleton.LargeRemoteView.setChronometer(R.id.largeNotificationChrono, SystemClock.elapsedRealtime(), null, false)
-        singleton.SmallRemoteView.setChronometer(R.id.smallNotificationChrono, SystemClock.elapsedRealtime(), null, false)
-        singleton.Notification = NotificationCompat.Builder(this, getString(R.string.channelId))
-            .setSmallIcon(R.drawable.ic_phonelink_erase_black_24dp)
-            .setContentTitle(getString(R.string.app_name))
-            .setOngoing(true)
-            .setUsesChronometer(true)
-            .setContentText(getString(R.string.channel_description))
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            /*.setCustomContentView(singleton.SmallRemoteView)
-            .setCustomBigContentView(singleton.LargeRemoteView)*/
+        singleton.initNotification(this,
+            getString(R.string.app_name),
+            getString(R.string.channelId),
+            getString(R.string.channel_description))
     }
 
     /**

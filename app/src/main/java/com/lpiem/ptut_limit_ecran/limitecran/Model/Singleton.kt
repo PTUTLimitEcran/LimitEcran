@@ -5,19 +5,31 @@ import android.content.Context
 import android.os.CountDownTimer
 import android.os.Environment
 import android.support.v4.app.NotificationCompat
+import android.util.Log
 import android.widget.RemoteViews
+import com.lpiem.ptut_limit_ecran.limitecran.MainActivityContainer
+import com.lpiem.ptut_limit_ecran.limitecran.R
 import com.lpiem.ptut_limit_ecran.limitecran.TreeFragment
+import kotlinx.android.synthetic.main.usage_stats_item.*
 import java.io.File
 import java.util.*
 import kotlin.collections.HashMap
 
 class Singleton(context: Context) {
 
+    val timeInterval = 1000L
+
     private var firstime = false
+    private var isDeviceOn = false
     private var currentCountDownTimer = 0L
     private lateinit var countDownTimer:CountDownTimer
-    private lateinit var smallRemoteView:RemoteViews
-    private lateinit var largeRemoteViews:RemoteViews
+    private var smallRemoteView = RemoteViews(context.packageName, R.layout.notification_small)
+
+    var IsDeviceOn:Boolean
+    get() = isDeviceOn
+    set(value){
+        isDeviceOn = value
+    }
 
     private var size = 0
     init {
@@ -40,12 +52,6 @@ class Singleton(context: Context) {
     get() = currentCountDownTimer
     set(newValue){
         currentCountDownTimer = newValue
-    }
-
-    var LargeRemoteView:RemoteViews
-    get() = largeRemoteViews
-    set(newValue){
-        largeRemoteViews = newValue
     }
 
     var IsRunning:Boolean
@@ -82,12 +88,14 @@ class Singleton(context: Context) {
      * Start the chronometer
      */
     fun initCountDownTimer(countDownTimerTime:Long, currentFragment:TreeFragment){
-        countDownTimer = object : CountDownTimer(countDownTimerTime, 1000) {
+        singleton.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono, formatTime(countDownTimerTime))
+        notificationManager.notify(0, notification.build())
+        countDownTimer = object : CountDownTimer(countDownTimerTime, timeInterval) {
             override fun onTick(millisUntilFinished: Long) {
                 currentCountDownTimer = millisUntilFinished
-                /*if(millisUntilFinished%1000 == 0L){
-                    currentFragment.updateTextView(formatTime(millisUntilFinished))
-                }*/
+                if(isDeviceOn){
+                    currentFragment.updateNotification(formatTime(millisUntilFinished))
+                }
             }
             override fun onFinish() {
                 isRunning = false
@@ -118,6 +126,18 @@ class Singleton(context: Context) {
     fun resumeCountDownTimer(currentFragment:TreeFragment){
         initCountDownTimer(currentCountDownTimer, currentFragment)
         countDownTimer.start()
+    }
+
+    fun initNotification(context: Context, channelId:String, channelName:String, channelDescription:String){
+        notification = NotificationCompat.Builder(context, channelId)
+            .setSmallIcon(R.drawable.ic_phonelink_erase_black_24dp)
+            .setContentTitle(channelName)
+            .setOngoing(true)
+            .setContentText(channelDescription)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setCustomContentView(singleton.SmallRemoteView)
+            //.setCustomBigContentView(singleton.SmallRemoteView)
+        smallRemoteView.setImageViewResource(R.id.notificationIcon,R.drawable.ic_phonelink_erase_black_24dp)
     }
 
     companion object{

@@ -9,7 +9,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.lpiem.ptut_limit_ecran.limitecran"
-        minSdkVersion 21
+        minSdkVersion 22
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
