@@ -2,8 +2,10 @@ package com.lpiem.ptut_limit_ecran.limitecran.Model
 
 import android.app.NotificationManager
 import android.content.Context
+import android.os.CountDownTimer
 import android.os.Environment
 import android.support.v4.app.NotificationCompat
+import android.widget.RemoteViews
 import com.lpiem.ptut_limit_ecran.limitecran.TreeFragment
 import java.io.File
 import java.util.*
@@ -11,10 +13,39 @@ import kotlin.collections.HashMap
 
 class Singleton(context: Context) {
 
-    private var firstime = true
+    private var firstime = false
+    private var currentCountDownTimer = 0L
+    private lateinit var countDownTimer:CountDownTimer
+    private lateinit var smallRemoteView:RemoteViews
+    private lateinit var largeRemoteViews:RemoteViews
+
     private var size = 0
     init {
         initSingleton(context)
+    }
+
+    var FirstTime:Boolean
+    get() = firstime
+    set(newValue){
+        firstime = newValue
+    }
+
+    var SmallRemoteView:RemoteViews
+    get() = smallRemoteView
+    set(newValue){
+        smallRemoteView = newValue
+    }
+
+    var CurrentCountDownTimer:Long
+    get() = currentCountDownTimer
+    set(newValue){
+        currentCountDownTimer = newValue
+    }
+
+    var LargeRemoteView:RemoteViews
+    get() = largeRemoteViews
+    set(newValue){
+        largeRemoteViews = newValue
     }
 
     var IsRunning:Boolean
@@ -48,19 +79,45 @@ class Singleton(context: Context) {
     }
 
     /**
-     * Create an instance of the [Chronometer] class
-     * @param chronoFragment instance of the activity which the chrono will run
-     */
-    fun initChronometer(chronoFragment: TreeFragment){
-        chronometer = Chronometer(chronoFragment)
-    }
-
-    /**
      * Start the chronometer
      */
-    fun startChronometer(){
-        chronometer.initChrono()
-        chronometer.startChrono()
+    fun initCountDownTimer(countDownTimerTime:Long, currentFragment:TreeFragment){
+        countDownTimer = object : CountDownTimer(countDownTimerTime, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                currentCountDownTimer = millisUntilFinished
+                /*if(millisUntilFinished%1000 == 0L){
+                    currentFragment.updateTextView(formatTime(millisUntilFinished))
+                }*/
+            }
+            override fun onFinish() {
+                isRunning = false
+            }
+        }
+    }
+
+    fun formatTime(countDownTimer: Long):String{
+        var seconds = (countDownTimer/1000)
+        var minutes = (seconds/60)
+        var hours = (minutes/60)
+        hours %= 24
+        minutes %= 60
+        seconds %= 60
+        return (if(hours<10)"0"+hours.toString()else hours.toString()) +" : "+
+                (if(minutes<10)"0"+minutes.toString()else minutes.toString()) +" : "+
+                if(seconds<10)"0"+seconds.toString()else seconds.toString()
+    }
+
+    fun startCountDownTimer(){
+        countDownTimer.start()
+    }
+
+    fun pauseCountDownTimer(){
+        countDownTimer.cancel()
+    }
+
+    fun resumeCountDownTimer(currentFragment:TreeFragment){
+        initCountDownTimer(currentCountDownTimer, currentFragment)
+        countDownTimer.start()
     }
 
     companion object{
@@ -75,8 +132,6 @@ class Singleton(context: Context) {
         private var initialized: Boolean=false
 
         private lateinit var singleton: Singleton
-
-        private lateinit var chronometer: Chronometer
 
         fun getInstance(context: Context):Singleton{
             if(initialized == true){
@@ -118,10 +173,4 @@ class Singleton(context: Context) {
     /*fun loadImages(){
         importImageList()
     }*/
-
-    var Chronometer:Chronometer
-        get() = chronometer
-        set(value){
-            chronometer = value
-        }
 }
