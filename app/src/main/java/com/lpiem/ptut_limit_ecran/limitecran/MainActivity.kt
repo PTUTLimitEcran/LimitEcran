@@ -5,10 +5,10 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.NotificationCompat
+import android.support.v7.app.AppCompatActivity
 import android.widget.RemoteViews
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 
@@ -26,6 +26,8 @@ class MainActivity : AppCompatActivity() {
         this.createNotification()
         this.createNotificationChannel()
         this.singleton = Singleton.getInstance(this)
+
+
 
 
         val handler = Handler()
@@ -51,7 +53,6 @@ class MainActivity : AppCompatActivity() {
                 description = descriptionText
                 enableLights(false)
                 enableVibration(false)
-
             }
             // Register the channel with the system
             val notificationManager: NotificationManager =
@@ -66,6 +67,7 @@ class MainActivity : AppCompatActivity() {
         .setSmallIcon(R.drawable.ic_notifications_black_24dp)
             .setContentTitle(getString(R.string.app_name))
             .setContentText(getString(R.string.channel_description))
+            .setVibrate(longArrayOf(0L))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setVibrate(longArrayOf(0L))
             .setOnlyAlertOnce(true)
@@ -80,7 +82,5 @@ class MainActivity : AppCompatActivity() {
         this.notification.setContentText(updateTimeText)
         this.notificationManager.notify(0, this.notification.build())
     }
-
-
 
 }
