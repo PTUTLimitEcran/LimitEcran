@@ -127,4 +127,6 @@ class TreeFragment() : PFragment() {
     fun updateNotification(updateTimeText: String){
         this.singleton.updateNotification(updateTimeText)
     }
+
+
 }
