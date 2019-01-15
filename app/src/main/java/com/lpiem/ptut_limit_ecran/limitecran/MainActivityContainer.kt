@@ -2,26 +2,23 @@ package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.Manifest
 import android.app.AppOpsManager
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.app.KeyguardManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.os.Process
 import android.provider.Settings
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.AppOpsManagerCompat
-import android.support.v4.app.NotificationCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
 import android.widget.FrameLayout
-import android.widget.RemoteViews
 import android.widget.Toast
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import kotlinx.android.synthetic.main.activity_main_container.*
@@ -29,13 +26,14 @@ import processing.core.PApplet
 import java.util.*
 
 
-class MainContainer : AppCompatActivity() {
+class
+MainContainer : AppCompatActivity() {
 
     private var prevMenuItem: MenuItem? = null
     private lateinit var fragmentHome: TreeFragment
     private lateinit var fragmentStat: StatisticFragment
     private lateinit var fragmentGallery: GalleryFragment
-    private lateinit var singleton: Singleton
+    private val singleton: Singleton = Singleton.getInstance(this)
     private var sketch: PApplet? = null
     private val REQUEST_WRITE_STORAGE = 0
     private lateinit var frame: FrameLayout
@@ -62,51 +60,11 @@ class MainContainer : AppCompatActivity() {
         false
     }
 
-    fun createNotificationChannel() {
-        this.singleton.NotificationChannel = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Register the channel with the system
-            val notificationManager: NotificationManager =
-                this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(
-                NotificationChannel(
-                    getString(R.string.channelId),
-                    getString(R.string.app_name),
-                    NotificationManager.IMPORTANCE_LOW
-                ).apply {
-                    description = getString(R.string.channel_description)
-                })
-        }
-        this.singleton.Notification.setDefaults(Notification.DEFAULT_LIGHTS or Notification.DEFAULT_SOUND)
-            .setVibrate(longArrayOf(0L)) // Passing null here silently fails
-        this.singleton.NotificationChannel!!.notify(0, this.singleton.Notification!!.build())
-    }
-
-    /**
-     * Create the notification
-     */
-    fun createNotification(){
-        val smallNotification = RemoteViews(packageName, R.layout.notification_small)
-        val largeNotification = RemoteViews(packageName, R.layout.notification_large)
-        this.singleton.Notification = NotificationCompat.Builder(this, getString(R.string.channelId))
-            .setSmallIcon(R.drawable.ic_phonelink_erase_black_24dp)
-            .setContentTitle(getString(R.string.app_name))
-            .setOngoing(true)
-            .setUsesChronometer(true)
-            .setContentText(getString(R.string.channel_description))
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setCustomContentView(smallNotification)
-            .setCustomBigContentView(largeNotification)
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_container)
-        this.createNotification()
-        this.createNotificationChannel()
+        registerBroadcastReceiver()
 
         fragment_container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -146,6 +104,54 @@ class MainContainer : AppCompatActivity() {
         viewPagerAdapter.addFragment(fragmentGallery)
         viewPager.adapter = viewPagerAdapter
         viewPager.currentItem = 1
+    }
+
+    /**
+     * Function about managing activity before screen lock
+     */
+    private fun registerBroadcastReceiver(){
+        val intentFilter = IntentFilter()
+        /** System Defined Broadcast */
+        intentFilter.addAction(Intent.ACTION_USER_PRESENT)
+        intentFilter.addAction(Intent.ACTION_USER_UNLOCKED)
+        intentFilter.addAction(Intent.ACTION_SCREEN_ON)
+        intentFilter.addAction(Intent.ACTION_SCREEN_OFF)
+
+        val screenOnOffReceiver = object: BroadcastReceiver(){
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val action = intent?.action
+
+                val keyguardManager = context?.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+                if (action == Intent.ACTION_USER_PRESENT ||
+                    action == Intent.ACTION_USER_UNLOCKED ||
+                    action == Intent.ACTION_SCREEN_OFF ||
+                    action == Intent.ACTION_SCREEN_ON ||
+                    action == Context.FINGERPRINT_SERVICE
+                )
+                    if (keyguardManager.inKeyguardRestrictedInputMode()) {
+                        Log.d("Screen", "Screen locked")
+                        if (singleton.IsRunning) {
+                            singleton.IsRunning = true
+                            changeStateofChrono(singleton.IsRunning)
+
+                        }
+                    } else {
+                        Log.d("Screen", "Screen unlocked")
+                        if (singleton.IsRunning) {
+                            singleton.IsRunning = false
+                            changeStateofChrono(singleton.IsRunning)
+                        }
+                    }
+                val openMainActivity= Intent(context, MainContainer::class.java)
+                openMainActivity.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+                startActivityIfNeeded(openMainActivity, 0);
+            }
+        }
+        this.registerReceiver(screenOnOffReceiver, intentFilter)
+    }
+
+    fun changeStateofChrono(isRunning:Boolean){
+
     }
 
 
@@ -188,8 +194,8 @@ class MainContainer : AppCompatActivity() {
         if (!checkForPermission(applicationContext)) {
             startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
         }
-        this.singleton.startChronometer()
-        this.singleton.loadImages()
+
+
     }
 
     private fun requestStoragePermission() {

@@ -8,12 +8,26 @@ import android.support.v4.app.NotificationCompat
 import com.lpiem.ptut_limit_ecran.limitecran.TreeFragment
 import java.io.File
 import java.util.*
+import kotlin.collections.HashMap
 
 class Singleton(context: Context) {
 
     private var firstime = true
+    private var size = 0
     init {
         initSingleton(context)
+    }
+
+    var ScreenSize:Int
+    get() = size
+    set(newValue){
+        size = newValue
+    }
+
+    var IsRunning:Boolean
+    get() = isRunning
+    set(newValue){
+        isRunning = newValue
     }
 
     var TreeList:HashMap<Date, ArrayList<TreeImage>>
@@ -54,9 +68,9 @@ class Singleton(context: Context) {
         private lateinit var notification: NotificationCompat.Builder
         private lateinit var notificationManager: NotificationManager
         private lateinit var treeList: HashMap<Date, ArrayList<TreeImage>>
+        private var isRunning:Boolean = false
 
         private lateinit var context: Context
-        private lateinit var resources: Resources
         var loadingTreeImageRegex: String = "^wonder_tree{1}.{0,}[.png]{1}"
 
         private var initialized: Boolean=false
@@ -98,7 +112,7 @@ class Singleton(context: Context) {
 
         fun initSingleton(context: Context){
             this.context = context
-            this.resources = context.resources
+            this.treeList = HashMap()
         }
     }
 
