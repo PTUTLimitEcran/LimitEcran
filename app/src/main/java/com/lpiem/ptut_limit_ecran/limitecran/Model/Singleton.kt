@@ -71,15 +71,17 @@ class Singleton(context: Context) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val name = resources.getString(R.string.app_name)
                 val descriptionText = resources.getString(R.string.channel_description)
-                val importance = NotificationManager.IMPORTANCE_DEFAULT
+                val importance = NotificationCompat.PRIORITY_DEFAULT
                 val channel = NotificationChannel(resources.getString(R.string.channelId), name, importance).apply {
                     description = descriptionText
+                    enableVibration(false)
                 }
                 // Register the channel with the system
-                val notificationManager: NotificationManager =
+                notificationManager =
                     context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 notificationManager.createNotificationChannel(channel)
             }
+
             this.notificationManager!!.notify(0, this.notification!!.build())
         }
 
@@ -89,6 +91,8 @@ class Singleton(context: Context) {
                 .setContentTitle(resources.getString(R.string.app_name))
                 .setOngoing(true)
                 .setContentText(resources.getString(R.string.channel_description))
+                .setVibrate(longArrayOf(0L))
+                .setSound(null)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         }
     }

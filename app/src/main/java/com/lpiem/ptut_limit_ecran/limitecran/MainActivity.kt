@@ -8,8 +8,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.NotificationCompat
-import android.widget.RemoteViews
 import android.support.v7.app.AppCompatActivity
+import android.widget.RemoteViews
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 
 
@@ -26,6 +26,8 @@ class MainActivity : AppCompatActivity() {
         this.createNotification()
         this.createNotificationChannel()
         this.singleton = Singleton.getInstance(this)
+
+
 
 
         val handler = Handler()
@@ -51,7 +53,6 @@ class MainActivity : AppCompatActivity() {
                 description = descriptionText
                 enableLights(false)
                 enableVibration(false)
-
             }
             // Register the channel with the system
             val notificationManager: NotificationManager =
@@ -80,7 +81,5 @@ class MainActivity : AppCompatActivity() {
         this.notification.setContentText(updateTimeText)
         this.notificationManager.notify(0, this.notification.build())
     }
-
-
 
 }

@@ -1,7 +1,9 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,25 +15,29 @@ import processing.android.PFragment
 import java.io.Serializable
 
 
-// TODO: Rename parameter arguments, choose names that match
+
+
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [TreeFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [TreeFragment.newInstance] factory method to
- * create an instance of this fragment.
- *
- */
-class TreeFragment() : PFragment() {
+
+class TreeFragment : PFragment() {
+
+
     private lateinit var chronometer: Chronometer
 
-    private lateinit var viewOfLayout:View
+    private lateinit var viewOfLayout: View
     private lateinit var singleton: Singleton
+    private lateinit var saveImage: SaveImage
+    //private var gram = "S[L[L[R]]R[L[L[LR]R[C]]R[L]]"
+    //private var gram = "S[L[C[L[C[L[L[LC]CR[R]]R]]]]R[C[L[L[C[LC[R[LR]]R]]]]R[C[L[C[LCR]]C[C[C[LR]]]R]]]"
+    //private var gram = "S[L[L[L[L[C[CR]R]]C[LC[LC]R]]R[C[C[LCR]R]]]R[CR[C[CR]R]]"
+    //private var gram = "S[L[LC[LCR[C[LCR]R[R]]]]C[R[C]]R[R[C[CR]]]]"
+    private var gram = "S[L[L[L[L[C[C[CR]R]]]C[LC[LC]R]]R[C[C[L[LC]C[C]R[CR]]R]]]R[CR[C[C[R]R[R]]R]]"
+    //private var gram = "S[L[L[C[LC[LC]R]]R[C[C[LCR]R]]]R[CR[C[CR]R]]"
+    private var bool = true
+    private var countTurn = 0
 
     companion object {
         /**
@@ -56,7 +62,7 @@ class TreeFragment() : PFragment() {
     /**
      * Initialize the chronometer
      */
-    fun initChrono(){
+    private fun initChrono() {
         chronometer = Chronometer(this)
         chronometer.initChrono()
         chronometer.startChrono()
@@ -73,6 +79,7 @@ class TreeFragment() : PFragment() {
             param2 = it.getString(ARG_PARAM2)
         }
         this.singleton = Singleton(activity!!.applicationContext)
+        //orderToSaveImage = this
     }
 
     override fun onCreateView(
@@ -80,9 +87,9 @@ class TreeFragment() : PFragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        viewOfLayout = inflater!!.inflate(R.layout.fragment_tree, container, false)
+        viewOfLayout = inflater.inflate(R.layout.fragment_tree, container, false)
         this.singleton.initChronometer(this)
-        if(this.singleton.Chronometer.ChronometerStartStatus==false){
+        if (!this.singleton.Chronometer.ChronometerStartStatus) {
             this.singleton.startChronometer()
         }
         return inflater.inflate(R.layout.fragment_tree, container, false)
@@ -91,42 +98,89 @@ class TreeFragment() : PFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val sketch = Sketch()
+        button_save.setOnClickListener { saveImage.savePictureToStorage(true) }
 
-        val frame = FrameLayout(context)
-        frame.id = R.id.sketch_frame
-        val pFragment = PFragment(sketch)
-        pFragment.setView(frame, activity)
-        //frame.id = R.id.sketch_frame//CompatUtils.getUniqueViewId()
 
-        //val frame: FrameLayout? = activity?.findViewById(R.id.sketch_frame)
+        chronometerXml.start()
+        chronometerXml.addTextChangedListener(object  : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if (s.toString() == "00:10" && bool) {
+                    drawTree(gram, true)
+                    bool = false
+                }
+                if (s.toString() == "00:10") {
+                    countTurn++
+                    Log.d("TAG_TEST", "number of turns: $countTurn")
+                }
+            }
 
-//        activity?.setContentView(
-//            sketch_frame, ViewGroup.LayoutParams(
-//                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT_WRAP,
-//                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT_WRAP
-////                ViewGroup.LayoutParams.WRAP_CONTENT,
-////                ViewGroup.LayoutParams.WRAP_CONTENT
-//            )
-//        )
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
-//        val fragment = PFragment(sketch)
-//        fragment.setView(sketch_frame, activity)
+            }
 
-        initChrono()
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+
+        })
+//        currentChronometerTime.addTextChangedListener(object : TextWatcher {
+//            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+//
+//            }
+//
+//            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+//
+//            }
+//
+//            override fun afterTextChanged(s: Editable?) {
+//                if (s.toString() == "00 : 00 : 10" && bool) {
+//                    drawTree(gram, true)
+//                    bool = false
+//                } else if (s.toString() == "00 : 00 : 10") {
+//                    countTurn++
+//                    Log.d("TEST______", "number of turns: $countTurn")
+//                }
+//            }
+//        })
+
+
+        //initChrono()
     }
 
     /**
      * Update chronometer
      */
-    fun updateTextView(updateTimeText : String){
+    fun updateTextView(updateTimeText: String) {
         print(currentChronometerTime)
         currentChronometerTime.text = updateTimeText
     }
 
-    fun updateNotification(updateTimeText: String){
+    fun updateNotification(updateTimeText: String) {
         this.singleton.updateNotification(updateTimeText)
     }
 
 
+//    override fun saveIt(save: SaveImage) {
+//        saveImage = save
+//    }
+
+    override fun onResume() {
+        super.onResume()
+        drawTree(gram, false)
+    }
+
+    private fun drawTree(gram: String, savePicture: Boolean) {
+
+
+        //TODO: change with percentage of challenge
+        //val treeCurrentSize = (0 until gram.length).random()
+        //gram.subSequence(0..treeCurrentSize).toString()
+        val sketch = Sketch(gram, savePicture)
+
+        val frame = FrameLayout(context)
+        frame.id = R.id.sketch_frame
+        val pFragment = PFragment(sketch)
+        pFragment.setView(frame, activity)
+
+    }
 }
