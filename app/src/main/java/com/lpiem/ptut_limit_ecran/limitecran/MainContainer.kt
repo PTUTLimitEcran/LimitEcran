@@ -127,7 +127,7 @@ class MainContainer : AppCompatActivity() {
     }
 
     fun initSketch() {
-        sketch = Sketch(null, "")
+        sketch = Sketch("", false)
         if (viewPagerAdapter == null) {
             setupViewPager(fragment_container)
         }

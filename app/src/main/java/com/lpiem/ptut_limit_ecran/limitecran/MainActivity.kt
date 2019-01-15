@@ -27,6 +27,8 @@ class MainActivity : AppCompatActivity() {
         this.singleton = Singleton.getInstance(this)
 
 
+
+
         val handler = Handler()
         handler.postDelayed(
             {

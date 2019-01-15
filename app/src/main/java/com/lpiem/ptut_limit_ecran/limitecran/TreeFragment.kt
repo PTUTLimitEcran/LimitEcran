@@ -1,6 +1,9 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,12 +15,14 @@ import processing.android.PFragment
 import java.io.Serializable
 
 
+
+
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 
-class TreeFragment : PFragment(), OrderToSaveImage {
+class TreeFragment : PFragment() {
 
 
     private lateinit var chronometer: Chronometer
@@ -25,12 +30,14 @@ class TreeFragment : PFragment(), OrderToSaveImage {
     private lateinit var viewOfLayout: View
     private lateinit var singleton: Singleton
     private lateinit var saveImage: SaveImage
-    private lateinit var orderToSaveImage: OrderToSaveImage
     //private var gram = "S[L[L[R]]R[L[L[LR]R[C]]R[L]]"
     //private var gram = "S[L[C[L[C[L[L[LC]CR[R]]R]]]]R[C[L[L[C[LC[R[LR]]R]]]]R[C[L[C[LCR]]C[C[C[LR]]]R]]]"
     //private var gram = "S[L[L[L[L[C[CR]R]]C[LC[LC]R]]R[C[C[LCR]R]]]R[CR[C[CR]R]]"
-    private var gram = "S[L[LC[LCR[C[LCR]R[R]]]]C[R[C]]R[R[C[CR]]]]"
+    //private var gram = "S[L[LC[LCR[C[LCR]R[R]]]]C[R[C]]R[R[C[CR]]]]"
+    private var gram = "S[L[L[L[L[C[C[CR]R]]]C[LC[LC]R]]R[C[C[L[LC]C[C]R[CR]]R]]]R[CR[C[C[R]R[R]]R]]"
     //private var gram = "S[L[L[C[LC[LC]R]]R[C[C[LCR]R]]]R[CR[C[CR]R]]"
+    private var bool = true
+    private var countTurn = 0
 
     companion object {
 
@@ -76,7 +83,7 @@ class TreeFragment : PFragment(), OrderToSaveImage {
             param2 = it.getString(ARG_PARAM2)
         }
         this.singleton = Singleton(activity!!.applicationContext)
-        orderToSaveImage = this
+        //orderToSaveImage = this
     }
 
     override fun onCreateView(
@@ -89,18 +96,60 @@ class TreeFragment : PFragment(), OrderToSaveImage {
         if (!this.singleton.Chronometer.ChronometerStartStatus) {
             this.singleton.startChronometer()
         }
+
         return inflater.inflate(R.layout.fragment_tree, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //var gram = "S[C[L[C[L[L]C[LCR]]C[R]]]R[C[LCR]]]"
-        //drawTreeStepByStep(gram)
-
         button_save.setOnClickListener { saveImage.savePictureToStorage(true) }
 
-        initChrono()
+
+        chronometerXml.start()
+        chronometerXml.addTextChangedListener(object  : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if (s.toString() == "00:10" && bool) {
+                    drawTree(gram, true)
+                    bool = false
+                }
+                if (s.toString() == "00:10") {
+                    countTurn++
+                    Log.d("TAG_TEST", "number of turns: $countTurn")
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+
+        })
+//        currentChronometerTime.addTextChangedListener(object : TextWatcher {
+//            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+//
+//            }
+//
+//            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+//
+//            }
+//
+//            override fun afterTextChanged(s: Editable?) {
+//                if (s.toString() == "00 : 00 : 10" && bool) {
+//                    drawTree(gram, true)
+//                    bool = false
+//                } else if (s.toString() == "00 : 00 : 10") {
+//                    countTurn++
+//                    Log.d("TEST______", "number of turns: $countTurn")
+//                }
+//            }
+//        })
+
+
+        //initChrono()
     }
 
     /**
@@ -115,22 +164,22 @@ class TreeFragment : PFragment(), OrderToSaveImage {
         this.singleton.updateNotification(updateTimeText)
     }
 
-    override fun saveIt(save: SaveImage) {
-        saveImage = save
-        //button_save.setOnClickListener { saveImage.savePictureToStorage(true) }
-    }
+//    override fun saveIt(save: SaveImage) {
+//        saveImage = save
+//    }
 
     override fun onResume() {
         super.onResume()
-        drawTreeStepByStep(gram)
+        drawTree(gram, false)
     }
 
-    private fun drawTreeStepByStep(gram: String) {
+    private fun drawTree(gram: String, savePicture: Boolean) {
+
 
         //TODO: change with percentage of challenge
-        val treeCurrentSize = (0 until gram.length).random()
-
-        val sketch = Sketch(orderToSaveImage, gram.subSequence(0..treeCurrentSize).toString())
+        //val treeCurrentSize = (0 until gram.length).random()
+        //gram.subSequence(0..treeCurrentSize).toString()
+        val sketch = Sketch(gram, savePicture)
 
         val frame = FrameLayout(context)
         frame.id = R.id.sketch_frame

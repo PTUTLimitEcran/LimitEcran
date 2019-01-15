@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
-import android.widget.Toast
 import com.lpiem.melkius.testprocessing.LeafDirection
 import com.lpiem.melkius.testprocessing.Node
 import processing.core.PApplet
@@ -12,34 +11,33 @@ import java.io.Serializable
 import java.util.*
 
 
-class Sketch(private var orderToSaveImage: OrderToSaveImage?, private var gram: String) : PApplet(), Serializable, SaveImage {
+class Sketch(private var gram: String, private var toSave: Boolean) : PApplet(), Serializable {
 
-    private lateinit var saveImage: SaveImage
-    private var toSave = true
+    //private lateinit var saveImage: SaveImage
+    //private var toSave = true
     private var flowerStack: Stack<Node<Char>> = Stack()
-    private var smallOffset = 120f
-    private var bigOffset = 200f
+    private var smallOffset = 100f
+    private var bigOffset = 150f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        saveImage = this
-        orderToSaveImage?.saveIt(saveImage)
+        //saveImage = this
+        //orderToSaveImage?.saveIt(saveImage)
     }
 
-    override fun savePictureToStorage(save: Boolean) {
-        if (save) {
-            toSave = true
-            saveThePicture(toSave)
-        }
-    }
+//    override fun savePictureToStorage(save: Boolean) {
+//        if (save) {
+//            //toSave = true
+//            //saveThePicture(toSave)
+//        }
+//    }
 
     private fun saveThePicture(saveTheImage: Boolean) {
         if (saveTheImage) {
             save(
                 Environment.getExternalStorageDirectory().absolutePath
-                        + "/LimitEcran/wonder_tree_${(0..100).random()}.png"
+                        + "/LimitEcran/wonder_tree_${(0..10).random()}.png"
             )
-            toSave = false
         }
 
     }
@@ -60,9 +58,13 @@ class Sketch(private var orderToSaveImage: OrderToSaveImage?, private var gram: 
         readAndDraw(gram)
         saveThePicture(toSave)
         noLoop()
-        if (toSave) {
-            Toast.makeText(activity.applicationContext, "Image Saved !", Toast.LENGTH_SHORT).show()
-        }
+        //Toast.makeText(activity.applicationContext, "Image Saved !", Toast.LENGTH_SHORT).show()
+//        if (toSave) {
+//            Handler().post {
+//
+//            }
+//
+//        }
     }
 
 
