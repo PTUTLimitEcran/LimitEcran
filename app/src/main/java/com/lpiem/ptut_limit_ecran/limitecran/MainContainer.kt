@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.activity_main_container.*
 import processing.core.PApplet
 import java.util.*
 
-class MainActivityContainer : AppCompatActivity() {
+class MainContainer : AppCompatActivity() {
 
     private var prevMenuItem: MenuItem? = null
     private lateinit var fragmentHome: TreeFragment
@@ -256,6 +256,10 @@ class MainActivityContainer : AppCompatActivity() {
                             changeStateofChrono(singleton.IsRunning)
                         }
                     }
+                val intent = getPackageManager().getLaunchIntentForPackage("com.your.package.name")
+                intent.flags = 0
+                intent.setPackage(null)
+                startActivity(intent)
             }
         }
         applicationContext.registerReceiver(screenOnOffReceiver, intentFilter)
