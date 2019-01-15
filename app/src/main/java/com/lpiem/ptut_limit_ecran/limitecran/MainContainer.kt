@@ -2,8 +2,11 @@ package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.Manifest
 import android.app.AppOpsManager
+import android.app.KeyguardManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Process
@@ -100,6 +103,54 @@ MainContainer : AppCompatActivity() {
         viewPagerAdapter.addFragment(fragmentGallery)
         viewPager.adapter = viewPagerAdapter
         viewPager.currentItem = 1
+    }
+
+    /**
+     * Function about managing activity before screen lock
+     */
+    private fun registerBroadcastReceiver(){
+        val intentFilter = IntentFilter()
+        /** System Defined Broadcast */
+        intentFilter.addAction(Intent.ACTION_USER_PRESENT)
+        intentFilter.addAction(Intent.ACTION_USER_UNLOCKED)
+        intentFilter.addAction(Intent.ACTION_SCREEN_ON)
+        intentFilter.addAction(Intent.ACTION_SCREEN_OFF)
+
+        val screenOnOffReceiver = object: BroadcastReceiver(){
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val action = intent?.action
+
+                val keyguardManager = context?.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+                if (action == Intent.ACTION_USER_PRESENT ||
+                    action == Intent.ACTION_USER_UNLOCKED ||
+                    action == Intent.ACTION_SCREEN_OFF ||
+                    action == Intent.ACTION_SCREEN_ON ||
+                    action == Context.FINGERPRINT_SERVICE
+                )
+                    if (keyguardManager.inKeyguardRestrictedInputMode()) {
+                        Log.d("Screen", "Screen locked")
+                        if (singleton.IsRunning) {
+                            singleton.IsRunning = true
+                            changeStateofChrono(singleton.IsRunning)
+
+                        }
+                    } else {
+                        Log.d("Screen", "Screen unlocked")
+                        if (singleton.IsRunning) {
+                            singleton.IsRunning = false
+                            changeStateofChrono(singleton.IsRunning)
+                        }
+                    }
+                val openMainActivity= Intent(context, MainContainer::class.java)
+                openMainActivity.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+                startActivityIfNeeded(openMainActivity, 0);
+            }
+        }
+        this.registerReceiver(screenOnOffReceiver, intentFilter)
+    }
+
+    fun changeStateofChrono(isRunning:Boolean){
+
     }
 
 

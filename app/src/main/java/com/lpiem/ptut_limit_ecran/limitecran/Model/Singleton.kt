@@ -1,11 +1,16 @@
 package com.lpiem.ptut_limit_ecran.limitecran.Model
 
 
+import android.app.KeyguardManager
 import android.app.NotificationManager
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.Resources
 import android.os.Environment
 import android.support.v4.app.NotificationCompat
+import android.util.Log
 import com.lpiem.ptut_limit_ecran.limitecran.TreeFragment
 import java.io.File
 import java.util.*
