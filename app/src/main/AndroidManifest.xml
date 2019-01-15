@@ -3,9 +3,12 @@
           package="com.lpiem.ptut_limit_ecran.limitecran">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
                      tools:ignore="ProtectedPermissions" />
 
+
+ 
 
     <application
             android:allowBackup="true"
@@ -14,9 +17,8 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity
-                android:name=".MainActivity"
-                android:screenOrientation="portrait">
+        <activity android:name=".MainActivity"
+                  android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <action android:name="android.intent.action.VIEW"/>

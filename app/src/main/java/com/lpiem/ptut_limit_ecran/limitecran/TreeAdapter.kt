@@ -13,9 +13,11 @@ import android.util.Log
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import com.lpiem.ptut_limit_ecran.limitecran.Model.TreeImage
 import java.util.*
+import android.graphics.Point
+import kotlin.collections.ArrayList
 
 
-class TreeAdapter(var treeCollection : List<List<TreeImage>>, val context: Context) : RecyclerView.Adapter<TreeAdapter.ViewHolder>() {
+class TreeAdapter(var treeCollection : List<TreeImage>, val context: Context) : RecyclerView.Adapter<TreeAdapter.ViewHolder>() {
     private val FROM_LOW_TO_HIGH = 0
     private val FROM_HIGHT_TO_LOW = 1
     private val SORT_BY_DATE  = 0
@@ -26,14 +28,31 @@ class TreeAdapter(var treeCollection : List<List<TreeImage>>, val context: Conte
     }
 
     override fun onBindViewHolder(holder: ViewHolder, index: Int) {
-        holder?.treeDateTextView?.text = treeCollection[index][0].formatDate()
 
 
-        holder?.treeCollectionsByDate.layoutManager = StaggeredGridLayoutManager(3,LinearLayoutManager.VERTICAL)
+        holder?.treeCollectionsByDate.layoutManager = LinearLayoutManager(context)
         holder?.treeCollectionsByDate.itemAnimator  = DefaultItemAnimator()
 
-        holder?.treeCollectionsByDate.adapter = SingleDayTreeListAdapter(treeCollection[index],context)
+        //holder?.treeCollectionsByDate.adapter = SingleDayTreeListAdapter([index],context)
     }
+
+    /*fun filterListBySize():List<List<TreeImage>>{
+        val display = context.getWindowManager().getDefaultDisplay()
+        val size = Point()
+        display.getSize(size)
+        val treeOutput = ArrayList<ArrayList<TreeImage>>()
+        var currentIndex = 0
+        val width = size.x
+        val height = size.y
+        for(i in 0 until treeCollection.size){
+            treeOutput.add(ArrayList())
+            for(j in 0 until 3){
+                treeOutput[currentIndex].add(treeCollection[i])
+            }
+            currentIndex++
+        }
+        return treeOutput
+    }*/
 
     // Gets the number of animals in the list
     override fun getItemCount(): Int {

@@ -64,8 +64,8 @@ class GalleryFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
 
-        treeAdapter = TreeAdapter(convertHashmapToArrayList(),context!!)
-        treeAdapter.treeCollection = convertHashmapToArrayList()
+        /*treeAdapter = TreeAdapter(convertHashmapToArrayList(),context!!)
+        treeAdapter.treeCollection = convertHashmapToArrayList()*/
     }
 
     private lateinit var treeAdapter:TreeAdapter
@@ -73,11 +73,11 @@ class GalleryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        treeAdapter.treeCollection = convertHashmapToArrayList()
-        treeAdapter.notifyDataSetChanged()
+        //treeAdapter.treeCollection = convertHashmapToArrayList()
+        //treeAdapter.notifyDataSetChanged()
         treeListRecyclerView.setLayoutManager(LinearLayoutManager(context!!))
         treeListRecyclerView.setItemAnimator(DefaultItemAnimator())
-        treeListRecyclerView.adapter = TreeAdapter(convertHashmapToArrayList(),activity!!.applicationContext)
+        //treeListRecyclerView.adapter = TreeAdapter(convertHashmapToArrayList(),activity!!.applicationContext)
     }
 
     /**
@@ -100,7 +100,7 @@ class GalleryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        treeAdapter = TreeAdapter(convertHashmapToArrayList(),context!!)
+        //treeAdapter = TreeAdapter(convertHashmapToArrayList(),context!!)
 
         return inflater.inflate(R.layout.fragment_gallery, container, false)
     }

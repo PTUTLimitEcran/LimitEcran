@@ -1,25 +1,18 @@
 package com.lpiem.ptut_limit_ecran.limitecran.Model
 
-
-import android.app.KeyguardManager
 import android.app.NotificationManager
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.content.res.Resources
 import android.os.Environment
 import android.support.v4.app.NotificationCompat
-import android.util.Log
 import com.lpiem.ptut_limit_ecran.limitecran.TreeFragment
 import java.io.File
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class Singleton(context: Context) {
 
     private var firstime = true
+    private var size = 0
     init {
         initSingleton(context)
     }
@@ -28,6 +21,12 @@ class Singleton(context: Context) {
     get() = isRunning
     set(newValue){
         isRunning = newValue
+    }
+
+    var ScreenSize:Int
+    get() = size
+    set(newValue){
+        size = newValue
     }
 
     var TreeList:HashMap<Date, ArrayList<TreeImage>>
@@ -67,8 +66,8 @@ class Singleton(context: Context) {
     companion object{
         private lateinit var notification: NotificationCompat.Builder
         private lateinit var notificationManager: NotificationManager
-        private var treeList: HashMap<Date, ArrayList<TreeImage>> = HashMap()
-        private var isRunning:Boolean = true
+        private lateinit var treeList: HashMap<Date, ArrayList<TreeImage>>
+        private var isRunning:Boolean = false
 
         private lateinit var context: Context
         var loadingTreeImageRegex: String = "^wonder_tree{1}.{0,}[.png]{1}"
@@ -112,12 +111,13 @@ class Singleton(context: Context) {
 
         fun initSingleton(context: Context){
             this.context = context
+            this.treeList = HashMap()
         }
     }
 
-    fun loadImages(){
+    /*fun loadImages(){
         importImageList()
-    }
+    }*/
 
     var Chronometer:Chronometer
         get() = chronometer
