@@ -1,9 +1,7 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
-import android.app.NotificationManager
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.app.NotificationCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

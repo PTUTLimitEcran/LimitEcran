@@ -1,25 +1,17 @@
 package com.lpiem.ptut_limit_ecran.limitecran.Model
 
-import android.app.Notification
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.res.Resources
-import android.os.Build
 import android.os.Environment
-import android.support.constraint.ConstraintLayout
 import android.support.v4.app.NotificationCompat
-import android.widget.Button
-import android.widget.RemoteViews
-import com.lpiem.ptut_limit_ecran.limitecran.BuildConfig
-import com.lpiem.ptut_limit_ecran.limitecran.R
 import com.lpiem.ptut_limit_ecran.limitecran.TreeFragment
 import java.io.File
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class Singleton(context: Context) {
+
+    private var firstime = true
     init {
         initSingleton(context)
     }
@@ -119,4 +111,13 @@ class Singleton(context: Context) {
         set(value){
             chronometer = value
         }
+
+    fun updateNotification(updateTimeText: String){
+        if (firstime) {
+            notification!!.setOnlyAlertOnce(true)
+            firstime = false
+        }
+        notification!!.setContentText("Temps écoulé : "+updateTimeText)
+        notificationManager!!.notify(0, notification!!.build())
+    }
 }

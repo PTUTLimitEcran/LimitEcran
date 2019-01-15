@@ -1,6 +1,7 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.Manifest
+import android.app.AppOpsManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,13 +10,17 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Process
+import android.provider.Settings
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.AppOpsManagerCompat
 import android.support.v4.app.NotificationCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
+import android.widget.FrameLayout
 import android.widget.RemoteViews
 import android.widget.Toast
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
@@ -24,7 +29,7 @@ import processing.core.PApplet
 import java.util.*
 
 
-class MainActivityContainer : AppCompatActivity() {
+class MainContainer : AppCompatActivity() {
 
     private var prevMenuItem: MenuItem? = null
     private lateinit var fragmentHome: TreeFragment
@@ -33,18 +38,20 @@ class MainActivityContainer : AppCompatActivity() {
     private lateinit var singleton: Singleton
     private var sketch: PApplet? = null
     private val REQUEST_WRITE_STORAGE = 0
+    private lateinit var frame: FrameLayout
+
 
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
 
         when (item.itemId) {
             R.id.navigation_stat -> {
-                fragment_container.currentItem = 1
+                fragment_container.currentItem = 0
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_home -> {
                 requestStoragePermission()
-                fragment_container.currentItem = 0
+                fragment_container.currentItem = 1
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_gallery -> {
@@ -98,9 +105,6 @@ class MainActivityContainer : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_container)
-        this.singleton = Singleton.getInstance(this)
-        this.createNotification()
-        this.createNotificationChannel()
 
         fragment_container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -134,10 +138,12 @@ class MainActivityContainer : AppCompatActivity() {
         fragmentHome = TreeFragment.newInstance(sketch = sketch as Sketch, param2 = null)
         fragmentStat = StatisticFragment()
         fragmentGallery = GalleryFragment()
+        fragmentStat.putContext(applicationContext)
         viewPagerAdapter.addFragment(fragmentStat)
         viewPagerAdapter.addFragment(fragmentHome)
         viewPagerAdapter.addFragment(fragmentGallery)
         viewPager.adapter = viewPagerAdapter
+        viewPager.currentItem = 1
     }
 
 
@@ -177,6 +183,9 @@ class MainActivityContainer : AppCompatActivity() {
     fun initSketch() {
         sketch = Sketch(Date())
         setupViewPager(fragment_container)
+        if (!checkForPermission(applicationContext)) {
+            startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+        }
         this.singleton.startChronometer()
         this.singleton.loadImages()
     }
@@ -187,5 +196,11 @@ class MainActivityContainer : AppCompatActivity() {
             arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
             REQUEST_WRITE_STORAGE
         )
+    }
+
+    private fun checkForPermission(context: Context): Boolean {
+        val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+        val mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
+        return mode == AppOpsManagerCompat.MODE_ALLOWED
     }
 }
