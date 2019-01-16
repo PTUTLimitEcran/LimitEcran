@@ -8,14 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.lpiem.ptut_limit_ecran.limitecran.Model.Chronometer
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import kotlinx.android.synthetic.main.fragment_tree.*
 import processing.android.PFragment
 import java.io.Serializable
-import java.util.*
-
-
 
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -23,10 +19,7 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 
-class TreeFragment : PFragment() {
-
-
-    private lateinit var chronometer: Chronometer
+class TreeFragment : PFragment(), TimeManagmentInterface{
 
     private lateinit var viewOfLayout: View
     private lateinit var singleton: Singleton
@@ -60,15 +53,6 @@ class TreeFragment : PFragment() {
             }
     }
 
-    /**
-     * Initialize the chronometer
-     */
-    private fun initChrono() {
-        chronometer = Chronometer(this)
-        chronometer.initChrono()
-        chronometer.startChrono()
-    }
-
     // TODO: Rename and change types of parameters
     private var param1: Serializable? = null
     private var param2: String? = null
@@ -79,7 +63,7 @@ class TreeFragment : PFragment() {
             param1 = it.getSerializable(ARG_PARAM1) as Sketch
             param2 = it.getString(ARG_PARAM2)
         }
-        this.singleton = Singleton(activity!!.applicationContext)
+        singleton = Singleton(activity!!.applicationContext)
         //orderToSaveImage = this
     }
 
@@ -89,20 +73,20 @@ class TreeFragment : PFragment() {
     ): View? {
 
         viewOfLayout = inflater.inflate(R.layout.fragment_tree, container, false)
-        this.singleton.initChronometer(this)
-        if (!this.singleton.Chronometer.ChronometerStartStatus) {
-            this.singleton.startChronometer()
-        }
+        /*if(!this.singleton.Chronometer.ChronometerStartStatus){
+            this.singleton.initCountDownTimer(30000,this)
+        }*/
         return inflater.inflate(R.layout.fragment_tree, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        updateTextView(singleton.formatTime(300000))
 
         button_save.setOnClickListener { saveImage.savePictureToStorage(true) }
 
 
-        chronometerXml.start()
+        //chronometerXml.start()
         chronometerXml.addTextChangedListener(object  : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if (s.toString() == "00:10" && bool) {
@@ -143,17 +127,12 @@ class TreeFragment : PFragment() {
 //                }
 //            }
 //        })
-
-
-        //initChrono()
     }
 
-    /**
-     * Initialize the chronometer
-     */
-    fun updateTextView(updateTimeText: String) {
-        print(currentChronometerTime)
-        currentChronometerTime.text = updateTimeText
+    override fun updateTextView(formattedTime: String) {
+        currentChronometerTime.text = formattedTime
+        //singleton.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono,"Temps restant : $formattedTime")
+        //singleton.LargeRemoteView.setTextViewText(R.id.largeNotificationChrono,"$formattedTime")
     }
 
 
@@ -178,6 +157,5 @@ class TreeFragment : PFragment() {
         frame.id = R.id.sketch_frame
         val pFragment = PFragment(sketch)
         pFragment.setView(frame, activity)
-
     }
 }
