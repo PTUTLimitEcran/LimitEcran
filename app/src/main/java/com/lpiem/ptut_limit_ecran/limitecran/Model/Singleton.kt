@@ -2,9 +2,9 @@ package com.lpiem.ptut_limit_ecran.limitecran.Model
 
 import android.app.NotificationManager
 import android.content.Context
-import android.content.res.Resources
 import android.os.Environment
 import android.support.v4.app.NotificationCompat
+import android.util.Log
 import com.lpiem.ptut_limit_ecran.limitecran.TreeFragment
 import java.io.File
 import java.util.*
@@ -71,7 +71,7 @@ class Singleton(context: Context) {
         private var isRunning:Boolean = false
 
         private lateinit var context: Context
-        var loadingTreeImageRegex: String = "^wonder_tree{1}.{0,}[.png]{1}"
+        var loadingTreeImageRegex: String = "^wonder_tree.*[.png]"
 
         private var initialized: Boolean=false
 
@@ -97,17 +97,20 @@ class Singleton(context: Context) {
                     val date = Date(list[i].lastModified())
                     date.minutes = 0
                     date.seconds = 0
-                    date.hours = 0
+                    date.hours = i
                     if(!isDateIndexAlreadyPresentInArray(date)){
                         treeList[date] = ArrayList()
                     }
                     treeList[date]!!.add(TreeImage(list[i].name, date))
+                } else {
+                    Log.d("SINGLETON", "out of regex")
                 }
             }
+
         }
 
         private fun isDateIndexAlreadyPresentInArray(date:Date):Boolean{
-            return if(treeList.containsKey(date))true else false
+            return treeList.containsKey(date)
         }
 
         fun initSingleton(context: Context){

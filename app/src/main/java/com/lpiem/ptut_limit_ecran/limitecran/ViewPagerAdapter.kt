@@ -18,4 +18,5 @@ class ViewPagerAdapter(manager: FragmentManager) : FragmentPagerAdapter(manager)
     fun addFragment(fragment: Fragment) {
         mFragmentList.add(fragment)
     }
+
 }

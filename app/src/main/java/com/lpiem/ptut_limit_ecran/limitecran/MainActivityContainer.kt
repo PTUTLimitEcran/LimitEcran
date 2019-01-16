@@ -22,7 +22,6 @@ import android.widget.Toast
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import kotlinx.android.synthetic.main.activity_main_container.*
 import processing.core.PApplet
-import java.util.*
 
 
 class
@@ -143,7 +142,7 @@ MainContainer : AppCompatActivity() {
                     }
                 val openMainActivity= Intent(context, MainContainer::class.java)
                 openMainActivity.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-                startActivityIfNeeded(openMainActivity, 0);
+                startActivityIfNeeded(openMainActivity, 0)
             }
         }
         this.registerReceiver(screenOnOffReceiver, intentFilter)

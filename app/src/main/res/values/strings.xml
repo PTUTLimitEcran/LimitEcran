@@ -25,4 +25,5 @@
     <string name="height">Taille</string>
     <string name="dateFilter">date</string>
     <string name="defaultTreeDateValue">jj/mm/aaaa</string>
+    <string name="dateFormatForFile">yyyyMMddss</string>
 </resources>
