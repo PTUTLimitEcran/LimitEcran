@@ -43,7 +43,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
     private lateinit var fragmentStat: StatisticFragment
     private lateinit var fragmentGallery: GalleryFragment
     private lateinit var fragmentChallenge: ChallengeFragment
-    private val singleton: Singleton = Singleton.getInstance(this)
+    private lateinit var singleton: Singleton
     private var sketch: PApplet? = null
     private val REQUEST_WRITE_STORAGE = 0
     private var viewPagerAdapter: ViewPagerAdapter? = null
@@ -74,6 +74,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_container)
+        singleton = Singleton.getInstance(this)
         createNotification()
         createNotificationChannel()
         registerBroadcastReceiver()

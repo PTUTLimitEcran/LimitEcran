@@ -28,8 +28,8 @@ class TreeFragment : PFragment(), TimeManagmentInterface{
     private lateinit var saveImage: SaveImage
     //private var gram = "S[L[L[R]]R[L[L[LR]R[C]]R[L]]"
     //private var gram = "S[L[C[L[C[L[L[LC]CR[R]]R]]]]R[C[L[L[C[LC[R[LR]]R]]]]R[C[L[C[LCR]]C[C[C[LR]]]R]]]"
-    private var gram = "S[L[L[L[L[C[CR]R]]C[LC[LC]R]]R[C[C[LCR]R]]]R[CR[C[CR]R]]"
-    //private var gram = "S[L[LC[LCR[C[LCR]R[R]]]]C[R[C]]R[R[C[CR]]]]"
+    //private var gram = "S[L[L[L[L[C[CR]R]]C[LC[LC]R]]R[C[C[LCR]R]]]R[CR[C[CR]R]]"
+    private var gram = "S[L[LC[LCR[C[LCR]R[R]]]]C[R[C]]R[R[C[CR]]]]"
     //private var gram = "S[L[L[L[L[C[C[CR]R]]]C[LC[LC]R]]R[C[C[L[LC]C[C]R[CR]]R]]]R[CR[C[C[R]R[R]]R]]"
     //private var gram = "S[L[L[C[LC[LC]R]]R[C[C[LCR]R]]]R[CR[C[CR]R]]"
     private var bool = true
@@ -89,14 +89,14 @@ class TreeFragment : PFragment(), TimeManagmentInterface{
 
 
         //chronometerXml.start()
-        chronometerXml.addTextChangedListener(object  : TextWatcher {
+        currentChronometerTime.addTextChangedListener(object  : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                if (s.toString() == "00:10" && bool) {
+                if (s.toString() == "00:00:00" && bool) {
                     //TODO: uncomment
                     drawTree(gram, true)
                     bool = false
                 }
-                if (s.toString() == "00:10") {
+                if (s.toString() == "05:00:00") {
                     countTurn++
                     Log.d("TAG_TEST", "number of turns: $countTurn")
                 }
