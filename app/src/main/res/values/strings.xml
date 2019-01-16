@@ -7,7 +7,7 @@
     <string name="channel_description">Limitez votre usage de l\'écran!</string>
     <string name="parameters">Paramètres</string>
     <string name="channelId">limitScreen</string>
-    <string name="defaultValue">Temps passé sans le téléphone : 00 : 00 : 00</string>
+    <string name="defaultValue">Temps passé sans le téléphone :</string>
     <string name="last_time_used">"Last time used: "</string>
     <string name="time_span">"Time span: "</string>
     <string name="Icon">Icon</string>
@@ -19,6 +19,10 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="defaultWeeklyChronometerValue">hebdo : 00:00:00</string>
-    <string name="defaultCurrentChronometerValue">00 : 00 : 00</string>
+    <string name="defaultWeeklyChronometerValue"><b>hebdo : 00:00:00</b></string>
+    <string name="defaultCurrentChronometerValue"><b>00 : 00 : 00</b></string>
+    <string name="filterByGallery">Trier par:</string>
+    <string name="height">Taille</string>
+    <string name="dateFilter">date</string>
+    <string name="defaultTreeDateValue">jj/mm/aaaa</string>
 </resources>

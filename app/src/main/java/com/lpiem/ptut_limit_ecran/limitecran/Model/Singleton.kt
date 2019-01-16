@@ -1,50 +1,162 @@
 package com.lpiem.ptut_limit_ecran.limitecran.Model
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.content.res.Resources
-import android.os.Build
+import android.os.CountDownTimer
+import android.os.Environment
 import android.support.v4.app.NotificationCompat
-import com.lpiem.ptut_limit_ecran.limitecran.MainActivity
+import android.util.Log
+import android.widget.RemoteViews
+import com.lpiem.ptut_limit_ecran.limitecran.MainActivityContainer
 import com.lpiem.ptut_limit_ecran.limitecran.R
 import com.lpiem.ptut_limit_ecran.limitecran.TreeFragment
+import kotlinx.android.synthetic.main.usage_stats_item.*
+import java.io.File
+import java.util.*
+import kotlin.collections.HashMap
 
 class Singleton(context: Context) {
 
-    private var firstime = true
+    val timeInterval = 1000L
+
+    private var firstime = false
+    private var isDeviceOn = false
+    private var currentCountDownTimer = 0L
+    private lateinit var countDownTimer:CountDownTimer
+    private var smallRemoteView = RemoteViews(context.packageName, R.layout.notification_small)
+
+    var IsDeviceOn:Boolean
+    get() = isDeviceOn
+    set(value){
+        isDeviceOn = value
+    }
+
+    private var size = 0
     init {
         initSingleton(context)
     }
 
-    /**
-     * Create an instance of the [Chronometer] class
-     * @param chronoFragment instance of the activity which the chrono will run
-     */
-    fun initChronometer(chronoFragment: TreeFragment){
-        chronometer = Chronometer(chronoFragment)
+    var FirstTime:Boolean
+    get() = firstime
+    set(newValue){
+        firstime = newValue
+    }
+
+    var SmallRemoteView:RemoteViews
+    get() = smallRemoteView
+    set(newValue){
+        smallRemoteView = newValue
+    }
+
+    var CurrentCountDownTimer:Long
+    get() = currentCountDownTimer
+    set(newValue){
+        currentCountDownTimer = newValue
+    }
+
+    var IsRunning:Boolean
+    get() = isRunning
+    set(newValue){
+        isRunning = newValue
+    }
+
+    var ScreenSize:Int
+    get() = size
+    set(newValue){
+        size = newValue
+    }
+
+    var TreeList:HashMap<Date, ArrayList<TreeImage>>
+    get() = treeList
+    set(newValue){
+        treeList = newValue
+    }
+
+    var Notification:NotificationCompat.Builder
+    get() = notification
+    set(newValue){
+        notification = newValue
+    }
+
+    var NotificationChannel:NotificationManager
+    get() = notificationManager
+    set(newValue){
+        notificationManager = newValue
     }
 
     /**
      * Start the chronometer
      */
-    fun startChronometer(){
-        chronometer.initChrono()
-        chronometer.startChrono()
+    fun initCountDownTimer(countDownTimerTime:Long, currentFragment:TreeFragment){
+        singleton.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono, formatTime(countDownTimerTime))
+        notificationManager.notify(0, notification.build())
+        countDownTimer = object : CountDownTimer(countDownTimerTime, timeInterval) {
+            override fun onTick(millisUntilFinished: Long) {
+                currentCountDownTimer = millisUntilFinished
+                if(isDeviceOn){
+                    updateNotification(formatTime(millisUntilFinished))
+                }
+            }
+            override fun onFinish() {
+                isRunning = false
+            }
+        }
+    }
+
+    fun updateNotification(formattedTime: String) {
+        singleton.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono,formattedTime)
+        singleton.NotificationChannel.notify(0,singleton.Notification.build())
+    }
+
+    fun formatTime(countDownTimer: Long):String{
+        var seconds = (countDownTimer/1000)
+        var minutes = (seconds/60)
+        var hours = (minutes/60)
+        hours %= 24
+        minutes %= 60
+        seconds %= 60
+        return (if(hours<10)"0"+hours.toString()else hours.toString()) +" : "+
+                (if(minutes<10)"0"+minutes.toString()else minutes.toString()) +" : "+
+                if(seconds<10)"0"+seconds.toString()else seconds.toString()
+    }
+
+    fun startCountDownTimer(){
+        countDownTimer.start()
+    }
+
+    fun pauseCountDownTimer(){
+        countDownTimer.cancel()
+    }
+
+    fun resumeCountDownTimer(currentFragment:TreeFragment){
+        initCountDownTimer(currentCountDownTimer, currentFragment)
+        countDownTimer.start()
+    }
+
+    fun initNotification(context: Context, channelId:String, channelName:String, channelDescription:String){
+        notification = NotificationCompat.Builder(context, channelId)
+            .setSmallIcon(R.drawable.ic_phonelink_erase_black_24dp)
+            .setContentTitle(channelName)
+            .setOngoing(true)
+            .setContentText(channelDescription)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setCustomContentView(singleton.SmallRemoteView)
+            //.setCustomBigContentView(singleton.SmallRemoteView)
+        smallRemoteView.setImageViewResource(R.id.notificationIcon,R.drawable.ic_phonelink_erase_black_24dp)
     }
 
     companion object{
         private lateinit var notification: NotificationCompat.Builder
         private lateinit var notificationManager: NotificationManager
+        private lateinit var treeList: HashMap<Date, ArrayList<TreeImage>>
+        private var isRunning:Boolean = false
 
         private lateinit var context: Context
-        private lateinit var resources: Resources
+        var loadingTreeImageRegex: String = "^wonder_tree{1}.{0,}[.png]{1}"
 
         private var initialized: Boolean=false
 
         private lateinit var singleton: Singleton
-
-        private lateinit var chronometer: Chronometer
 
         fun getInstance(context: Context):Singleton{
             if(initialized == true){
@@ -56,59 +168,34 @@ class Singleton(context: Context) {
             }
         }
 
-        fun initSingleton(context: Context){
-            //this.chronometer = Chronometer()
-            this.context = context
-            this.resources = context.resources
-            this.createNotification()
-            this.createNotificationChannel()
-        }
-
-        fun createNotificationChannel() {
-            notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            // Create the NotificationChannel, but only on API 26+ because
-            // the NotificationChannel class is new and not in the support library
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val name = resources.getString(R.string.app_name)
-                val descriptionText = resources.getString(R.string.channel_description)
-                val importance = NotificationCompat.PRIORITY_DEFAULT
-                val channel = NotificationChannel(resources.getString(R.string.channelId), name, importance).apply {
-                    description = descriptionText
-                    enableVibration(false)
+        fun importImageList(){
+            treeList = HashMap()
+            val list = File(Environment.getExternalStorageDirectory().absolutePath+"/LimitEcran").listFiles()
+            for(i in 0 until list.size){
+                if(Regex(loadingTreeImageRegex).matches(list[i].name)){
+                    val date = Date(list[i].lastModified())
+                    date.minutes = 0
+                    date.seconds = 0
+                    date.hours = 0
+                    if(!isDateIndexAlreadyPresentInArray(date)){
+                        treeList[date] = ArrayList()
+                    }
+                    treeList[date]!!.add(TreeImage(list[i].name, date))
                 }
-                // Register the channel with the system
-                notificationManager =
-                    context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                notificationManager.createNotificationChannel(channel)
             }
-
-            this.notificationManager!!.notify(0, this.notification!!.build())
         }
 
-        fun createNotification(){
-            this.notification = NotificationCompat.Builder(this.context, resources.getString(R.string.channelId))
-                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
-                .setContentTitle(resources.getString(R.string.app_name))
-                .setOngoing(true)
-                .setContentText(resources.getString(R.string.channel_description))
-                .setVibrate(longArrayOf(0L))
-                .setSound(null)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        private fun isDateIndexAlreadyPresentInArray(date:Date):Boolean{
+            return (treeList.containsKey(date))
+        }
+
+        fun initSingleton(context: Context){
+            this.context = context
+            this.treeList = HashMap()
         }
     }
 
-    var Chronometer:Chronometer
-        get() = chronometer
-        set(value){
-            chronometer = value
-        }
-
-    fun updateNotification(updateTimeText: String){
-        if (firstime) {
-            notification!!.setOnlyAlertOnce(true)
-            firstime = false
-        }
-        notification!!.setContentText("Temps écoulé : "+updateTimeText)
-        notificationManager!!.notify(0, notification!!.build())
-    }
+    /*fun loadImages(){
+        importImageList()
+    }*/
 }
