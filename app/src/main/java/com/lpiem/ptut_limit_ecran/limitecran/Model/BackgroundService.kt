@@ -14,14 +14,6 @@ class BackgroundService() : Service() {
     private val mBinder = LocalBinder()
 
     private lateinit var screenOnOffReceiver:BroadcastReceiver
-    //private val singleton: Singleton = Singleton.getInstance(mainActivity)
-
-    /**
-     * Create an instance of the notification channel
-     */
-    private fun createNotificationChannel() {
-        //singleton.initNotificationChannel(mainActivity, mainActivity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-    }
 
     inner class LocalBinder: Binder(){
         fun getService(): BackgroundService = this@BackgroundService

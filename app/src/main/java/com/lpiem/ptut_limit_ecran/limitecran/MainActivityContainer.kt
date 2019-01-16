@@ -103,8 +103,6 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
 
     override fun onStart() {
         super.onStart()
-        serviceIntent = Intent(this, BackgroundService::class.java)
-        serviceIntent.putExtra("timeChrono", 300000)
         bindService()
         boundTo = true
     }
@@ -147,6 +145,8 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         requestStoragePermission()
+        bindService()
+        boundTo = true
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
