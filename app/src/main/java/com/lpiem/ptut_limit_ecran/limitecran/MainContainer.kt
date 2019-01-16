@@ -109,13 +109,14 @@ MainContainer : AppCompatActivity(), ChallengeUpdateManager {
         fragmentChallenge = ChallengeFragment.newInstance(challengeManager)
         fragmentStat.putContext(applicationContext)
         viewPagerAdapter?.addFragment(fragmentStat)
-        viewPagerAdapter?.addFragment(fragmentChallenge)
+
         if(intent.getBooleanExtra("challenge",false)) {
             viewPagerAdapter?.addFragment(fragmentHome)
         }
         else {
-            viewPagerAdapter?.addFragment(fragmentGallery)
+            viewPagerAdapter?.addFragment(fragmentChallenge)
         }
+        viewPagerAdapter?.addFragment(fragmentGallery)
         viewPager.adapter = viewPagerAdapter
         viewPager.currentItem = 1
     }
