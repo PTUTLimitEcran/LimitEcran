@@ -117,6 +117,9 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        createNotification()
+        createNotificationChannel()
+        registerBroadcastReceiver()
         setContentView(R.layout.activity_main_container)
 
         fragment_container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
