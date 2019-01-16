@@ -31,6 +31,7 @@
                 android:label="@string/title_activity_main_container"
                 android:screenOrientation="portrait">
         </activity>
+        <service android:name=".Model.BackgroundService"/>
     </application>
 
 </manifest>
