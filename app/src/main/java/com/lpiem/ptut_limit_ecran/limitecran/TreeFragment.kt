@@ -29,7 +29,7 @@ class TreeFragment : PFragment(), TimeManagmentInterface{
     //private var gram = "S[L[L[L[L[C[CR]R]]C[LC[LC]R]]R[C[C[LCR]R]]]R[CR[C[CR]R]]"
     //private var gram = "S[L[LC[LCR[C[LCR]R[R]]]]C[R[C]]R[R[C[CR]]]]"
     private var gram = "S[L[L[L[L[C[C[CR]R]]]C[LC[LC]R]]R[C[C[L[LC]C[C]R[CR]]R]]]R[CR[C[C[R]R[R]]R]]"
-    //private var gram = "S[L[L[C[LC[LC]R]]R[C[C[LCR]R]]]R[CR[C[CR]R]]"
+    //    //private var gram = "S[L[L[C[LC[LC]R]]R[C[C[LCR]R]]]R[CR[C[CR]R]]"
     private var bool = true
     private var countTurn = 0
 
@@ -63,7 +63,7 @@ class TreeFragment : PFragment(), TimeManagmentInterface{
             param1 = it.getSerializable(ARG_PARAM1) as Sketch
             param2 = it.getString(ARG_PARAM2)
         }
-        singleton = Singleton(activity!!.applicationContext)
+        singleton = Singleton.getInstance(activity?.applicationContext!!)
         //orderToSaveImage = this
     }
 
@@ -158,4 +158,6 @@ class TreeFragment : PFragment(), TimeManagmentInterface{
         val pFragment = PFragment(sketch)
         pFragment.setView(frame, activity)
     }
+
+
 }

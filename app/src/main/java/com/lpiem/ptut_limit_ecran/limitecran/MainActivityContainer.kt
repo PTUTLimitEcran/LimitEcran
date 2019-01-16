@@ -1,7 +1,14 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.Manifest
+
+import android.app.AppOpsManager
+import android.app.Fragment
+import android.app.FragmentManager
+import android.app.FragmentTransaction
+
 import android.app.*
+
 import android.content.Context
 import android.content.BroadcastReceiver
 import android.content.Intent
@@ -25,12 +32,24 @@ import kotlinx.android.synthetic.main.activity_main_container.*
 import processing.core.PApplet
 
 
-class MainActivityContainer : AppCompatActivity() {
+class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
+
+    override fun setNewChallenge() {
+        viewPagerAdapter?.replaceFragment(fragmentChallenge, fragmentHome)
+        viewPagerAdapter?.notifyDataSetChanged()
+        //viewPagerAdapter?.update()
+        var intent:Intent = Intent(applicationContext, MainActivityContainer::class.java )
+        intent.putExtra("challenge", true)
+        startActivity(intent)
+        finish()
+    }
+
 
     private var prevMenuItem: MenuItem? = null
     private lateinit var fragmentHome: TreeFragment
     private lateinit var fragmentStat: StatisticFragment
     private lateinit var fragmentGallery: GalleryFragment
+    private lateinit var fragmentChallenge: ChallengeFragment
     private val singleton: Singleton = Singleton.getInstance(this)
     private var sketch: PApplet? = null
     private val REQUEST_WRITE_STORAGE = 0
@@ -83,7 +102,7 @@ class MainActivityContainer : AppCompatActivity() {
             }
 
             override fun onPageScrollStateChanged(state: Int) {
-
+                viewPagerAdapter?.notifyDataSetChanged()
             }
         })
 
@@ -94,12 +113,20 @@ class MainActivityContainer : AppCompatActivity() {
 
     private fun setupViewPager(viewPager: ViewPager) {
         if (viewPagerAdapter == null) viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
+        var challengeManager:ChallengeUpdateManager = this
         fragmentHome = TreeFragment()
         fragmentStat = StatisticFragment()
         fragmentGallery = GalleryFragment()
+        fragmentChallenge = ChallengeFragment.newInstance(challengeManager)
         fragmentStat.putContext(applicationContext)
         viewPagerAdapter?.addFragment(fragmentStat)
-        viewPagerAdapter?.addFragment(fragmentHome)
+
+        if(intent.getBooleanExtra("challenge",false)) {
+            viewPagerAdapter?.addFragment(fragmentHome)
+        }
+        else {
+            viewPagerAdapter?.addFragment(fragmentChallenge)
+        }
         viewPagerAdapter?.addFragment(fragmentGallery)
         viewPager.adapter = viewPagerAdapter
         viewPager.currentItem = 1
@@ -150,9 +177,9 @@ class MainActivityContainer : AppCompatActivity() {
                         singleton.IsDeviceOn = false
                         startOrResumeCountDownTimer()
                     }
-                val openMainActivity = Intent(context, MainActivityContainer::class.java)
+                /*val openMainActivity = Intent(context, MainActivityContainer::class.java)
                 openMainActivity.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-                startActivityIfNeeded(openMainActivity, 0)
+                startActivityIfNeeded(openMainActivity, 0)*/
             }
         }
         registerReceiver(screenOnOffReceiver, intentFilter)
