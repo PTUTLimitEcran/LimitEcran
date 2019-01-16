@@ -2,15 +2,13 @@ package com.lpiem.ptut_limit_ecran.limitecran.Model
 
 import android.app.NotificationManager
 import android.content.Context
+import android.os.Build
 import android.os.CountDownTimer
 import android.os.Environment
 import android.support.v4.app.NotificationCompat
-import android.util.Log
 import android.widget.RemoteViews
-import com.lpiem.ptut_limit_ecran.limitecran.MainActivityContainer
 import com.lpiem.ptut_limit_ecran.limitecran.R
 import com.lpiem.ptut_limit_ecran.limitecran.TreeFragment
-import kotlinx.android.synthetic.main.usage_stats_item.*
 import java.io.File
 import java.util.*
 import kotlin.collections.HashMap
@@ -82,6 +80,27 @@ class Singleton(context: Context) {
     get() = notificationManager
     set(newValue){
         notificationManager = newValue
+    }
+
+    fun initNotificationChannel(context: Context, notificationService:NotificationManager){
+        NotificationChannel = notificationService
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Register the channel with the system
+            val notificationManager: NotificationManager = notificationService
+            notificationManager.createNotificationChannel(
+                android.app.NotificationChannel(
+                    context.getString(R.string.channelId),
+                    context.getString(R.string.app_name),
+                    NotificationManager.IMPORTANCE_LOW
+                ).apply {
+                    description = context.getString(R.string.channel_description)
+                })
+        }
+        Notification.setDefaults(android.app.Notification.DEFAULT_LIGHTS or android.app.Notification.DEFAULT_SOUND)
+            .setVibrate(longArrayOf(0L)) // Passing null here silently fails
+        NotificationChannel!!.notify(0, Notification!!.build())
     }
 
     /**
@@ -160,7 +179,7 @@ class Singleton(context: Context) {
 
         fun getInstance(context: Context):Singleton{
             if(initialized == true){
-                return this.singleton
+                return singleton
             }else{
                 initialized = true
                 singleton = Singleton(context)
@@ -189,9 +208,9 @@ class Singleton(context: Context) {
             return (treeList.containsKey(date))
         }
 
-        fun initSingleton(context: Context){
-            this.context = context
-            this.treeList = HashMap()
+        fun initSingleton(newContext: Context){
+            context = newContext
+            treeList = HashMap()
         }
     }
 
