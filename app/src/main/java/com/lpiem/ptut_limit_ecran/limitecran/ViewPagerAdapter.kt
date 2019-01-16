@@ -6,7 +6,9 @@ import android.support.v4.app.FragmentPagerAdapter
 
 
 class ViewPagerAdapter(manager: FragmentManager) : FragmentPagerAdapter(manager) {
-    private val mFragmentList = ArrayList<Fragment>()
+
+    private val mFragmentList: MutableList<Fragment> = ArrayList()
+
     override fun getItem(position: Int): Fragment {
         return mFragmentList[position]
     }

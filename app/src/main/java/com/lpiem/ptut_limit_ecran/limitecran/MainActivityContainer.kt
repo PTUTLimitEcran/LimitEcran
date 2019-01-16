@@ -52,6 +52,7 @@ MainContainer : AppCompatActivity() {
             }
             R.id.navigation_gallery -> {
                 fragment_container.currentItem = 2
+                viewPagerAdapter?.notifyDataSetChanged()
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -84,6 +85,7 @@ MainContainer : AppCompatActivity() {
             override fun onPageScrollStateChanged(state: Int) {
 
             }
+
         })
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)

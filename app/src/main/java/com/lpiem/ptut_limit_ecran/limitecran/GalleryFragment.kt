@@ -94,7 +94,6 @@ class GalleryFragment : Fragment() {
         var i = 0
         for(dateTree in dateTreeIterator){
             treeList.add(dateTree.value[i])
-
         }
         return treeList
     }
@@ -107,6 +106,11 @@ class GalleryFragment : Fragment() {
         treeAdapter = TreeAdapter(convertHashmapToArrayList(),context!!)
 
         return inflater.inflate(R.layout.fragment_gallery, container, false)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        initOnce = true
     }
 
 }
