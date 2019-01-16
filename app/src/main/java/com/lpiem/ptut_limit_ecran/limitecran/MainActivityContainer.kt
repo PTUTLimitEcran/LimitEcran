@@ -23,7 +23,6 @@ import android.widget.Toast
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import kotlinx.android.synthetic.main.activity_main_container.*
 import processing.core.PApplet
-import android.view.Display
 
 
 class MainActivityContainer : AppCompatActivity() {
@@ -36,10 +35,7 @@ class MainActivityContainer : AppCompatActivity() {
     private var sketch: PApplet? = null
     private val REQUEST_WRITE_STORAGE = 0
     private var viewPagerAdapter: ViewPagerAdapter? = null
-
-    companion object {
-        val PACKAGE_NAME = MainActivityContainer::getPackageName
-    }
+    private lateinit var screenOnOffReceiver:BroadcastReceiver
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
 
@@ -120,7 +116,7 @@ class MainActivityContainer : AppCompatActivity() {
         intentFilter.addAction(Intent.ACTION_SCREEN_ON)
         intentFilter.addAction(Intent.ACTION_SCREEN_OFF)
 
-        val screenOnOffReceiver = object : BroadcastReceiver() {
+        screenOnOffReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val action = intent?.action
                 Log.d("Intent", intent?.action.toString())
@@ -159,7 +155,7 @@ class MainActivityContainer : AppCompatActivity() {
                 startActivityIfNeeded(openMainActivity, 0)
             }
         }
-        this.registerReceiver(screenOnOffReceiver, intentFilter)
+        registerReceiver(screenOnOffReceiver, intentFilter)
     }
 
     /**
@@ -180,25 +176,7 @@ class MainActivityContainer : AppCompatActivity() {
      * Create an instance of the notification channel
      */
     private fun createNotificationChannel() {
-        this.singleton.NotificationChannel = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Register the channel with the system
-            val notificationManager: NotificationManager =
-                this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(
-                NotificationChannel(
-                    getString(R.string.channelId),
-                    getString(R.string.app_name),
-                    NotificationManager.IMPORTANCE_LOW
-                ).apply {
-                    description = getString(R.string.channel_description)
-                })
-        }
-        this.singleton.Notification.setDefaults(Notification.DEFAULT_LIGHTS or Notification.DEFAULT_SOUND)
-            .setVibrate(longArrayOf(0L)) // Passing null here silently fails
-        this.singleton.NotificationChannel!!.notify(0, this.singleton.Notification!!.build())
+        singleton.initNotificationChannel(this, getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
     }
 
     /**
