@@ -27,12 +27,13 @@ import processing.core.PApplet
 
 class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
 
-    override fun setNewChallenge() {
+    override fun setNewChallenge(challengeTime: Int) {
         viewPagerAdapter?.replaceFragment(fragmentChallenge, fragmentHome)
         viewPagerAdapter?.notifyDataSetChanged()
         //viewPagerAdapter?.update()
-        var intent:Intent = Intent(applicationContext, MainActivityContainer::class.java )
+        val intent = Intent(applicationContext, MainActivityContainer::class.java )
         intent.putExtra("challenge", true)
+        intent.putExtra("ChallengeTime", challengeTime)
         startActivity(intent)
         finish()
     }
@@ -110,7 +111,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
     private fun setupViewPager(viewPager: ViewPager) {
         if (viewPagerAdapter == null) viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
         var challengeManager:ChallengeUpdateManager = this
-        fragmentHome = TreeFragment()
+        fragmentHome = TreeFragment.newInstance(param2 = intent.getIntExtra("ChallengeTime", 0), sketch = null)
         fragmentStat = StatisticFragment()
         fragmentGallery = GalleryFragment()
         fragmentChallenge = ChallengeFragment.newInstance(challengeManager)
@@ -278,4 +279,6 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
         val mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
         return mode == AppOpsManagerCompat.MODE_ALLOWED
     }
+
+
 }

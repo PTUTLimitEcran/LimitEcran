@@ -21,7 +21,7 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 
-class TreeFragment : PFragment(), TimeManagmentInterface{
+class TreeFragment() : PFragment(), TimeManagmentInterface{
 
     private lateinit var viewOfLayout: View
     private lateinit var singleton: Singleton
@@ -46,24 +46,24 @@ class TreeFragment : PFragment(), TimeManagmentInterface{
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(sketch: Sketch, param2: String?) =
+        fun newInstance(sketch: Sketch?, param2: Int) =
             TreeFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(ARG_PARAM1, sketch)
-                    putString(ARG_PARAM2, param2)
+                    putInt(ARG_PARAM2, param2)
                 }
             }
     }
 
     // TODO: Rename and change types of parameters
     private var param1: Serializable? = null
-    private var param2: String? = null
+    private var param2: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getSerializable(ARG_PARAM1) as Sketch
-            param2 = it.getString(ARG_PARAM2)
+            param1 = it.getSerializable(ARG_PARAM1) as Sketch?
+            param2 = it.getInt(ARG_PARAM2)
         }
         singleton = Singleton.getInstance(activity?.applicationContext!!)
         //orderToSaveImage = this
@@ -83,7 +83,7 @@ class TreeFragment : PFragment(), TimeManagmentInterface{
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        updateTextView(singleton.formatTime(300000))
+        updateTextView(singleton.formatTime(if (param2 != null) param2?.toLong()!! else 0L))
 
         button_save.setOnClickListener { saveImage.savePictureToStorage(true) }
 
