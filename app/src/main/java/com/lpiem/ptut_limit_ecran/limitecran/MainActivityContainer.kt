@@ -2,14 +2,10 @@ package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.Manifest
 import android.app.*
-import android.content.Context
-import android.content.BroadcastReceiver
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.pm.PackageManager
-import android.hardware.display.DisplayManager
-import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.os.Process
 import android.provider.Settings
 import android.support.design.widget.BottomNavigationView
@@ -20,6 +16,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
+import com.lpiem.ptut_limit_ecran.limitecran.Model.BackgroundService
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import kotlinx.android.synthetic.main.activity_main_container.*
 import processing.core.PApplet
@@ -28,6 +25,7 @@ import processing.core.PApplet
 class MainActivityContainer : AppCompatActivity() {
 
     private var prevMenuItem: MenuItem? = null
+    private var boundTo:Boolean = false
     private lateinit var fragmentHome: TreeFragment
     private lateinit var fragmentStat: StatisticFragment
     private lateinit var fragmentGallery: GalleryFragment
@@ -35,7 +33,20 @@ class MainActivityContainer : AppCompatActivity() {
     private var sketch: PApplet? = null
     private val REQUEST_WRITE_STORAGE = 0
     private var viewPagerAdapter: ViewPagerAdapter? = null
-    private lateinit var screenOnOffReceiver:BroadcastReceiver
+    private lateinit var serviceIntent: Intent
+    private lateinit var backgroundService: BackgroundService
+    private val serviceConnection = object : ServiceConnection{
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            val binder = service as BackgroundService.LocalBinder
+            backgroundService = binder.getService()
+            boundTo = true
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            boundTo = false
+        }
+    }
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
 
@@ -57,13 +68,35 @@ class MainActivityContainer : AppCompatActivity() {
         false
     }
 
+    override fun onStop() {
+        super.onStop()
+        if(boundTo){
+            unbindService(serviceConnection)
+            boundTo = false
+        }
+    }
+
+    private fun initData(){
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        serviceIntent = Intent(this, BackgroundService::class.java)
+        serviceIntent.putExtra("timeChrono", 300000)
+        bindService()
+        boundTo = true
+    }
+
+    fun bindService(){
+        Intent(this, BackgroundService::class.java).also { intent ->
+            bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_container)
-        createNotification()
-        createNotificationChannel()
-        registerBroadcastReceiver()
 
         fragment_container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -103,92 +136,6 @@ class MainActivityContainer : AppCompatActivity() {
         viewPagerAdapter?.addFragment(fragmentGallery)
         viewPager.adapter = viewPagerAdapter
         viewPager.currentItem = 1
-    }
-
-    /**
-     * Function about managing activity before screen lock
-     */
-    private fun registerBroadcastReceiver() {
-        val intentFilter = IntentFilter()
-        /** System Defined Broadcast */
-        intentFilter.addAction(Intent.ACTION_USER_PRESENT)
-        intentFilter.addAction(Intent.ACTION_USER_UNLOCKED)
-        intentFilter.addAction(Intent.ACTION_SCREEN_ON)
-        intentFilter.addAction(Intent.ACTION_SCREEN_OFF)
-
-        screenOnOffReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                val action = intent?.action
-                Log.d("Intent", intent?.action.toString())
-
-                val keyguardManager = context?.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-                if (action == Intent.ACTION_USER_PRESENT ||
-                    action == Intent.ACTION_USER_UNLOCKED ||
-                    action == Intent.ACTION_SCREEN_OFF ||
-                    action == Intent.ACTION_SCREEN_ON ||
-                    action == Context.FINGERPRINT_SERVICE
-                )
-                    if (action == Intent.ACTION_SCREEN_ON) {
-                        Log.d("Screen","Screen turned on")
-                        if(keyguardManager.isKeyguardLocked){
-                            Log.d("Screen", "Screen locked")
-                            singleton.IsDeviceOn = true
-                            startOrResumeCountDownTimer()
-                        }
-                    }
-                if (action == Intent.ACTION_USER_PRESENT) {
-                    Log.d("Screen", "Screen unlocked")
-                    if (singleton.IsRunning) {
-                        singleton.IsRunning = false
-                        singleton.pauseCountDownTimer()
-                        fragmentHome.updateTextView(singleton.formatTime(singleton.CurrentCountDownTimer))
-                    }
-                }
-                if (action == Intent.ACTION_SCREEN_OFF) {
-                        Log.d("Screen", "Screen locked")
-                        Log.d("Screen", "Phone screen turned off")
-                        singleton.IsDeviceOn = false
-                        startOrResumeCountDownTimer()
-                    }
-                val openMainActivity = Intent(context, MainActivityContainer::class.java)
-                openMainActivity.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-                startActivityIfNeeded(openMainActivity, 0)
-            }
-        }
-        registerReceiver(screenOnOffReceiver, intentFilter)
-    }
-
-    /**
-     * Start or resume countDownTimer
-     */
-    private fun startOrResumeCountDownTimer() {
-        if (!singleton.IsRunning) {
-            singleton.IsRunning = true
-            if (singleton.CurrentCountDownTimer == 0L) {
-                singleton.startCountDownTimer()
-            } else {
-                singleton.resumeCountDownTimer(fragmentHome)
-            }
-        }
-    }
-
-    /**
-     * Create an instance of the notification channel
-     */
-    private fun createNotificationChannel() {
-        singleton.initNotificationChannel(this, getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-    }
-
-    /**
-     * Create the notification
-     */
-    private fun createNotification() {
-        singleton.initNotification(
-            this,
-            getString(R.string.app_name),
-            getString(R.string.channelId),
-            getString(R.string.channel_description)
-        )
     }
 
     /**

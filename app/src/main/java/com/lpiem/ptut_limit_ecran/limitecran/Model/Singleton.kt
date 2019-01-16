@@ -103,6 +103,10 @@ class Singleton(context: Context) {
         NotificationChannel!!.notify(0, Notification!!.build())
     }
 
+    fun destroyNotification(){
+        notificationManager.cancelAll()
+    }
+
     /**
      * Start the chronometer
      */
@@ -213,8 +217,4 @@ class Singleton(context: Context) {
             treeList = HashMap()
         }
     }
-
-    /*fun loadImages(){
-        importImageList()
-    }*/
 }
