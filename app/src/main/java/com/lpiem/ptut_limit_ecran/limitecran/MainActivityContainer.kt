@@ -123,6 +123,7 @@ class MainActivityContainer : AppCompatActivity() {
         val screenOnOffReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val action = intent?.action
+                Log.d("Intent", intent?.action.toString())
 
                 val keyguardManager = context?.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
                 if (action == Intent.ACTION_USER_PRESENT ||
@@ -134,17 +135,20 @@ class MainActivityContainer : AppCompatActivity() {
                     if (action == Intent.ACTION_SCREEN_ON) {
                         Log.d("Screen","Screen turned on")
                         if(keyguardManager.isKeyguardLocked){
+                            Log.d("Screen", "Screen locked")
                             singleton.IsDeviceOn = true
                             startOrResumeCountDownTimer()
-                        }else{
-                            Log.d("Screen", "Screen unlocked")
-                            if (singleton.IsRunning) {
-                                singleton.IsRunning = false
-                                singleton.pauseCountDownTimer()
-                                fragmentHome.updateTextView(singleton.formatTime(singleton.CurrentCountDownTimer))
-                            }
                         }
-                    }else if (action == Intent.ACTION_SCREEN_OFF) {
+                    }
+                if (action == Intent.ACTION_USER_PRESENT) {
+                    Log.d("Screen", "Screen unlocked")
+                    if (singleton.IsRunning) {
+                        singleton.IsRunning = false
+                        singleton.pauseCountDownTimer()
+                        fragmentHome.updateTextView(singleton.formatTime(singleton.CurrentCountDownTimer))
+                    }
+                }
+                if (action == Intent.ACTION_SCREEN_OFF) {
                         Log.d("Screen", "Screen locked")
                         Log.d("Screen", "Phone screen turned off")
                         singleton.IsDeviceOn = false
