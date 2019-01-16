@@ -49,22 +49,23 @@ class UsageStatsAdapter(private var context: Context): BaseAdapter() {
 
 
             val map = ArrayMap<String, UsageStats>()
-            val statCount = stats!!.size
+            val statCount = stats.size
 
             for (i in 0 until statCount) {
-                val pkgStats = stats!!.get(i)
+                val pkgStats = stats[i]
 
                 // load application labels for each application
                 try {
-                    val appInfo = mPm.getApplicationInfo(pkgStats.getPackageName(), 0)
+                    val pkgName = pkgStats.packageName
+                    val appInfo = mPm.getApplicationInfo(pkgName, 0)
 
                     val label = appInfo.loadLabel(mPm).toString()
-                    mAppLabelMap[pkgStats.getPackageName()] = label
+                    mAppLabelMap[pkgName] = label
 
-                    val existingStats = map[pkgStats.getPackageName()]
+                    val existingStats = map[pkgName]
 
                     if (existingStats == null) {
-                        map[pkgStats.getPackageName()] = pkgStats
+                        map[pkgName] = pkgStats
                     } else {
                         existingStats.add(pkgStats)
                     }

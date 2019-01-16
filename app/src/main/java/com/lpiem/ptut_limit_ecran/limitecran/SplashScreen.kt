@@ -11,7 +11,7 @@ class SplashScreen : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val intent = Intent(applicationContext, MainContainer::class.java)
+        val intent = Intent(applicationContext, MainActivityContainer::class.java)
         startActivity(intent)
         finish()
 

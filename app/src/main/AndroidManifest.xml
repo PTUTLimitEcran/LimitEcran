@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-                android:name=".MainContainer"
+                android:name=".MainActivityContainer"
                 android:label="@string/title_activity_main_container"
                 android:screenOrientation="portrait">
         </activity>
