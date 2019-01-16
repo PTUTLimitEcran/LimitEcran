@@ -129,11 +129,6 @@ class TreeFragment : PFragment(), TimeManagmentInterface{
 //        })
     }
 
-    override fun updateNotification(formattedTime: String) {
-        singleton.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono,formattedTime)
-        singleton.NotificationChannel.notify(0,singleton.Notification.build())
-    }
-
     override fun updateTextView(formattedTime: String) {
         currentChronometerTime.text = formattedTime
         //singleton.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono,"Temps restant : $formattedTime")

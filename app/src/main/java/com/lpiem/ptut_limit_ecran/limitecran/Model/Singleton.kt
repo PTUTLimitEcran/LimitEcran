@@ -94,13 +94,18 @@ class Singleton(context: Context) {
             override fun onTick(millisUntilFinished: Long) {
                 currentCountDownTimer = millisUntilFinished
                 if(isDeviceOn){
-                    currentFragment.updateNotification(formatTime(millisUntilFinished))
+                    updateNotification(formatTime(millisUntilFinished))
                 }
             }
             override fun onFinish() {
                 isRunning = false
             }
         }
+    }
+
+    fun updateNotification(formattedTime: String) {
+        singleton.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono,formattedTime)
+        singleton.NotificationChannel.notify(0,singleton.Notification.build())
     }
 
     fun formatTime(countDownTimer: Long):String{

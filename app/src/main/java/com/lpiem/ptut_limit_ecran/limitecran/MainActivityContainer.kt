@@ -7,29 +7,26 @@ import android.content.BroadcastReceiver
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.hardware.display.DisplayManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Process
-import android.os.SystemClock
 import android.provider.Settings
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.AppOpsManagerCompat
-import android.support.v4.app.NotificationCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
-import android.widget.RemoteViews
 import android.widget.Toast
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import kotlinx.android.synthetic.main.activity_main_container.*
-import kotlinx.android.synthetic.main.fragment_tree.*
 import processing.core.PApplet
+import android.view.Display
 
 
-
-class MainActivityContainer : AppCompatActivity(){
+class MainActivityContainer : AppCompatActivity() {
 
     private var prevMenuItem: MenuItem? = null
     private lateinit var fragmentHome: TreeFragment
@@ -134,27 +131,24 @@ class MainActivityContainer : AppCompatActivity(){
                     action == Intent.ACTION_SCREEN_ON ||
                     action == Context.FINGERPRINT_SERVICE
                 )
-                    if (keyguardManager.isDeviceLocked){
-                        singleton.IsDeviceOn = true
-                    }
-                    else if (keyguardManager.isKeyguardLocked) {
-                        Log.d("Screen", "Screen locked")
-                        singleton.IsDeviceOn = false
-                        if (!singleton.IsRunning) {
-                            singleton.IsRunning = true
-                            if(singleton.CurrentCountDownTimer == 0L){
-                                singleton.startCountDownTimer()
-                            }else{
-                                singleton.resumeCountDownTimer(fragmentHome)
+                    if (action == Intent.ACTION_SCREEN_ON) {
+                        Log.d("Screen","Screen turned on")
+                        if(keyguardManager.isKeyguardLocked){
+                            singleton.IsDeviceOn = true
+                            startOrResumeCountDownTimer()
+                        }else{
+                            Log.d("Screen", "Screen unlocked")
+                            if (singleton.IsRunning) {
+                                singleton.IsRunning = false
+                                singleton.pauseCountDownTimer()
+                                fragmentHome.updateTextView(singleton.formatTime(singleton.CurrentCountDownTimer))
                             }
                         }
-                    } else {
-                        Log.d("Screen", "Screen unlocked")
-                        if (singleton.IsRunning) {
-                            singleton.IsRunning = false
-                            singleton.pauseCountDownTimer()
-                            fragmentHome.updateTextView(singleton.formatTime(singleton.CurrentCountDownTimer))
-                        }
+                    }else if (action == Intent.ACTION_SCREEN_OFF) {
+                        Log.d("Screen", "Screen locked")
+                        Log.d("Screen", "Phone screen turned off")
+                        singleton.IsDeviceOn = false
+                        startOrResumeCountDownTimer()
                     }
                 val openMainActivity = Intent(context, MainActivityContainer::class.java)
                 openMainActivity.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
@@ -162,6 +156,20 @@ class MainActivityContainer : AppCompatActivity(){
             }
         }
         this.registerReceiver(screenOnOffReceiver, intentFilter)
+    }
+
+    /**
+     * Start or resume countDownTimer
+     */
+    private fun startOrResumeCountDownTimer() {
+        if (!singleton.IsRunning) {
+            singleton.IsRunning = true
+            if (singleton.CurrentCountDownTimer == 0L) {
+                singleton.startCountDownTimer()
+            } else {
+                singleton.resumeCountDownTimer(fragmentHome)
+            }
+        }
     }
 
     /**
@@ -193,10 +201,12 @@ class MainActivityContainer : AppCompatActivity(){
      * Create the notification
      */
     private fun createNotification() {
-        singleton.initNotification(this,
+        singleton.initNotification(
+            this,
             getString(R.string.app_name),
             getString(R.string.channelId),
-            getString(R.string.channel_description))
+            getString(R.string.channel_description)
+        )
     }
 
     /**
@@ -229,9 +239,9 @@ class MainActivityContainer : AppCompatActivity(){
 
     }
 
-    private fun initCountDownTimer(){
-        if(!singleton.FirstTime){
-            singleton.initCountDownTimer(300000,fragmentHome)
+    private fun initCountDownTimer() {
+        if (!singleton.FirstTime) {
+            singleton.initCountDownTimer(300000, fragmentHome)
             singleton.FirstTime = true
         }
     }
