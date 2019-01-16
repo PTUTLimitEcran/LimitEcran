@@ -42,6 +42,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
         var intent:Intent = Intent(applicationContext, MainActivityContainer::class.java )
         intent.putExtra("challenge", true)
         startActivity(intent)
+        finish()
     }
 
 
@@ -111,7 +112,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
-        //requestStoragePermission()
+        requestStoragePermission()
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
