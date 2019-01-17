@@ -13,7 +13,7 @@ class ChallengeFragment() : Fragment(), View.OnClickListener{
     override fun onClick(v: View?) {
         val fifteenMins = 900000
         when(v) {
-            challenge1 -> challengeUpdateManager.setNewChallenge(fifteenMins)
+            challenge1 -> challengeUpdateManager.setNewChallenge(fifteenMins- fifteenMins +5000)
             challenge2 -> challengeUpdateManager.setNewChallenge(fifteenMins*2)
             challenge3 -> challengeUpdateManager.setNewChallenge(fifteenMins*4)
             challenge4 -> challengeUpdateManager.setNewChallenge(fifteenMins*8)

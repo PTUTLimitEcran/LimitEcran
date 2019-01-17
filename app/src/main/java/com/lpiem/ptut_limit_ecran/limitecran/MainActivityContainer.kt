@@ -49,6 +49,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
     private val REQUEST_WRITE_STORAGE = 0
     private var viewPagerAdapter: ViewPagerAdapter? = null
     private lateinit var screenOnOffReceiver:BroadcastReceiver
+    private var challengeTime = 0
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
 
@@ -110,8 +111,8 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
 
     private fun setupViewPager(viewPager: ViewPager) {
         if (viewPagerAdapter == null) viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
-        var challengeManager:ChallengeUpdateManager = this
-        fragmentHome = TreeFragment.newInstance(param2 = intent.getIntExtra("ChallengeTime", 0), sketch = null)
+        val challengeManager:ChallengeUpdateManager = this
+        fragmentHome = TreeFragment.newInstance(challengeTime)
         fragmentStat = StatisticFragment()
         fragmentGallery = GalleryFragment()
         fragmentChallenge = ChallengeFragment.newInstance(challengeManager)
@@ -229,6 +230,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
             REQUEST_WRITE_STORAGE -> {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    challengeTime = intent.getIntExtra("ChallengeTime", 0)
                     initSketch()
                     initCountDownTimer()
                 } else {
@@ -246,8 +248,8 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
     }
 
     private fun initCountDownTimer() {
-        if (!singleton.FirstTime) {
-            singleton.initCountDownTimer(300000, fragmentHome)
+        if (intent.getBooleanExtra("challenge", false)) {
+            singleton.initCountDownTimer(challengeTime.toLong(), fragmentHome)
             singleton.FirstTime = true
         }
     }

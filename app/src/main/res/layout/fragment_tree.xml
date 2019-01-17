@@ -11,18 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Chronometer
-                android:id="@+id/chronometerXml"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="40dp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
         <TextView
             android:id="@+id/currentChronometerTime"
             android:layout_width="0dp"
@@ -62,6 +50,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginBottom="62dp"
             android:layout_marginEnd="8dp"
+            android:background="@color/colorPrimary"
             app:layout_constraintTop_toBottomOf="@+id/weeklyTimerCounter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -79,31 +68,7 @@
             </FrameLayout>
 
         </ScrollView>
-        <Button
-                android:id="@+id/button_save"
-                android:text="Save"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="68dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="8dp"
-                app:layout_constraintHorizontal_bias="0.939"/>
-                android:textColor="@color/textColorChronometer"
-                android:layout_height="27dp" android:id="@+id/weeklyTimerCounter"
-                app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="36dp"
-                app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="426dp"
-                android:layout_marginTop="10dp" app:layout_constraintTop_toBottomOf="@+id/currentChronometerTime"
-                app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="36dp"/>
-    </android.support.constraint.ConstraintLayout>
 
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="TREE"
-            android:visibility="gone"/>
+    </android.support.constraint.ConstraintLayout>
 
 </FrameLayout>
