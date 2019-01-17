@@ -95,7 +95,7 @@ class Singleton(context: Context) {
                 android.app.NotificationChannel(
                     context.getString(R.string.channelId),
                     context.getString(R.string.app_name),
-                    NotificationManager.IMPORTANCE_LOW
+                    NotificationManager.IMPORTANCE_DEFAULT
                 ).apply {
                     description = context.getString(R.string.channel_description)
                 })
@@ -114,6 +114,7 @@ class Singleton(context: Context) {
         countDownTimer = object : CountDownTimer(countDownTimerTime, timeInterval) {
             override fun onTick(millisUntilFinished: Long) {
                 currentCountDownTimer = millisUntilFinished
+                Log.d("Compteur", "$currentCountDownTimer")
                 if(isDeviceOn){
                     updateNotification(formatTime(millisUntilFinished))
                 }
@@ -155,6 +156,7 @@ class Singleton(context: Context) {
     }
 
     fun initNotification(context: Context, channelId:String, channelName:String, channelDescription:String){
+        smallRemoteView.setImageViewResource(R.id.notificationIcon,R.drawable.ic_phonelink_erase_black_24dp)
         notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_phonelink_erase_black_24dp)
             .setContentTitle(channelName)
@@ -163,7 +165,6 @@ class Singleton(context: Context) {
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCustomContentView(singleton.SmallRemoteView)
             //.setCustomBigContentView(singleton.SmallRemoteView)
-        smallRemoteView.setImageViewResource(R.id.notificationIcon,R.drawable.ic_phonelink_erase_black_24dp)
     }
 
     companion object{
