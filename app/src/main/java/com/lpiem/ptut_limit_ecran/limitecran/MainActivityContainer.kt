@@ -23,9 +23,10 @@ import android.widget.Toast
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import kotlinx.android.synthetic.main.activity_main_container.*
 import processing.core.PApplet
+import java.io.Serializable
 
 
-class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
+class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Serializable {
 
     override fun setNewChallenge(challengeTime: Int) {
         viewPagerAdapter?.replaceFragment(fragmentChallenge, fragmentHome)

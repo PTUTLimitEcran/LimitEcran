@@ -22,69 +22,70 @@ class Singleton(context: Context) {
     private var firstime = false
     private var isDeviceOn = false
     private var currentCountDownTimer = 0L
-    private lateinit var countDownTimer:CountDownTimer
+    private lateinit var countDownTimer: CountDownTimer
     private var smallRemoteView = RemoteViews(context.packageName, R.layout.notification_small)
 
-    var IsDeviceOn:Boolean
-    get() = isDeviceOn
-    set(value){
-        isDeviceOn = value
-    }
+    var IsDeviceOn: Boolean
+        get() = isDeviceOn
+        set(value) {
+            isDeviceOn = value
+        }
 
     private var size = 0
+
     init {
         initSingleton(context)
     }
 
-    var FirstTime:Boolean
-    get() = firstime
-    set(newValue){
-        firstime = newValue
-    }
+    var FirstTime: Boolean
+        get() = firstime
+        set(newValue) {
+            firstime = newValue
+        }
 
-    var SmallRemoteView:RemoteViews
-    get() = smallRemoteView
-    set(newValue){
-        smallRemoteView = newValue
-    }
+    var SmallRemoteView: RemoteViews
+        get() = smallRemoteView
+        set(newValue) {
+            smallRemoteView = newValue
+        }
 
-    var CurrentCountDownTimer:Long
-    get() = currentCountDownTimer
-    set(newValue){
-        currentCountDownTimer = newValue
-    }
+    var CurrentCountDownTimer: Long
+        get() = currentCountDownTimer
+        set(newValue) {
+            currentCountDownTimer = newValue
+        }
 
-    var IsRunning:Boolean
-    get() = isRunning
-    set(newValue){
-        isRunning = newValue
-    }
+    var IsRunning: Boolean
+        get() = isRunning
+        set(newValue) {
+            isRunning = newValue
+        }
 
-    var ScreenSize:Int
-    get() = size
-    set(newValue){
-        size = newValue
-    }
+    var ScreenSize: Int
+        get() = size
+        set(newValue) {
+            size = newValue
+        }
 
-    var TreeList:HashMap<Date, ArrayList<TreeImage>>
-    get() = treeList
-    set(newValue){
-        treeList = newValue
-    }
+    var TreeList: HashMap<Date, ArrayList<TreeImage>>
+        get() = treeList
+        set(newValue) {
+            treeList = newValue
+        }
 
-    var Notification:NotificationCompat.Builder
-    get() = notification
-    set(newValue){
-        notification = newValue
-    }
+    var Notification: NotificationCompat.Builder
+        get() = notification
+        set(newValue) {
+            notification = newValue
+        }
 
-    var NotificationChannel:NotificationManager
-    get() = notificationManager
-    set(newValue){
-        notificationManager = newValue
-    }
+    var NotificationChannel: NotificationManager
+        get() = notificationManager
+        set(newValue) {
+            notificationManager = newValue
+        }
 
-    fun initNotificationChannel(context: Context, notificationService:NotificationManager){
+    fun initNotificationChannel(context: Context, notificationService: NotificationManager) {
         NotificationChannel = notificationService
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -108,17 +109,18 @@ class Singleton(context: Context) {
     /**
      * Start the chronometer
      */
-    fun initCountDownTimer(countDownTimerTime:Long, currentFragment:TreeFragment){
+    fun initCountDownTimer(countDownTimerTime: Long, currentFragment: TreeFragment) {
         singleton.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono, formatTime(countDownTimerTime))
         notificationManager.notify(0, notification.build())
         countDownTimer = object : CountDownTimer(countDownTimerTime, timeInterval) {
             override fun onTick(millisUntilFinished: Long) {
                 currentCountDownTimer = millisUntilFinished
                 Log.d("Compteur", "$currentCountDownTimer")
-                if(isDeviceOn){
+                if (isDeviceOn) {
                     updateNotification(formatTime(millisUntilFinished))
                 }
             }
+
             override fun onFinish() {
                 isRunning = false
             }
@@ -126,37 +128,37 @@ class Singleton(context: Context) {
     }
 
     fun updateNotification(formattedTime: String) {
-        singleton.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono,formattedTime)
-        singleton.NotificationChannel.notify(0,singleton.Notification.build())
+        singleton.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono, formattedTime)
+        singleton.NotificationChannel.notify(0, singleton.Notification.build())
     }
 
-    fun formatTime(countDownTimer: Long):String{
-        var seconds = (countDownTimer/1000)
-        var minutes = (seconds/60)
-        var hours = (minutes/60)
+    fun formatTime(countDownTimer: Long): String {
+        var seconds = (countDownTimer / 1000)
+        var minutes = (seconds / 60)
+        var hours = (minutes / 60)
         hours %= 24
         minutes %= 60
         seconds %= 60
-        return (if(hours<10)"0"+hours.toString()else hours.toString()) +" : "+
-                (if(minutes<10)"0"+minutes.toString()else minutes.toString()) +" : "+
-                if(seconds<10)"0"+seconds.toString()else seconds.toString()
+        return (if (hours < 10) "0" + hours.toString() else hours.toString()) + " : " +
+                (if (minutes < 10) "0" + minutes.toString() else minutes.toString()) + " : " +
+                if (seconds < 10) "0" + seconds.toString() else seconds.toString()
     }
 
-    fun startCountDownTimer(){
+    fun startCountDownTimer() {
         countDownTimer.start()
     }
 
-    fun pauseCountDownTimer(){
+    fun pauseCountDownTimer() {
         countDownTimer.cancel()
     }
 
-    fun resumeCountDownTimer(currentFragment:TreeFragment){
+    fun resumeCountDownTimer(currentFragment: TreeFragment) {
         initCountDownTimer(currentCountDownTimer, currentFragment)
         countDownTimer.start()
     }
 
-    fun initNotification(context: Context, channelId:String, channelName:String, channelDescription:String){
-        smallRemoteView.setImageViewResource(R.id.notificationIcon,R.drawable.ic_phonelink_erase_black_24dp)
+    fun initNotification(context: Context, channelId: String, channelName: String, channelDescription: String) {
+        smallRemoteView.setImageViewResource(R.id.notificationIcon, R.drawable.ic_phonelink_erase_black_24dp)
         notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_phonelink_erase_black_24dp)
             .setContentTitle(channelName)
@@ -164,70 +166,72 @@ class Singleton(context: Context) {
             .setContentText(channelDescription)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCustomContentView(singleton.SmallRemoteView)
-            //.setCustomBigContentView(singleton.SmallRemoteView)
+        //.setCustomBigContentView(singleton.SmallRemoteView)
     }
 
-    companion object{
+    companion object {
         private lateinit var notification: NotificationCompat.Builder
         private lateinit var notificationManager: NotificationManager
         private lateinit var treeList: HashMap<Date, ArrayList<TreeImage>>
-        private var isRunning:Boolean = false
+        private var isRunning: Boolean = false
 
         private lateinit var context: Context
         var loadingTreeImageRegex: String = "^wonder_tree.*[.png]"
 
-        private var initialized: Boolean=false
+        private var initialized: Boolean = false
 
         private lateinit var singleton: Singleton
 
         private lateinit var chronometer: Chronometer
 
-        fun getInstance(context: Context):Singleton{
-            if(initialized == true){
+        fun getInstance(context: Context): Singleton {
+            if (initialized == true) {
                 return singleton
-            }else{
+            } else {
                 initialized = true
                 singleton = Singleton(context)
                 return singleton
             }
         }
 
-        fun importImageList(){
+        fun importImageList() {
             treeList = HashMap()
-            val list = File(Environment.getExternalStorageDirectory().absolutePath+"/LimitEcran").listFiles()
-            for(i in 0 until list.size){
-                if(Regex(loadingTreeImageRegex).matches(list[i].name)){
-                    val date = Date(list[i].lastModified())
-                    date.minutes = 0
-                    date.seconds = 0
-                    date.hours = i
-                    if(!isDateIndexAlreadyPresentInArray(date)){
-                        treeList[date] = ArrayList()
+            val list = File(Environment.getExternalStorageDirectory().absolutePath + "/LimitEcran").listFiles()
+            if (!list.isNullOrEmpty()) {
+                for (i in 0 until list.size) {
+                    if (Regex(loadingTreeImageRegex).matches(list[i].name)) {
+                        val date = Date(list[i].lastModified())
+                        date.minutes = 0
+                        date.seconds = 0
+                        date.hours = i
+                        if (!isDateIndexAlreadyPresentInArray(date)) {
+                            treeList[date] = ArrayList()
+                        }
+                        treeList[date]!!.add(TreeImage(list[i].name, date))
+                    } else {
+                        Log.d("SINGLETON", "out of regex")
                     }
-                    treeList[date]!!.add(TreeImage(list[i].name, date))
-                } else {
-                    Log.d("SINGLETON", "out of regex")
                 }
             }
         }
 
-        private fun isDateIndexAlreadyPresentInArray(date:Date):Boolean{
+        private fun isDateIndexAlreadyPresentInArray(date: Date): Boolean {
             return treeList.containsKey(date)
         }
 
-        fun initSingleton(newContext: Context){
+        fun initSingleton(newContext: Context) {
             context = newContext
             treeList = HashMap()
         }
     }
 
-    fun loadImages(){
+    fun loadImages() {
         importImageList()
     }
 
     var Chronometer: Chronometer
         get() = chronometer
-        set(value){
+        set(value) {
             chronometer = value
         }
 

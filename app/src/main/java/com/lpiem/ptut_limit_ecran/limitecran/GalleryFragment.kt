@@ -15,7 +15,6 @@ import com.lpiem.ptut_limit_ecran.limitecran.Model.TreeImage
 import kotlinx.android.synthetic.main.fragment_gallery.*
 
 
-
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
@@ -69,9 +68,9 @@ class GalleryFragment : Fragment() {
                     object : RecyclerTouchListener.ClickListener {
                         override fun onClick(view: View, position: Int) {
                             val filePath = treeAdapter.treeCollection[position].FilePath
-                            val detailIntent = Intent(activity!!.applicationContext, DetailAndShareTree::class.java)
+                            val detailIntent = Intent(context, DetailAndShareTree::class.java)
                             detailIntent.putExtra("filePath", filePath)
-                            requireActivity().startActivity(detailIntent)
+                            startActivity(detailIntent)
                             Log.d(TAG, "touchListener : simple click")
 
                         }
@@ -87,6 +86,7 @@ class GalleryFragment : Fragment() {
         }
 
         treeAdapter.notifyDataSetChanged()
+
 
     }
 

@@ -83,7 +83,7 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
     override fun onResume() {
         super.onResume()
         Log.d("CompteurFrag", "${singleton.CurrentCountDownTimer}")
-        if ((singleton.CurrentCountDownTimer < 1000L && singleton.CurrentCountDownTimer != 0L) && !alreadySaved) {
+        if ((singleton.CurrentCountDownTimer < 1500L && singleton.CurrentCountDownTimer != 0L) && !alreadySaved) {
             drawTree(gram, true)
             Log.d("CompteurFragDraw", "drawn")
             alreadySaved = true
@@ -101,6 +101,8 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
              gramToDraw = gram.subSequence(0 until timeToStop.toInt()).toString()
         }
 
+        if (singleton.CurrentCountDownTimer <= 1500L && singleton.CurrentCountDownTimer != 0L) gramToDraw = gram
+
 
         val sketch = Sketch(gramToDraw, savePicture)
 
@@ -108,6 +110,7 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
         frame.id = R.id.sketch_frame
         val pFragment = PFragment(sketch)
         fragmentManager?.beginTransaction()?.replace(frame.id, pFragment)?.commit()
+
     }
 
 

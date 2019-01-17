@@ -1,12 +1,14 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.app.Application
-import android.os.SystemClock
+import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 
 class App : Application() {
 
+    private lateinit var singleton: Singleton
+
     override fun onCreate() {
         super.onCreate()
-        SystemClock.sleep(2000)
+        singleton = Singleton(this)
     }
 }
