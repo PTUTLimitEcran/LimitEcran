@@ -26,8 +26,8 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
     //private var gram = "S[L[L[R]]R[L[L[LR]R[C]]R[L]]"
     //private var gram = "S[L[C[L[C[L[L[LC]CR[R]]R]]]]R[C[L[L[C[LC[R[LR]]R]]]]R[C[L[C[LCR]]C[C[C[LR]]]R]]]"
     //private var gram = "S[L[L[L[L[C[CR]R]]C[LC[LC]R]]R[C[C[LCR]R]]]R[CR[C[CR]R]]"
-    private var gram = "S[L[LC[LCR[C[LCR]R[R]]]]C[R[C]]R[R[C[CR]]]]"
-    //private var gram = "S[L[L[L[L[C[C[CR]R]]]C[LC[LC]R]]R[C[C[L[LC]C[C]R[CR]]R]]]R[CR[C[C[R]R[R]]R]]"
+    //private var gram = "S[L[LC[LCR[C[LCR]R[R]]]]C[R[C]]R[R[C[CR]]]]"
+    private var gram = "S[L[L[L[L[C[C[CR]R]]]C[LC[LC]R]]R[C[C[L[LC]C[C]R[CR]]R]]]R[CR[C[C[R]R[R]]R]]"
     //private var gram = "S[L[L[C[LC[LC]R]]R[C[C[LCR]R]]]R[CR[C[CR]R]]"
     private var bool = true
     private var countTurn = 0
@@ -121,14 +121,19 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
 
 
         //TODO: change with percentage of challenge
-        //val treeCurrentSize = (0 until gram.length).random()
-        //gram.subSequence(0..treeCurrentSize).toString()
-        val sketch = Sketch(gram, savePicture)
+        val timeLeft = timerLength!!.toDouble()
+        val ellapsedTime = timeLeft - singleton.CurrentCountDownTimer
+        val coef = ellapsedTime/timeLeft
+        val timeToStop = coef * gram.length
+        val gramToDraw = gram.subSequence(0 until timeToStop.toInt()).toString()
+
+
+        val sketch = Sketch(gramToDraw, savePicture)
 
         val frame = FrameLayout(context)
         frame.id = R.id.sketch_frame
         val pFragment = PFragment(sketch)
-        pFragment.setView(frame, activity)
+        fragmentManager?.beginTransaction()?.replace(frame.id, pFragment)?.commit()
     }
 
 
