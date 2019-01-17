@@ -30,7 +30,6 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
     override fun setNewChallenge(challengeTime: Int) {
         viewPagerAdapter?.replaceFragment(fragmentChallenge, fragmentHome)
         viewPagerAdapter?.notifyDataSetChanged()
-        //viewPagerAdapter?.update()
         val intent = Intent(applicationContext, MainActivityContainer::class.java )
         intent.putExtra("challenge", true)
         intent.putExtra("ChallengeTime", challengeTime)
