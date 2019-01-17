@@ -4,6 +4,10 @@ import android.Manifest
 import android.app.AppOpsManager
 import android.app.KeyguardManager
 import android.app.NotificationManager
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LifecycleObserver
+import android.arch.lifecycle.OnLifecycleEvent
+import android.arch.lifecycle.ProcessLifecycleOwner
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -25,7 +29,7 @@ import kotlinx.android.synthetic.main.activity_main_container.*
 import processing.core.PApplet
 
 
-class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
+class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, LifecycleObserver {
 
     override fun setNewChallenge(challengeTime: Int) {
         viewPagerAdapter?.replaceFragment(fragmentChallenge, fragmentHome)
@@ -45,6 +49,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
     private lateinit var fragmentGallery: GalleryFragment
     private lateinit var fragmentChallenge: ChallengeFragment
     private lateinit var singleton: Singleton
+    private var isActivityLaunched = false
     private var sketch: PApplet? = null
     private val REQUEST_WRITE_STORAGE = 0
     private var viewPagerAdapter: ViewPagerAdapter? = null
@@ -70,6 +75,14 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
             }
         }
         false
+    }
+
+    override fun newChallenge(){
+        viewPagerAdapter?.newChallengeFragment(fragmentHome, fragmentGallery, fragmentStat, fragmentChallenge)
+        viewPagerAdapter?.notifyDataSetChanged()
+        val intent = Intent(applicationContext, MainActivityContainer::class.java )
+        startActivity(intent)
+        finish()
     }
 
 
@@ -105,8 +118,28 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
         })
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         requestStoragePermission()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun onBackground() {
+        if(isActivityLaunched){
+            Toast.makeText(this,"Application en fond : challenge annulé!", Toast.LENGTH_LONG).show()
+            singleton.CurrentCountDownTimer = 0L
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onForeGround() {
+        if(isActivityLaunched){
+            newChallenge()
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroyApplication() {
+        singleton.destroyNotification()
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
@@ -128,6 +161,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
         viewPagerAdapter?.addFragment(fragmentGallery)
         viewPager.adapter = viewPagerAdapter
         viewPager.currentItem = 1
+        isActivityLaunched = true
     }
 
     /**
@@ -236,7 +270,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
                 } else {
                     Toast.makeText(
                         this,
-                        "Storage permission is required for saving picture in gallery",
+                        "La permission pour accéder au stockage est nécessaire pour lancer l'application.",
                         Toast.LENGTH_LONG
                     )
                         .show()

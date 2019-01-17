@@ -109,7 +109,7 @@ class Singleton(context: Context) {
      * Start the chronometer
      */
     fun initCountDownTimer(countDownTimerTime:Long, currentFragment:TreeFragment){
-        singleton.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono, formatTime(countDownTimerTime))
+        smallRemoteView.setTextViewText(R.id.smallNotificationChrono, formatTime(countDownTimerTime))
         notificationManager.notify(0, notification.build())
         countDownTimer = object : CountDownTimer(countDownTimerTime, timeInterval) {
             override fun onTick(millisUntilFinished: Long) {
@@ -125,9 +125,13 @@ class Singleton(context: Context) {
         }
     }
 
+    fun destroyNotification(){
+        notificationManager.cancelAll()
+    }
+
     fun updateNotification(formattedTime: String) {
-        singleton.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono,formattedTime)
-        singleton.NotificationChannel.notify(0,singleton.Notification.build())
+        smallRemoteView.setTextViewText(R.id.smallNotificationChrono,formattedTime)
+        notificationManager.notify(0,notification.build())
     }
 
     fun formatTime(countDownTimer: Long):String{
@@ -163,8 +167,7 @@ class Singleton(context: Context) {
             .setOngoing(true)
             .setContentText(channelDescription)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setCustomContentView(singleton.SmallRemoteView)
-            //.setCustomBigContentView(singleton.SmallRemoteView)
+            .setCustomContentView(smallRemoteView)
     }
 
     companion object{
@@ -206,7 +209,7 @@ class Singleton(context: Context) {
                     }
                     treeList[date]!!.add(TreeImage(list[i].name, date))
                 } else {
-                    Log.d("SINGLETON", "out of regex")
+                    Log.d("SINGLETON", "The filename is out of regex.")
                 }
             }
         }

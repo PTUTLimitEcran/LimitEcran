@@ -5,4 +5,5 @@ import java.io.Serializable
 interface ChallengeUpdateManager: Serializable {
 
     fun setNewChallenge(challengeTime: Int)
+    fun newChallenge()
 }

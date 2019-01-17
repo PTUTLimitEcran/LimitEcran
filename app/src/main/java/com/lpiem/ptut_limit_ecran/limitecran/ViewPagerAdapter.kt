@@ -26,5 +26,12 @@ class ViewPagerAdapter(manager: FragmentManager) : FragmentPagerAdapter(manager)
         mFragmentList.remove(toDelete)
     }
 
+    fun newChallengeFragment(delete1: Fragment, delete2:Fragment, delete3:Fragment, toAdd: Fragment) {
+        mFragmentList.add(1, toAdd)
+            mFragmentList.remove(delete1)
+            mFragmentList.remove(delete2)
+            mFragmentList.remove(delete3)
+    }
+
 
 }
