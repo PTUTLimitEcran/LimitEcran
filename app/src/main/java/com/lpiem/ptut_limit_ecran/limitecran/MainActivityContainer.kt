@@ -1,13 +1,14 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.Manifest
-
 import android.app.AppOpsManager
 
 import android.app.*
 import android.content.*
 
 import android.content.Context
+import android.app.KeyguardManager
+import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Intent
 import android.content.IntentFilter
@@ -32,12 +33,13 @@ import processing.core.PApplet
 
 class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
 
-    override fun setNewChallenge() {
+    override fun setNewChallenge(challengeTime: Int) {
         viewPagerAdapter?.replaceFragment(fragmentChallenge, fragmentHome)
         viewPagerAdapter?.notifyDataSetChanged()
         //viewPagerAdapter?.update()
-        var intent:Intent = Intent(applicationContext, MainActivityContainer::class.java )
+        val intent = Intent(applicationContext, MainActivityContainer::class.java )
         intent.putExtra("challenge", true)
+        intent.putExtra("ChallengeTime", challengeTime)
         startActivity(intent)
         finish()
     }
@@ -49,7 +51,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
     private lateinit var fragmentStat: StatisticFragment
     private lateinit var fragmentGallery: GalleryFragment
     private lateinit var fragmentChallenge: ChallengeFragment
-    private val singleton: Singleton = Singleton.getInstance(this)
+    private lateinit var singleton: Singleton
     private var sketch: PApplet? = null
     private val REQUEST_WRITE_STORAGE = 0
     private var viewPagerAdapter: ViewPagerAdapter? = null
@@ -83,6 +85,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
             }
             R.id.navigation_gallery -> {
                 fragment_container.currentItem = 2
+                viewPagerAdapter?.notifyDataSetChanged()
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -115,6 +118,8 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main_container)
+        singleton = Singleton.getInstance(this)
         createNotification()
         createNotificationChannel()
         registerBroadcastReceiver()
@@ -138,7 +143,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
             }
 
             override fun onPageScrollStateChanged(state: Int) {
-                viewPagerAdapter?.notifyDataSetChanged()
+
             }
         })
 
@@ -152,7 +157,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
     private fun setupViewPager(viewPager: ViewPager) {
         if (viewPagerAdapter == null) viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
         var challengeManager:ChallengeUpdateManager = this
-        fragmentHome = TreeFragment()
+        fragmentHome = TreeFragment.newInstance(param2 = intent.getIntExtra("ChallengeTime", 0), sketch = null)
         fragmentStat = StatisticFragment()
         fragmentGallery = GalleryFragment()
         fragmentChallenge = ChallengeFragment.newInstance(challengeManager)
@@ -215,9 +220,9 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
                         singleton.IsDeviceOn = false
                         startOrResumeCountDownTimer()
                     }
-                /*val openMainActivity = Intent(context, MainActivityContainer::class.java)
+                val openMainActivity= Intent(context, MainActivityContainer::class.java)
                 openMainActivity.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-                startActivityIfNeeded(openMainActivity, 0)*/
+                startActivityIfNeeded(openMainActivity, 0)
             }
         }
         registerReceiver(screenOnOffReceiver, intentFilter)
@@ -320,4 +325,6 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
         val mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
         return mode == AppOpsManagerCompat.MODE_ALLOWED
     }
+
+
 }

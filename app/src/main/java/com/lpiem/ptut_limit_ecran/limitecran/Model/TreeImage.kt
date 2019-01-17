@@ -18,7 +18,7 @@ class TreeImage(filePath:String, fileDate: Date){
 
     fun formatDate():String{
         val stamp = Timestamp(System.currentTimeMillis())
-        val date = Date(stamp.getTime())
+        val date = Date(stamp.time)
         Log.d("Calendrier",date.year.toString())
         Log.d("Calendrier",date.month.toString())
         Log.d("Calendrier",date.year.toString())

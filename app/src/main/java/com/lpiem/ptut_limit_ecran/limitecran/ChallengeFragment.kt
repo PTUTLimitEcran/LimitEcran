@@ -1,6 +1,5 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -12,11 +11,12 @@ private const val ARG_PARAM1 = "param1"
 
 class ChallengeFragment() : Fragment(), View.OnClickListener{
     override fun onClick(v: View?) {
+        val fifteenMins = 900000
         when(v) {
-            challenge1 -> challengeUpdateManager.setNewChallenge()
-            challenge2 -> challengeUpdateManager.setNewChallenge()
-            challenge3 -> challengeUpdateManager.setNewChallenge()
-            challenge4 -> challengeUpdateManager.setNewChallenge()
+            challenge1 -> challengeUpdateManager.setNewChallenge(fifteenMins)
+            challenge2 -> challengeUpdateManager.setNewChallenge(fifteenMins*2)
+            challenge3 -> challengeUpdateManager.setNewChallenge(fifteenMins*4)
+            challenge4 -> challengeUpdateManager.setNewChallenge(fifteenMins*8)
 
         }
     }
@@ -45,7 +45,7 @@ class ChallengeFragment() : Fragment(), View.OnClickListener{
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        return inflater?.inflate(R.layout.fragment_challenge, container, false)
+        return inflater.inflate(R.layout.fragment_challenge, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

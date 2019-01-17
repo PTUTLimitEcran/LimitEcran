@@ -1,19 +1,19 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.content.Context
+import android.graphics.Point
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.StaggeredGridLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.tree_list_ressource_layout.view.*
-import android.util.Log
+import android.view.WindowManager
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import com.lpiem.ptut_limit_ecran.limitecran.Model.TreeImage
+import kotlinx.android.synthetic.main.tree_list_ressource_layout.view.*
 import java.util.*
-import android.graphics.Point
 import kotlin.collections.ArrayList
 
 
@@ -27,17 +27,25 @@ class TreeAdapter(var treeCollection : List<TreeImage>, val context: Context) : 
         return ViewHolder(LayoutInflater.from(context).inflate(R.layout.tree_list_ressource_layout, viewGroup, false))
     }
 
+
+
     override fun onBindViewHolder(holder: ViewHolder, index: Int) {
 
+        if (holder.treeCollectionsByDate.adapter != null) {
+            holder.treeCollectionsByDate.adapter.notifyDataSetChanged()
+        } else {
+            holder.treeCollectionsByDate?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            holder.treeCollectionsByDate?.itemAnimator  = DefaultItemAnimator()
+            holder.adapter = SingleDayTreeListAdapter(treeCollection,context)
+            holder.treeCollectionsByDate.adapter = holder.adapter
+        }
 
-        holder?.treeCollectionsByDate.layoutManager = LinearLayoutManager(context)
-        holder?.treeCollectionsByDate.itemAnimator  = DefaultItemAnimator()
 
-        //holder?.treeCollectionsByDate.adapter = SingleDayTreeListAdapter([index],context)
     }
 
-    /*fun filterListBySize():List<List<TreeImage>>{
-        val display = context.getWindowManager().getDefaultDisplay()
+    fun filterListBySize():List<List<TreeImage>>{
+        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val display = windowManager.defaultDisplay
         val size = Point()
         display.getSize(size)
         val treeOutput = ArrayList<ArrayList<TreeImage>>()
@@ -46,13 +54,13 @@ class TreeAdapter(var treeCollection : List<TreeImage>, val context: Context) : 
         val height = size.y
         for(i in 0 until treeCollection.size){
             treeOutput.add(ArrayList())
-            for(j in 0 until 3){
+            for(j in 0 until treeCollection.size){
                 treeOutput[currentIndex].add(treeCollection[i])
             }
             currentIndex++
         }
         return treeOutput
-    }*/
+    }
 
     // Gets the number of animals in the list
     override fun getItemCount(): Int {
@@ -64,10 +72,10 @@ class TreeAdapter(var treeCollection : List<TreeImage>, val context: Context) : 
         lhs: TreeImage,
         rhs: TreeImage
     ): Int {
-        when (filterType) {
-            SORT_BY_DATE -> return sortDates(lhs.FileDate, rhs.FileDate)
-            SORT_BY_SIZE -> return sortBySize(0, 0)
-            else -> return sortingError()
+        return when (filterType) {
+            SORT_BY_DATE -> sortDates(lhs.FileDate, rhs.FileDate)
+            SORT_BY_SIZE -> sortBySize(0, 0)
+            else -> sortingError()
         }
     }
 
@@ -86,6 +94,7 @@ class TreeAdapter(var treeCollection : List<TreeImage>, val context: Context) : 
     class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {
         val treeDateTextView = view.treeListDate
         val treeCollectionsByDate = view.treeListRecyclerView
+        lateinit var adapter: SingleDayTreeListAdapter
     }
 
 }
