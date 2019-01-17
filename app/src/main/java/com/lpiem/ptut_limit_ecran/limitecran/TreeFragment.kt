@@ -1,8 +1,6 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -76,35 +74,10 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
         super.onViewCreated(view, savedInstanceState)
         updateTextView(singleton.formatTime(if (timerLength != null) timerLength?.toLong()!! else 0L))
 
-
-        currentChronometerTime.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                if (s.toString() == "00:00:00" && bool) {
-                    //TODO: uncomment
-                    drawTree(gram, true)
-                    bool = false
-                }
-                if (s.toString() == "05:00:00") {
-                    countTurn++
-                    Log.d("TAG_TEST", "number of turns: $countTurn")
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-            }
-
-        })
     }
 
     override fun updateTextView(formattedTime: String) {
         currentChronometerTime.text = formattedTime
-        //singleton.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono,"Temps restant : $formattedTime")
-        //singleton.LargeRemoteView.setTextViewText(R.id.largeNotificationChrono,"$formattedTime")
     }
 
     override fun onResume() {
@@ -119,11 +92,14 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
 
     private fun drawTree(gram: String, savePicture: Boolean) {
 
-        val timeLeft = timerLength!!.toDouble()
-        val ellapsedTime = timeLeft - singleton.CurrentCountDownTimer
-        val coef = ellapsedTime/timeLeft
-        val timeToStop = coef * gram.length
-        val gramToDraw = gram.subSequence(0 until timeToStop.toInt()).toString()
+        var gramToDraw = ""
+        if (singleton.IsRunning) {
+            val timeLeft = timerLength!!.toDouble()
+            val ellapsedTime = timeLeft - singleton.CurrentCountDownTimer
+            val coef = ellapsedTime / timeLeft
+            val timeToStop = coef * gram.length
+             gramToDraw = gram.subSequence(0 until timeToStop.toInt()).toString()
+        }
 
 
         val sketch = Sketch(gramToDraw, savePicture)

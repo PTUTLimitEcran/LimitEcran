@@ -3,10 +3,8 @@
 
     <item android:drawable="@color/colorPrimary" />
 
-    <item >
-        <selector>
-            <item android:drawable="@drawable/ic_splash_screen_240dp" />
-        </selector>
+    <item>
+        <bitmap android:src="@drawable/logo_arbre" android:gravity="center|fill" />
     </item>
 
 </layer-list>
