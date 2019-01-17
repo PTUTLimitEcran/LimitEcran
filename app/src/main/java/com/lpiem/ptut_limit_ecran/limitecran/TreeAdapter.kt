@@ -2,17 +2,17 @@ package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.content.Context
 import android.graphics.Point
-import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.LinearLayoutManager
+import android.os.Environment
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import com.bumptech.glide.Glide
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import com.lpiem.ptut_limit_ecran.limitecran.Model.TreeImage
-import kotlinx.android.synthetic.main.tree_list_ressource_layout.view.*
+import kotlinx.android.synthetic.main.single_day_tree_ressource_list.view.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -23,22 +23,27 @@ class TreeAdapter(var treeCollection : List<TreeImage>, val context: Context) : 
     private val SORT_BY_DATE  = 0
     private val SORT_BY_SIZE  = 1
     private val singleton : Singleton = Singleton.getInstance(context)
+
     override fun onCreateViewHolder(viewGroup: ViewGroup, index: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(context).inflate(R.layout.tree_list_ressource_layout, viewGroup, false))
+        return ViewHolder(LayoutInflater.from(context).inflate(R.layout.single_day_tree_ressource_list, viewGroup, false))
     }
 
 
 
     override fun onBindViewHolder(holder: ViewHolder, index: Int) {
 
-        if (holder.treeCollectionsByDate.adapter != null) {
-            holder.treeCollectionsByDate.adapter.notifyDataSetChanged()
-        } else {
-            holder.treeCollectionsByDate?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            holder.treeCollectionsByDate?.itemAnimator  = DefaultItemAnimator()
-            holder.adapter = SingleDayTreeListAdapter(treeCollection,context)
-            holder.treeCollectionsByDate.adapter = holder.adapter
-        }
+        Glide.with(holder.image)
+            .load(Environment.getExternalStorageDirectory().absolutePath+"/LimitEcran/"+treeCollection[index].FilePath)
+            .into(holder.image)
+
+//        if (holder.treeCollectionsByDate.adapter != null) {
+//            holder.treeCollectionsByDate.adapter.notifyDataSetChanged()
+//        } else {
+//            holder.treeCollectionsByDate?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+//            holder.treeCollectionsByDate?.itemAnimator  = DefaultItemAnimator()
+//            holder.adapter = SingleDayTreeListAdapter(treeCollection,context)
+//            holder.treeCollectionsByDate.adapter = holder.adapter
+//        }
 
 
     }
@@ -91,10 +96,10 @@ class TreeAdapter(var treeCollection : List<TreeImage>, val context: Context) : 
         Log.e("Sorting", "No sorting possible")
         return -2
     }
+
+
     class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {
-        val treeDateTextView = view.treeListDate
-        val treeCollectionsByDate = view.treeListRecyclerView
-        lateinit var adapter: SingleDayTreeListAdapter
+        val image = view.imageTree
     }
 
 }

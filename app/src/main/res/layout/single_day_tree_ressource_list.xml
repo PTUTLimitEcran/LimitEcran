@@ -6,13 +6,14 @@
         android:layout_height="wrap_content">
 
     <ImageView
+            android:id="@+id/imageTree"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
-            android:id="@+id/imageTree"
-            app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="4dp"
+            android:layout_marginStart="4dp"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginStart="4dp"/>
+    />
 
 </android.support.constraint.ConstraintLayout>
