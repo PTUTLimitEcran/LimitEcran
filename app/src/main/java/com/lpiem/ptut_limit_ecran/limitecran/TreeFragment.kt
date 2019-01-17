@@ -119,8 +119,6 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
 
     private fun drawTree(gram: String, savePicture: Boolean) {
 
-
-        //TODO: change with percentage of challenge
         val timeLeft = timerLength!!.toDouble()
         val ellapsedTime = timeLeft - singleton.CurrentCountDownTimer
         val coef = ellapsedTime/timeLeft

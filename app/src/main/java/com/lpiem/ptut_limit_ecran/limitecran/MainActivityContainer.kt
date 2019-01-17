@@ -282,5 +282,9 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
         return mode == AppOpsManagerCompat.MODE_ALLOWED
     }
 
+    override fun onDestroy() {
+        unregisterReceiver(screenOnOffReceiver)
+        super.onDestroy()
+    }
 
 }
