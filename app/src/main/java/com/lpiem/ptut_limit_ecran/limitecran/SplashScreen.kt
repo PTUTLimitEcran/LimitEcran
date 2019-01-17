@@ -7,13 +7,9 @@ import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 
 
 class SplashScreen : AppCompatActivity() {
-
-    private lateinit var singleton: Singleton
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        singleton = Singleton(application.applicationContext)
 
         val intent = Intent(applicationContext, MainActivityContainer::class.java)
         startActivity(intent)

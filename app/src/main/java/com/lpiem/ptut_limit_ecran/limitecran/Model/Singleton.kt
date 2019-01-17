@@ -24,11 +24,18 @@ class Singleton(context: Context) {
     private var currentCountDownTimer = 0L
     private lateinit var countDownTimer:CountDownTimer
     private var smallRemoteView = RemoteViews(context.packageName, R.layout.notification_small)
+    private lateinit var treeFragment:TreeFragment
 
     var IsDeviceOn:Boolean
     get() = isDeviceOn
     set(value){
         isDeviceOn = value
+    }
+
+    var TreeFragment:TreeFragment
+    get() = treeFragment
+    set(value){
+        treeFragment = value
     }
 
     private var size = 0
@@ -112,12 +119,14 @@ class Singleton(context: Context) {
     /**
      * Start the chronometer
      */
-    fun initCountDownTimer(countDownTimerTime:Long, currentFragment:TreeFragment){
+    fun initCountDownTimer(countDownTimerTime:Long){
         singleton.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono, formatTime(countDownTimerTime))
         notificationManager.notify(0, notification.build())
+        //currentCountDownTimer = countDownTimerTime
         countDownTimer = object : CountDownTimer(countDownTimerTime, timeInterval) {
             override fun onTick(millisUntilFinished: Long) {
                 currentCountDownTimer = millisUntilFinished
+                Log.d("Compteur",currentCountDownTimer.toString())
                 if(isDeviceOn){
                     updateNotification(formatTime(millisUntilFinished))
                 }
@@ -153,8 +162,8 @@ class Singleton(context: Context) {
         countDownTimer.cancel()
     }
 
-    fun resumeCountDownTimer(currentFragment:TreeFragment){
-        initCountDownTimer(currentCountDownTimer, currentFragment)
+    fun resumeCountDownTimer(){
+        initCountDownTimer(currentCountDownTimer)
         countDownTimer.start()
     }
 
@@ -183,15 +192,14 @@ class Singleton(context: Context) {
 
         private lateinit var singleton: Singleton
 
-        private lateinit var chronometer: Chronometer
-
-        fun getInstance(context: Context):Singleton{
-            if(initialized == true){
-                return singleton
-            }else{
-                initialized = true
-                singleton = Singleton(context)
-                return singleton
+        fun getInstance(context: Context, currentFragment: TreeFragment?):Singleton{
+            return when (initialized) {
+                true -> singleton
+                else -> {
+                    initialized = true
+                    singleton = Singleton(context)
+                    singleton
+                }
             }
         }
 
@@ -224,14 +232,14 @@ class Singleton(context: Context) {
         }
     }
 
+
+
+    fun stopCountDownTimer(){
+        countDownTimer.cancel()
+    }
+
     fun loadImages(){
         importImageList()
     }
-
-    var Chronometer: Chronometer
-        get() = chronometer
-        set(value){
-            chronometer = value
-        }
 
 }

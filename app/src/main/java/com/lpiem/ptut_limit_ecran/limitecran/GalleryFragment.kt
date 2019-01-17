@@ -56,7 +56,7 @@ class GalleryFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        singleton = Singleton.getInstance(activity!!.applicationContext)
+        singleton = Singleton.getInstance(activity!!.applicationContext,null)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)

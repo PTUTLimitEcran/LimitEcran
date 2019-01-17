@@ -13,6 +13,7 @@ import android.content.BroadcastReceiver
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.os.Process
@@ -46,19 +47,21 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
 
 
     private var prevMenuItem: MenuItem? = null
-    private var boundTo:Boolean = false
     private lateinit var fragmentHome: TreeFragment
     private lateinit var fragmentStat: StatisticFragment
     private lateinit var fragmentGallery: GalleryFragment
     private lateinit var fragmentChallenge: ChallengeFragment
+
     private lateinit var singleton: Singleton
+
     private var sketch: PApplet? = null
     private val REQUEST_WRITE_STORAGE = 0
     private var viewPagerAdapter: ViewPagerAdapter? = null
-    private lateinit var serviceIntent: Intent
-    private lateinit var screenOnOffReceiver:BroadcastReceiver
+
+
     private lateinit var backgroundService: BackgroundService
-    private val serviceConnection = object : ServiceConnection{
+    private var boundTo:Boolean = false
+    private val serviceConnection= object : ServiceConnection {
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             val binder = service as BackgroundService.LocalBinder
@@ -66,7 +69,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
             boundTo = true
         }
 
-        override fun onServiceDisconnected(arg0: ComponentName) {
+        override fun onServiceDisconnected(componentName: ComponentName) {
             boundTo = false
         }
     }
@@ -92,6 +95,17 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
         false
     }
 
+    override fun onPause() {
+        super.onPause()
+        // Bind to LocalService
+        if (!boundTo) {
+            Intent(this, BackgroundService::class.java).also { intent ->
+                bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+            }
+            boundTo = true
+        }
+    }
+
     override fun onStop() {
         super.onStop()
         if(boundTo){
@@ -100,30 +114,27 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
         }
     }
 
-    private fun initData(){
-
-    }
-
     override fun onStart() {
         super.onStart()
-        bindService()
-        boundTo = true
-    }
-
-    fun bindService(){
+        singleton = Singleton.getInstance(this,null)
         Intent(this, BackgroundService::class.java).also { intent ->
             bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
         }
+        println("hfkdshfkds")
+    }
+
+    override fun onDestroy() {
+        if (boundTo) {
+            unbindService(serviceConnection)
+            boundTo = false
+        }
+        super.onDestroy()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_container)
-        singleton = Singleton.getInstance(this)
-        createNotification()
-        createNotificationChannel()
-        registerBroadcastReceiver()
-        setContentView(R.layout.activity_main_container)
+        Build.VERSION_CODES.O
 
         fragment_container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -150,8 +161,20 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         requestStoragePermission()
-        bindService()
-        boundTo = true
+        //startService()
+    }
+
+    private fun startService(){
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(Intent(this, BackgroundService::class.java).also { intent ->
+                bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+            })
+        }else{
+            Intent(this, BackgroundService::class.java).also { intent ->
+                bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+            }
+        }
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
@@ -172,94 +195,12 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
         }
         viewPagerAdapter?.addFragment(fragmentGallery)
         viewPager.adapter = viewPagerAdapter
+        singleton.TreeFragment = fragmentHome
+        backgroundService.registerBroadcastReceiver()
+        startService()
         viewPager.currentItem = 1
     }
 
-    /**
-     * Function about managing activity before screen lock
-     */
-    private fun registerBroadcastReceiver() {
-        val intentFilter = IntentFilter()
-        /** System Defined Broadcast */
-        intentFilter.addAction(Intent.ACTION_USER_PRESENT)
-        intentFilter.addAction(Intent.ACTION_USER_UNLOCKED)
-        intentFilter.addAction(Intent.ACTION_SCREEN_ON)
-        intentFilter.addAction(Intent.ACTION_SCREEN_OFF)
-
-        screenOnOffReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                val action = intent?.action
-                Log.d("Intent", intent?.action.toString())
-
-                val keyguardManager = context?.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-                if (action == Intent.ACTION_USER_PRESENT ||
-                    action == Intent.ACTION_USER_UNLOCKED ||
-                    action == Intent.ACTION_SCREEN_OFF ||
-                    action == Intent.ACTION_SCREEN_ON ||
-                    action == Context.FINGERPRINT_SERVICE
-                )
-                    if (action == Intent.ACTION_SCREEN_ON) {
-                        Log.d("Screen","Screen turned on")
-                        if(keyguardManager.isKeyguardLocked){
-                            Log.d("Screen", "Screen locked")
-                            singleton.IsDeviceOn = true
-                            startOrResumeCountDownTimer()
-                        }
-                    }
-                if (action == Intent.ACTION_USER_PRESENT) {
-                    Log.d("Screen", "Screen unlocked")
-                    if (singleton.IsRunning) {
-                        singleton.IsRunning = false
-                        singleton.pauseCountDownTimer()
-                        fragmentHome.updateTextView(singleton.formatTime(singleton.CurrentCountDownTimer))
-                    }
-                }
-                if (action == Intent.ACTION_SCREEN_OFF) {
-                        Log.d("Screen", "Screen locked")
-                        Log.d("Screen", "Phone screen turned off")
-                        singleton.IsDeviceOn = false
-                        startOrResumeCountDownTimer()
-                    }
-                val openMainActivity= Intent(context, MainActivityContainer::class.java)
-                openMainActivity.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-                startActivityIfNeeded(openMainActivity, 0)
-            }
-        }
-        registerReceiver(screenOnOffReceiver, intentFilter)
-    }
-
-    /**
-     * Start or resume countDownTimer
-     */
-    private fun startOrResumeCountDownTimer() {
-        if (!singleton.IsRunning) {
-            singleton.IsRunning = true
-            if (singleton.CurrentCountDownTimer == 0L) {
-                singleton.startCountDownTimer()
-            } else {
-                singleton.resumeCountDownTimer(fragmentHome)
-            }
-        }
-    }
-
-    /**
-     * Create an instance of the notification channel
-     */
-    private fun createNotificationChannel() {
-        singleton.initNotificationChannel(this, getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-    }
-
-    /**
-     * Create the notification
-     */
-    private fun createNotification() {
-        singleton.initNotification(
-            this,
-            getString(R.string.app_name),
-            getString(R.string.channelId),
-            getString(R.string.channel_description)
-        )
-    }
 
     /**
      * Draw part
@@ -276,7 +217,6 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     initSketch()
-                    initCountDownTimer()
                 } else {
                     Toast.makeText(
                         this,
@@ -289,13 +229,6 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
             }
         }
 
-    }
-
-    private fun initCountDownTimer() {
-        if (!singleton.FirstTime) {
-            singleton.initCountDownTimer(300000, fragmentHome)
-            singleton.FirstTime = true
-        }
     }
 
     public override fun onNewIntent(intent: Intent) {

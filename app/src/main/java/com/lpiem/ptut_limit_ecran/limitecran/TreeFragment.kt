@@ -65,7 +65,7 @@ class TreeFragment() : PFragment(), TimeManagmentInterface{
             param1 = it.getSerializable(ARG_PARAM1) as Sketch?
             param2 = it.getInt(ARG_PARAM2)
         }
-        singleton = Singleton.getInstance(activity?.applicationContext!!)
+        singleton = Singleton.getInstance(activity?.applicationContext!!,this)
         //orderToSaveImage = this
     }
 

@@ -22,7 +22,7 @@ class TreeAdapter(var treeCollection : List<TreeImage>, val context: Context) : 
     private val FROM_HIGHT_TO_LOW = 1
     private val SORT_BY_DATE  = 0
     private val SORT_BY_SIZE  = 1
-    private val singleton : Singleton = Singleton.getInstance(context)
+    private val singleton : Singleton = Singleton.getInstance(context,null)
     override fun onCreateViewHolder(viewGroup: ViewGroup, index: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(context).inflate(R.layout.tree_list_ressource_layout, viewGroup, false))
     }
