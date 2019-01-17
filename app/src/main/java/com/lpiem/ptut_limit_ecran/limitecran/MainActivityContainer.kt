@@ -175,9 +175,9 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
                         singleton.IsDeviceOn = false
                         startOrResumeCountDownTimer()
                     }
-                val openMainActivity= Intent(context, MainActivityContainer::class.java)
-                openMainActivity.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-                startActivityIfNeeded(openMainActivity, 0)
+//                val openMainActivity= Intent(context, MainActivityContainer::class.java)
+//                openMainActivity.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+//                startActivityIfNeeded(openMainActivity, 0)
             }
         }
         registerReceiver(screenOnOffReceiver, intentFilter)

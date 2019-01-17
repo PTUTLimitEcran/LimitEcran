@@ -156,6 +156,7 @@ class Singleton(context: Context) {
     }
 
     fun initNotification(context: Context, channelId:String, channelName:String, channelDescription:String){
+        smallRemoteView.setImageViewResource(R.id.notificationIcon,R.drawable.ic_phonelink_erase_black_24dp)
         notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_phonelink_erase_black_24dp)
             .setContentTitle(channelName)
@@ -164,7 +165,6 @@ class Singleton(context: Context) {
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCustomContentView(singleton.SmallRemoteView)
             //.setCustomBigContentView(singleton.SmallRemoteView)
-        smallRemoteView.setImageViewResource(R.id.notificationIcon,R.drawable.ic_phonelink_erase_black_24dp)
     }
 
     companion object{
