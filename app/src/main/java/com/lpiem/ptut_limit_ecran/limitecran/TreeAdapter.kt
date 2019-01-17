@@ -36,6 +36,7 @@ class TreeAdapter(var treeCollection : List<TreeImage>, val context: Context) : 
             .load(Environment.getExternalStorageDirectory().absolutePath+"/LimitEcran/"+treeCollection[index].FilePath)
             .into(holder.image)
 
+        holder.date.text = treeCollection[index].formatDate()
 //        if (holder.treeCollectionsByDate.adapter != null) {
 //            holder.treeCollectionsByDate.adapter.notifyDataSetChanged()
 //        } else {
@@ -100,6 +101,7 @@ class TreeAdapter(var treeCollection : List<TreeImage>, val context: Context) : 
 
     class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {
         val image = view.imageTree
+        val date = view.date
     }
 
 }

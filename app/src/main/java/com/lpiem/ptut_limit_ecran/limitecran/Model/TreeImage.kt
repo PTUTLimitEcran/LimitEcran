@@ -1,7 +1,5 @@
 package com.lpiem.ptut_limit_ecran.limitecran.Model
 
-import android.util.Log
-import java.sql.Timestamp
 import java.util.*
 
 
@@ -17,15 +15,17 @@ class TreeImage(filePath:String, fileDate: Date){
     get() = fileDate
 
     fun formatDate():String{
-        val stamp = Timestamp(System.currentTimeMillis())
-        val date = Date(stamp.time)
-        Log.d("Calendrier",date.year.toString())
-        Log.d("Calendrier",date.month.toString())
-        Log.d("Calendrier",date.year.toString())
-        Log.d("Calendrier",fileDate.month.toString())
-        Log.d("Calendrier",fileDate.day.toString())
-        return fileDate.day.toString()+"/"+
-               fileDate.month.toString()+"/"+
-               fileDate.year.toString()
+
+        val dateFile = filePath.subSequence(11..filePath.length-7)
+        val builder = StringBuilder()
+        builder.append(dateFile.substring(0..3))
+            .append("-")
+            .append(dateFile.substring(4..5))
+            .append("-")
+            .append(dateFile.substring(6..7))
+
+        val formattedDate = builder.toString()
+
+        return formattedDate
     }
 }

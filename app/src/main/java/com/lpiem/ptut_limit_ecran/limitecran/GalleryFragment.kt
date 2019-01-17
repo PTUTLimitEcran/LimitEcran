@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,7 +54,7 @@ class GalleryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         treeAdapter.treeCollection = convertHashmapToArrayList()
         if (initOnce) {
-            treeListRecyclerView.layoutManager = StaggeredGridLayoutManager(3, GridLayoutManager.VERTICAL)
+            treeListRecyclerView.layoutManager = GridLayoutManager(context, 3)
             treeListRecyclerView.itemAnimator = DefaultItemAnimator()
             treeListRecyclerView.adapter = treeAdapter
             initOnce = false
