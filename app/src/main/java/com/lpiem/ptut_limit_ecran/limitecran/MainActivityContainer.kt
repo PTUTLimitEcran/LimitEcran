@@ -4,6 +4,8 @@ import android.Manifest
 import android.app.AppOpsManager
 import android.app.KeyguardManager
 import android.app.NotificationManager
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.OnLifecycleEvent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -107,6 +109,24 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         requestStoragePermission()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    private fun backgroundApplication(){
+
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    private fun resumingApplication(){
+
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if(challengeTime != 0){
+            Toast.makeText(this,"Application en fond : challenge annulé!",Toast.LENGTH_LONG).show()
+            singleton.destroyingNotification()
+        }
     }
 
     private fun setupViewPager(viewPager: ViewPager) {

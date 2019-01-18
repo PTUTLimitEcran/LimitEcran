@@ -125,6 +125,10 @@ class Singleton(context: Context) {
         }
     }
 
+    fun destroyingNotification(){
+        singleton.NotificationChannel.cancelAll()
+    }
+
     fun updateNotification(formattedTime: String) {
         singleton.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono,formattedTime)
         singleton.NotificationChannel.notify(0,singleton.Notification.build())
