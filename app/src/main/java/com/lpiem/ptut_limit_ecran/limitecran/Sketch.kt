@@ -174,8 +174,8 @@ class Sketch(private var gram: String, private var toSave: Boolean) : PApplet() 
     //private lateinit var saveImage: SaveImage
     //private var toSave = true
     private var flowerStack: Stack<Node<Char>> = Stack()
-    private var smallOffset = 100f
-    private var bigOffset = 150f
+    private var smallOffset = 80f
+    private var bigOffset = 120f
 
 
     private fun saveThePicture(saveTheImage: Boolean) {
@@ -301,8 +301,8 @@ class Sketch(private var gram: String, private var toSave: Boolean) : PApplet() 
 
     private fun drawLeaf(direction: LeafDirection, node: Node<Char>) {
 
-        smallOffset = (120..150).random().toFloat()
-        bigOffset = (160..200).random().toFloat()
+        //smallOffset = (120..150).random().toFloat()
+        //bigOffset = (160..200).random().toFloat()
         beginShape()
         val img = loadImage("frontend_large.jpg")
         when (direction) {
@@ -322,7 +322,7 @@ class Sketch(private var gram: String, private var toSave: Boolean) : PApplet() 
                 noStroke()
                 texture(img)
                 vertex(node.coordX + 10, node.coordY + 10)
-                vertex(node.coordX - smallOffset + 10, node.coordY - 190)
+                vertex(node.coordX - smallOffset , node.coordY - bigOffset - 10f)
                 vertex(node.coordX - smallOffset, node.coordY - bigOffset + 20f)
                 vertex(node.coordX - 10, node.coordY + 10)
                 endShape()

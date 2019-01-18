@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.fragment_challenge.*
 
 private const val ARG_PARAM1 = "param1"
 
-class ChallengeFragment() : Fragment(), View.OnClickListener{
+class ChallengeFragment : Fragment(), View.OnClickListener{
 
     private lateinit var singleton: Singleton
 
