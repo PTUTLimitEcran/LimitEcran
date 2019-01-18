@@ -8,14 +8,12 @@
     <string name="parameters">Paramètres</string>
     <string name="channelId">limitScreen</string>
     <string name="defaultValue">Temps passé sans le téléphone :</string>
-    <string name="last_time_used">"Last time used: "</string>
     <string name="time_span">"Time span: "</string>
     <string name="Icon">Icon</string>
     <string name="display_order_text">Sort by:</string>
     <string name="app_name_label">App</string>
-    <string name="last_time_used_label">Last time used</string>
     <!-- label for usage time -->
-    <string name="usage_time_label">Usage time</string>
+    <string name="usage_time_label">Temps d\'utilisation</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
