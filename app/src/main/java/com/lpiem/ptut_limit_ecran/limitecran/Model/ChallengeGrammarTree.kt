@@ -3,22 +3,23 @@ package com.lpiem.ptut_limit_ecran.limitecran.Model
 enum class ChallengeGrammarTree(val challengeTime: Long) {
     QuarterHour(5000){
         override fun randomTree():String{
-            return listOf("S[L[LC]C[R]R[R]]",
+            val list = listOf("S[L[LC]C[R]R[R]]",
                 "S[L[C[LR]]C[CR]R]",
-                "S[L[LC]CR[LC]]")[(0 until listOf("S[L[LC]C[R]R[R]]",
-                "S[L[C[LR]]C[CR]R]",
-                "S[L[LC]CR[LC]]").size).random()]
+                "S[L[LC]CR[LC]]")
+            return list[(0 until list.size).random()]
         }
     },
     HalfHour(900000*2){
         override fun randomTree():String{
-            return listOf("[C[L[L[C]C[C]]C[CR]]R[R[C]]]",
-                "[L[C[L[LC]C[C]]]C[C[C[C]]R[R[LCR]]]]",
+            return listOf("S[C[L[L[C]C[C]]C[CR]]R[R[C]]]",
+                "S[L[C[L[LC]C[C]]]C[C[C[C]]R[R[LCR]]]]",
                 "S[L[L[C[C[LR]]]C[C[R]]]C[C[C]]R[C[C[L]]R[C[C[LR]]]]",
                 "S[L[L[R]]R[L[L[LR]R[C]]R[L]]",
-                "S[L[L[C[LC[LC]R]]R[C[C[LCR]R]]]R[CR[C[CR]R]]")[(0 until listOf("S[L[LC]C[R]R[R]]",
-                "S[L[C[LR]]C[CR]R]",
-                "S[L[LC]CR[LC]]").size).random()]
+                "S[L[L[C[LC[LC]R]]R[C[C[LCR]R]]]R[CR[C[CR]R]]")[(0 until listOf("S[C[L[L[C]C[C]]C[CR]]R[R[C]]]",
+                "S[L[C[L[LC]C[C]]]C[C[C[C]]R[R[LCR]]]]",
+                "S[L[L[C[C[LR]]]C[C[R]]]C[C[C]]R[C[C[L]]R[C[C[LR]]]]",
+                "S[L[L[R]]R[L[L[LR]R[C]]R[L]]",
+                "S[L[L[C[LC[LC]R]]R[C[C[LCR]R]]]R[CR[C[CR]R]]").size).random()]
         }
     },
     OneHour(900000*4){
