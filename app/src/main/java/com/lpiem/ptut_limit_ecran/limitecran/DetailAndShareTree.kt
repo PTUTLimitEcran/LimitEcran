@@ -3,6 +3,7 @@ package com.lpiem.ptut_limit_ecran.limitecran
 import android.os.Bundle
 import android.os.Environment
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_detail_and_share_tree.*
 
@@ -17,5 +18,10 @@ class DetailAndShareTree : AppCompatActivity() {
         Glide.with(detailTreeImage)
             .load(Environment.getExternalStorageDirectory().absolutePath+"/LimitEcran/"+filePath)
             .into(detailTreeImage)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("", "onResume detail")
     }
 }

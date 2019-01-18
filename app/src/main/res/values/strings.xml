@@ -23,7 +23,7 @@
         <b>hebdo : 00:00:00</b>
     </string>
     <string name="defaultCurrentChronometerValue">
-        <b>00 : 00 : 00</b>
+        <b>00:00:00</b>
     </string>
     <string name="filterByGallery">Trier par:</string>
     <string name="height">Taille</string>

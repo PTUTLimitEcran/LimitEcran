@@ -89,7 +89,7 @@ class StatisticFragment : Fragment(), AdapterView.OnItemSelectedListener, PassCo
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-
+        appContext = requireContext()
     }
 
     override fun onCreateView(

@@ -24,6 +24,8 @@ class Singleton(context: Context) {
     private var currentCountDownTimer = 0L
     private lateinit var countDownTimer: CountDownTimer
     private var smallRemoteView = RemoteViews(context.packageName, R.layout.notification_small)
+    private var challengeTime = 0L
+    private var challengeAccepted = false
 
     var IsDeviceOn: Boolean
         get() = isDeviceOn
@@ -36,6 +38,18 @@ class Singleton(context: Context) {
     init {
         initSingleton(context)
     }
+
+    var ChallengeAccepted: Boolean
+        get() = challengeAccepted
+        set(newValue) {
+            challengeAccepted = newValue
+        }
+
+    var ChallengeTime: Long
+        get() = challengeTime
+        set(newValue) {
+            challengeTime = newValue
+        }
 
     var FirstTime: Boolean
         get() = firstime

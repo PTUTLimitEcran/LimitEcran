@@ -23,20 +23,20 @@ import android.widget.Toast
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import kotlinx.android.synthetic.main.activity_main_container.*
 import processing.core.PApplet
-import java.io.Serializable
 
 
-class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Serializable {
+class MainActivityContainer() : AppCompatActivity() {
 
-    override fun setNewChallenge(challengeTime: Int) {
-        viewPagerAdapter?.replaceFragment(fragmentChallenge, fragmentHome)
-        viewPagerAdapter?.notifyDataSetChanged()
-        val intent = Intent(applicationContext, MainActivityContainer::class.java )
-        intent.putExtra("challenge", true)
-        intent.putExtra("ChallengeTime", challengeTime)
-        startActivity(intent)
-        finish()
-    }
+
+//    override fun setNewChallenge(challengeTime: Int) {
+//        viewPagerAdapter?.replaceFragment(fragmentChallenge, fragmentHome)
+//        viewPagerAdapter?.notifyDataSetChanged()
+//        val intent = Intent(applicationContext, MainActivityContainer::class.java )
+//        intent.putExtra("challenge", true)
+//        intent.putExtra("ChallengeTime", challengeTime)
+//        startActivity(intent)
+//        finish()
+//    }
 
 
     private var prevMenuItem: MenuItem? = null
@@ -49,7 +49,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Seria
     private val REQUEST_WRITE_STORAGE = 0
     private var viewPagerAdapter: ViewPagerAdapter? = null
     private lateinit var screenOnOffReceiver:BroadcastReceiver
-    private var challengeTime = 0
+    private var challengeTime = 0L
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
 
@@ -71,6 +71,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Seria
         }
         false
     }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,15 +112,14 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Seria
 
     private fun setupViewPager(viewPager: ViewPager) {
         if (viewPagerAdapter == null) viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
-        val challengeManager:ChallengeUpdateManager = this
         fragmentHome = TreeFragment.newInstance(challengeTime)
         fragmentStat = StatisticFragment()
         fragmentGallery = GalleryFragment()
-        fragmentChallenge = ChallengeFragment.newInstance(challengeManager)
+        fragmentChallenge = ChallengeFragment()
         fragmentStat.putContext(applicationContext)
         viewPagerAdapter?.addFragment(fragmentStat)
 
-        if(intent.getBooleanExtra("challenge",false)) {
+        if(singleton.ChallengeAccepted) {
             viewPagerAdapter?.addFragment(fragmentHome)
         }
         else {
@@ -166,7 +166,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Seria
                     if (singleton.IsRunning) {
                         singleton.IsRunning = false
                         singleton.pauseCountDownTimer()
-                        fragmentHome.updateTextView(singleton.formatTime(singleton.CurrentCountDownTimer))
+                        //fragmentHome.updateTextView(singleton.formatTime(singleton.CurrentCountDownTimer))
                     }
                 }
                 if (action == Intent.ACTION_SCREEN_OFF) {
@@ -230,7 +230,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Seria
             REQUEST_WRITE_STORAGE -> {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    challengeTime = intent.getIntExtra("ChallengeTime", 0)
+                    challengeTime = singleton.ChallengeTime
                     initSketch()
                     initCountDownTimer()
                 } else {
@@ -248,8 +248,8 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Seria
     }
 
     private fun initCountDownTimer() {
-        if (intent.getBooleanExtra("challenge", false)) {
-            singleton.initCountDownTimer(challengeTime.toLong(), fragmentHome)
+        if (singleton.ChallengeAccepted) {
+            singleton.initCountDownTimer(challengeTime, fragmentHome)
             singleton.FirstTime = true
         }
     }
@@ -286,5 +286,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Seria
         unregisterReceiver(screenOnOffReceiver)
         super.onDestroy()
     }
+
+
 
 }

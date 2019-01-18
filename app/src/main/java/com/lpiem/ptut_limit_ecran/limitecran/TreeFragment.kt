@@ -1,6 +1,7 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -41,21 +42,21 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param: Int) =
+        fun newInstance(param: Long) =
             TreeFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(CHALLENGE_TIME, param)
+                    putLong(CHALLENGE_TIME, param)
                 }
             }
     }
 
     // TODO: Rename and change types of parameters
-    private var timerLength: Int? = null
+    private var timerLength: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            timerLength = it.getInt(CHALLENGE_TIME)
+            timerLength = it.getLong(CHALLENGE_TIME)
         }
         singleton = Singleton.getInstance(activity?.applicationContext!!)
     }
@@ -72,17 +73,21 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        updateTextView(singleton.formatTime(if (timerLength != null) timerLength?.toLong()!! else 0L))
+        updateTextView(singleton.formatTime(if (timerLength != null) timerLength!! else 0L))
 
     }
 
     override fun updateTextView(formattedTime: String) {
-        currentChronometerTime.text = formattedTime
+        val handler = Handler()
+        handler.postDelayed({
+            currentChronometerTime.text = formattedTime
+        }, 1000L)
     }
 
     override fun onResume() {
         super.onResume()
         Log.d("CompteurFrag", "${singleton.CurrentCountDownTimer}")
+        currentChronometerTime.text = singleton.formatTime(singleton.CurrentCountDownTimer)
         if ((singleton.CurrentCountDownTimer < 1500L && singleton.CurrentCountDownTimer != 0L) && !alreadySaved) {
             drawTree(gram, true)
             Log.d("CompteurFragDraw", "drawn")
@@ -93,15 +98,24 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
     private fun drawTree(gram: String, savePicture: Boolean) {
 
         var gramToDraw = ""
-        if (singleton.IsRunning) {
+        if (singleton.FirstTime && singleton.CurrentCountDownTimer != 0L) {
+            countTurn++
+            Log.d("TEST_COUNT", "count = $countTurn")
             val timeLeft = timerLength!!.toDouble()
             val ellapsedTime = timeLeft - singleton.CurrentCountDownTimer
             val coef = ellapsedTime / timeLeft
             val timeToStop = coef * gram.length
              gramToDraw = gram.subSequence(0 until timeToStop.toInt()).toString()
+            if (singleton.CurrentCountDownTimer <= 1500L && singleton.CurrentCountDownTimer != 0L) {
+                gramToDraw = gram
+                singleton.CurrentCountDownTimer = 0L
+                singleton.FirstTime = false
+            }
         }
 
-        if (singleton.CurrentCountDownTimer <= 1500L && singleton.CurrentCountDownTimer != 0L) gramToDraw = gram
+        if (singleton.CurrentCountDownTimer <= 1500L && !singleton.FirstTime) {
+            gramToDraw = gram
+        }
 
 
         val sketch = Sketch(gramToDraw, savePicture)
