@@ -12,6 +12,7 @@ import java.util.*
 
 class Sketch(private var gram: String, private var toSave: Boolean) : PApplet() {
 
+    //TODO: test of an other possibility to display tree
     /*lateinit var manager: SensorManager
     lateinit var sensor: Sensor
     lateinit var listener: SensorListener

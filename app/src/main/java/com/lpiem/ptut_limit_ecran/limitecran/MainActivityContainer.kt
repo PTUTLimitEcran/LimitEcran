@@ -112,7 +112,7 @@ class MainActivityContainer() : AppCompatActivity() {
 
     private fun setupViewPager(viewPager: ViewPager) {
         if (viewPagerAdapter == null) viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
-        fragmentHome = TreeFragment.newInstance(challengeTime)
+        fragmentHome = TreeFragment()
         fragmentStat = StatisticFragment()
         fragmentGallery = GalleryFragment()
         fragmentChallenge = ChallengeFragment()

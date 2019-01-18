@@ -63,15 +63,18 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
     }
 
     // TODO: Rename and change types of parameters
-    private var timerLength: Long? = null
+    private var timerLength: Long = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            timerLength = it.getLong(CHALLENGE_TIME)
-        }
+//        arguments?.let {
+//            timerLength = it.getLong(CHALLENGE_TIME)
+//        }
         singleton = Singleton.getInstance(activity?.applicationContext!!)
         gram = randomGrammarTree()
+        timerLength = singleton.ChallengeTime
+        singleton.CurrentCountDownTimer = timerLength
+
     }
 
     override fun onCreateView(
@@ -86,8 +89,8 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        updateTextView(singleton.formatTime(if (timerLength != null) timerLength!! else 0L))
-
+        //updateTextView(singleton.formatTime(if (timerLength != null) timerLength!! else 0L))
+        currentChronometerTime.text = singleton.formatTime(timerLength)
     }
 
     override fun updateTextView(formattedTime: String) {
@@ -106,6 +109,7 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
     }
 
     private fun drawTree(gram: String, savePicture: Boolean) {
+
 
         var gramToDraw = ""
         if (singleton.FirstTime && singleton.CurrentCountDownTimer != 0L) {
@@ -126,7 +130,6 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
         if (singleton.CurrentCountDownTimer <= 1500L && !singleton.FirstTime) {
             gramToDraw = gram
         }
-
 
         val sketch = Sketch(gramToDraw, savePicture)
 
