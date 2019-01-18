@@ -73,6 +73,8 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        println(savedInstanceState.toString())
+        println("Temps restant : ${timerLength.toString()}.")
         updateTextView(singleton.formatTime(if (timerLength != null) timerLength!! else 0L))
 
     }
@@ -106,14 +108,14 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
             val coef = ellapsedTime / timeLeft
             val timeToStop = coef * gram.length
              gramToDraw = gram.subSequence(0 until timeToStop.toInt()).toString()
-            if (singleton.CurrentCountDownTimer <= 1500L && singleton.CurrentCountDownTimer != 0L) {
+            if (singleton.CurrentCountDownTimer <= 2000L && singleton.CurrentCountDownTimer != 0L) {
                 gramToDraw = gram
                 singleton.CurrentCountDownTimer = 0L
                 singleton.FirstTime = false
             }
         }
 
-        if (singleton.CurrentCountDownTimer <= 1500L && !singleton.FirstTime) {
+        if (singleton.CurrentCountDownTimer <= 2000L && !singleton.FirstTime) {
             gramToDraw = gram
         }
 

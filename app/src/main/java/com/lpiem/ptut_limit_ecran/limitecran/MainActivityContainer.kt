@@ -122,14 +122,6 @@ class MainActivityContainer() : AppCompatActivity() {
 
     }
 
-    override fun onStop() {
-        super.onStop()
-        if(challengeTime != 0){
-            Toast.makeText(this,"Application en fond : challenge annulé!",Toast.LENGTH_LONG).show()
-            singleton.destroyingNotification()
-        }
-    }
-
     private fun setupViewPager(viewPager: ViewPager) {
         if (viewPagerAdapter == null) viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
         fragmentHome = TreeFragment.newInstance(challengeTime)
@@ -217,6 +209,16 @@ class MainActivityContainer() : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        App.activityResumed()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        App.activityPaused()
+    }
+
     /**
      * Create an instance of the notification channel
      */
@@ -302,8 +304,16 @@ class MainActivityContainer() : AppCompatActivity() {
         return mode == AppOpsManagerCompat.MODE_ALLOWED
     }
 
+    override fun onStop() {
+        if(!singleton.ChallengeAccepted){
+            Toast.makeText(this,"Application en fond : challenge annulé!",Toast.LENGTH_LONG).show()
+        }
+        super.onStop()
+    }
+
     override fun onDestroy() {
         unregisterReceiver(screenOnOffReceiver)
+        singleton.destroyingNotification()
         super.onDestroy()
     }
 

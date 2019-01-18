@@ -180,7 +180,6 @@ class Singleton(context: Context) {
         notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_phonelink_erase_black_24dp)
             .setContentTitle(channelName)
-            .setOngoing(true)
             .setContentText(channelDescription)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCustomContentView(singleton.SmallRemoteView)
