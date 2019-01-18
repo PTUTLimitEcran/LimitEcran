@@ -15,7 +15,7 @@
                 android:id="@+id/filterBy"
                 android:layout_width="0dp"
                 android:layout_height="29dp"
-                android:text="@string/filterByGallery"
+                android:text="Gallery"
                 android:layout_marginTop="60dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="80dp"

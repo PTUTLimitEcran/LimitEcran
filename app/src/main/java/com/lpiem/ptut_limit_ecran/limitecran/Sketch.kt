@@ -6,12 +6,11 @@ import android.util.Log
 import com.lpiem.melkius.testprocessing.LeafDirection
 import com.lpiem.melkius.testprocessing.Node
 import processing.core.PApplet
-import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class Sketch(private var gram: String, private var toSave: Boolean) : PApplet(), Serializable {
+class Sketch(private var gram: String, private var toSave: Boolean) : PApplet() {
 
     /*lateinit var manager: SensorManager
     lateinit var sensor: Sensor

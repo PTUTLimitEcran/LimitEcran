@@ -1,8 +1,6 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
-import java.io.Serializable
-
-interface ChallengeUpdateManager: Serializable {
+interface ChallengeUpdateManager {
 
     fun setNewChallenge(challengeTime: Int)
 }

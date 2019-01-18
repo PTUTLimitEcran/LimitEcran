@@ -1,15 +1,19 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.GridLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import com.lpiem.ptut_limit_ecran.limitecran.Model.TreeImage
 import kotlinx.android.synthetic.main.fragment_gallery.*
+
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -57,10 +61,32 @@ class GalleryFragment : Fragment() {
             treeListRecyclerView.layoutManager = GridLayoutManager(context, 3)
             treeListRecyclerView.itemAnimator = DefaultItemAnimator()
             treeListRecyclerView.adapter = treeAdapter
+            treeListRecyclerView.addOnItemTouchListener(
+                RecyclerTouchListener(
+                    activity!!.applicationContext,
+                    treeListRecyclerView,
+                    object : RecyclerTouchListener.ClickListener {
+                        override fun onClick(view: View, position: Int) {
+                            val filePath = treeAdapter.treeCollection[position].FilePath
+                            val detailIntent = Intent(context, DetailAndShareTree::class.java)
+                            detailIntent.putExtra("filePath", filePath)
+                            startActivity(detailIntent)
+                            Log.d(TAG, "touchListener : simple click")
+
+                        }
+
+                        override fun onLongClick(view: View?, position: Int) {
+                            Toast.makeText(activity!!.applicationContext, "Arbre gagné le ${treeAdapter.treeCollection[position].formatDate()}", Toast.LENGTH_LONG).show()
+                            Log.d(TAG, "touchListener : long click")
+                        }
+                    })
+            )
+
             initOnce = false
         }
 
         treeAdapter.notifyDataSetChanged()
+
 
     }
 
