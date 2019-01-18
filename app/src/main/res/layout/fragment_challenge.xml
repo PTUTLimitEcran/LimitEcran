@@ -4,7 +4,7 @@
                                              android:layout_height="match_parent">
 
     <TextView
-            android:text="Relever un nouveau défi :"
+            android:text="@string/newChallengeTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/title" app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="114dp"
@@ -14,33 +14,35 @@
             android:textSize="20sp" app:layout_constraintHorizontal_bias="0.492"
             app:layout_constraintVertical_bias="0.0"/>
     <Button
-            android:text="Défi: 15 minutes"
+            android:text="@string/challenge15minutes"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:id="@+id/challenge1" app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="40dp"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="211dp"
             android:layout_marginBottom="252dp" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"/>
+            app:layout_constraintHorizontal_bias="1.0" android:background="@drawable/buttons"/>
     <Button
-            android:text="Défi: 1 heure"
+            android:text="@string/challenge1hour"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:id="@+id/challenge3" app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="40dp"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="211dp"
             android:layout_marginBottom="88dp" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"/>
+            app:layout_constraintHorizontal_bias="1.0" android:background="@drawable/buttons"/>
     <Button
-            android:text="Défi: 30 minutes"
+            android:text="@string/challenge30minutes"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:id="@+id/challenge2"
             android:layout_marginBottom="252dp" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="32dp"/>
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="32dp"
+            android:background="@drawable/buttons"/>
     <Button
-            android:text="Défi: 2 heures"
+            android:text="@string/challenge2hours"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:id="@+id/challenge4"
             android:layout_marginBottom="88dp" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="32dp"/>
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="32dp"
+            android:background="@drawable/buttons"/>
 </android.support.constraint.ConstraintLayout>

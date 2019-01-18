@@ -11,20 +11,4 @@ class App : Application() {
         super.onCreate()
         singleton = Singleton(this)
     }
-
-    companion object {
-        fun isActivityVisible(): Boolean {
-            return activityVisible
-        }
-
-        fun activityResumed() {
-            activityVisible = true
-        }
-
-        fun activityPaused() {
-            activityVisible = false
-        }
-
-        private var activityVisible: Boolean = false
-    }
 }

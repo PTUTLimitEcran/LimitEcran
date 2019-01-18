@@ -5,7 +5,9 @@ import android.app.AppOpsManager
 import android.app.KeyguardManager
 import android.app.NotificationManager
 import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LifecycleObserver
 import android.arch.lifecycle.OnLifecycleEvent
+import android.arch.lifecycle.ProcessLifecycleOwner
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -27,7 +29,7 @@ import kotlinx.android.synthetic.main.activity_main_container.*
 import processing.core.PApplet
 
 
-class MainActivityContainer() : AppCompatActivity() {
+class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, LifecycleObserver {
 
 
 //    override fun setNewChallenge(challengeTime: Int) {
@@ -47,6 +49,7 @@ class MainActivityContainer() : AppCompatActivity() {
     private lateinit var fragmentGallery: GalleryFragment
     private lateinit var fragmentChallenge: ChallengeFragment
     private lateinit var singleton: Singleton
+    private var isActivityLaunched = false
     private var sketch: PApplet? = null
     private val REQUEST_WRITE_STORAGE = 0
     private var viewPagerAdapter: ViewPagerAdapter? = null
@@ -72,6 +75,14 @@ class MainActivityContainer() : AppCompatActivity() {
             }
         }
         false
+    }
+
+    override fun newChallenge(){
+        viewPagerAdapter?.newChallengeFragment(fragmentHome, fragmentGallery, fragmentStat, fragmentChallenge)
+        viewPagerAdapter?.notifyDataSetChanged()
+        val intent = Intent(applicationContext, MainActivityContainer::class.java )
+        startActivity(intent)
+        finish()
     }
 
 
@@ -108,18 +119,8 @@ class MainActivityContainer() : AppCompatActivity() {
         })
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         requestStoragePermission()
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    private fun backgroundApplication(){
-
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    private fun resumingApplication(){
-
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
@@ -140,6 +141,7 @@ class MainActivityContainer() : AppCompatActivity() {
         viewPagerAdapter?.addFragment(fragmentGallery)
         viewPager.adapter = viewPagerAdapter
         viewPager.currentItem = 1
+        isActivityLaunched = true
     }
 
     /**
@@ -258,7 +260,7 @@ class MainActivityContainer() : AppCompatActivity() {
                 } else {
                     Toast.makeText(
                         this,
-                        "Storage permission is required for saving picture in gallery",
+                        "La permission pour accéder au stockage est nécessaire pour lancer l'application.",
                         Toast.LENGTH_LONG
                     )
                         .show()

@@ -123,8 +123,8 @@ class Singleton(context: Context) {
     /**
      * Start the chronometer
      */
-    fun initCountDownTimer(countDownTimerTime: Long, currentFragment: TreeFragment) {
-        singleton.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono, formatTime(countDownTimerTime))
+    fun initCountDownTimer(countDownTimerTime:Long, currentFragment:TreeFragment){
+        smallRemoteView.setTextViewText(R.id.smallNotificationChrono, formatTime(countDownTimerTime))
         notificationManager.notify(0, notification.build())
         countDownTimer = object : CountDownTimer(countDownTimerTime, timeInterval) {
             override fun onTick(millisUntilFinished: Long) {
@@ -141,13 +141,13 @@ class Singleton(context: Context) {
         }
     }
 
-    fun destroyingNotification(){
-        singleton.NotificationChannel.cancelAll()
+    fun destroyNotification(){
+        notificationManager.cancelAll()
     }
 
     fun updateNotification(formattedTime: String) {
-        singleton.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono, formattedTime)
-        singleton.NotificationChannel.notify(0, singleton.Notification.build())
+        smallRemoteView.setTextViewText(R.id.smallNotificationChrono,formattedTime)
+        notificationManager.notify(0,notification.build())
     }
 
     fun formatTime(countDownTimer: Long): String {
@@ -213,21 +213,19 @@ class Singleton(context: Context) {
 
         fun importImageList() {
             treeList = HashMap()
-            val list = File(Environment.getExternalStorageDirectory().absolutePath + "/LimitEcran").listFiles()
-            if (!list.isNullOrEmpty()) {
-                for (i in 0 until list.size) {
-                    if (Regex(loadingTreeImageRegex).matches(list[i].name)) {
-                        val date = Date(list[i].lastModified())
-                        date.minutes = 0
-                        date.seconds = 0
-                        date.hours = i
-                        if (!isDateIndexAlreadyPresentInArray(date)) {
-                            treeList[date] = ArrayList()
-                        }
-                        treeList[date]!!.add(TreeImage(list[i].name, date))
-                    } else {
-                        Log.d("SINGLETON", "out of regex")
+            val list = File(Environment.getExternalStorageDirectory().absolutePath+"/LimitEcran").listFiles()
+            for(i in 0 until list.size){
+                if(Regex(loadingTreeImageRegex).matches(list[i].name)){
+                    val date = Date(list[i].lastModified())
+                    date.minutes = 0
+                    date.seconds = 0
+                    date.hours = i
+                    if(!isDateIndexAlreadyPresentInArray(date)){
+                        treeList[date] = ArrayList()
                     }
+                    treeList[date]!!.add(TreeImage(list[i].name, date))
+                } else {
+                    Log.d("SINGLETON", "out of regex")
                 }
             }
         }
