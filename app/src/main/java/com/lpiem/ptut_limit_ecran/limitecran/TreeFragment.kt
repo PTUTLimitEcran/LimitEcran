@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.lpiem.ptut_limit_ecran.limitecran.Model.ChallengeGrammarTree
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
 import kotlinx.android.synthetic.main.fragment_tree.*
 import processing.android.PFragment
@@ -18,6 +19,7 @@ private const val CHALLENGE_TIME = "challengeTime"
 class TreeFragment : PFragment(), TimeManagmentInterface {
 
 
+
     private lateinit var viewOfLayout: View
     private lateinit var singleton: Singleton
     private var alreadySaved = false
@@ -25,7 +27,8 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
     //private var gram = "S[L[C[L[C[L[L[LC]CR[R]]R]]]]R[C[L[L[C[LC[R[LR]]R]]]]R[C[L[C[LCR]]C[C[C[LR]]]R]]]"
     //private var gram = "S[L[L[L[L[C[CR]R]]C[LC[LC]R]]R[C[C[LCR]R]]]R[CR[C[CR]R]]"
     //private var gram = "S[L[LC[LCR[C[LCR]R[R]]]]C[R[C]]R[R[C[CR]]]]"
-    private var gram = "S[L[L[L[L[C[C[CR]R]]]C[LC[LC]R]]R[C[C[L[LC]C[C]R[CR]]R]]]R[CR[C[C[R]R[R]]R]]"
+    //private var gram = "S[L[L[L[L[C[C[CR]R]]]C[LC[LC]R]]R[C[C[L[LC]C[C]R[CR]]R]]]R[CR[C[C[R]R[R]]R]]"
+    private lateinit var gram:String
     //private var gram = "S[L[L[C[LC[LC]R]]R[C[C[LCR]R]]]R[CR[C[CR]R]]"
     private var bool = true
     private var countTurn = 0
@@ -49,6 +52,16 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
             }
     }
 
+    private fun randomGrammarTree():String{
+        return when(timerLength){
+            5000-> ChallengeGrammarTree.QuarterHour.randomTree()
+            900000->ChallengeGrammarTree.HalfHour.randomTree()
+            900000*2->ChallengeGrammarTree.OneHour.randomTree()
+            900000*4->ChallengeGrammarTree.TwoHours.randomTree()
+            else->"S[L[L[C[LC[LC]R]]R[C[C[LCR]R]]]R[CR[C[CR]R]]"
+        }
+    }
+
     // TODO: Rename and change types of parameters
     private var timerLength: Int? = null
 
@@ -58,6 +71,7 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
             timerLength = it.getInt(CHALLENGE_TIME)
         }
         singleton = Singleton.getInstance(activity?.applicationContext!!)
+        gram = randomGrammarTree()
     }
 
     override fun onCreateView(
@@ -83,7 +97,7 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
     override fun onResume() {
         super.onResume()
         Log.d("CompteurFrag", "${singleton.CurrentCountDownTimer}")
-        if ((singleton.CurrentCountDownTimer < 1500L && singleton.CurrentCountDownTimer != 0L) && !alreadySaved) {
+        if ((singleton.CurrentCountDownTimer < 1600L && singleton.CurrentCountDownTimer != 0L) && !alreadySaved) {
             drawTree(gram, true)
             Log.d("CompteurFragDraw", "drawn")
             alreadySaved = true
@@ -101,7 +115,7 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
              gramToDraw = gram.subSequence(0 until timeToStop.toInt()).toString()
         }
 
-        if (singleton.CurrentCountDownTimer <= 1500L && singleton.CurrentCountDownTimer != 0L) gramToDraw = gram
+        if (singleton.IsRunning == false && singleton.CurrentCountDownTimer != 0L) gramToDraw = gram
 
 
         val sketch = Sketch(gramToDraw, savePicture)
