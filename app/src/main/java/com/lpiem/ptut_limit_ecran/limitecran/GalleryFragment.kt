@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,15 +47,15 @@ class GalleryFragment : Fragment() {
         }
         singleton.loadImages()
 
-        treeAdapter = TreeAdapter(convertHashmapToArrayList(),context!!)
-        treeAdapter.treeCollection = convertHashmapToArrayList()
+        treeAdapter = TreeAdapter(getTreeList(),context!!)
+        treeAdapter.treeCollection = getTreeList()
     }
 
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        treeAdapter.treeCollection = convertHashmapToArrayList()
+        treeAdapter.treeCollection = getTreeList()
         if (initOnce) {
             treeListRecyclerView.layoutManager = GridLayoutManager(context, 3)
             treeListRecyclerView.itemAnimator = DefaultItemAnimator()
@@ -71,29 +70,23 @@ class GalleryFragment : Fragment() {
                             val detailIntent = Intent(context, DetailAndShareTree::class.java)
                             detailIntent.putExtra("filePath", filePath)
                             startActivity(detailIntent)
-                            Log.d(TAG, "touchListener : simple click")
 
                         }
 
                         override fun onLongClick(view: View?, position: Int) {
                             Toast.makeText(activity!!.applicationContext, "Arbre gagné le ${treeAdapter.treeCollection[position].formatDate()}", Toast.LENGTH_LONG).show()
-                            Log.d(TAG, "touchListener : long click")
                         }
                     })
             )
-
             initOnce = false
         }
-
         treeAdapter.notifyDataSetChanged()
-
-
     }
 
     /**
      * Import the Hashmap from the [Singleton] class and transform it into a [Hashmap] object
      */
-    fun convertHashmapToArrayList():ArrayList<TreeImage>{
+    fun getTreeList():ArrayList<TreeImage>{
         val treeList = ArrayList<TreeImage>()
 
         val dateTreeIterator = this.singleton.TreeList
@@ -109,9 +102,7 @@ class GalleryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        treeAdapter = TreeAdapter(convertHashmapToArrayList(),context!!)
-
+        treeAdapter = TreeAdapter(getTreeList(),context!!)
         return inflater.inflate(R.layout.fragment_gallery, container, false)
     }
 

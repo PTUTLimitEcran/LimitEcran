@@ -25,19 +25,7 @@ import kotlinx.android.synthetic.main.activity_main_container.*
 import processing.core.PApplet
 
 
-class MainActivityContainer() : AppCompatActivity() {
-
-
-//    override fun setNewChallenge(challengeTime: Int) {
-//        viewPagerAdapter?.replaceFragment(fragmentChallenge, fragmentHome)
-//        viewPagerAdapter?.notifyDataSetChanged()
-//        val intent = Intent(applicationContext, MainActivityContainer::class.java )
-//        intent.putExtra("challenge", true)
-//        intent.putExtra("ChallengeTime", challengeTime)
-//        startActivity(intent)
-//        finish()
-//    }
-
+class MainActivityContainer : AppCompatActivity() {
 
     private var prevMenuItem: MenuItem? = null
     private lateinit var fragmentHome: TreeFragment
@@ -46,9 +34,9 @@ class MainActivityContainer() : AppCompatActivity() {
     private lateinit var fragmentChallenge: ChallengeFragment
     private lateinit var singleton: Singleton
     private var sketch: PApplet? = null
-    private val REQUEST_WRITE_STORAGE = 0
+    private val REQUEST_STORAGE_PERMISSION = 0
     private var viewPagerAdapter: ViewPagerAdapter? = null
-    private lateinit var screenOnOffReceiver:BroadcastReceiver
+    private lateinit var screenOnOffReceiver: BroadcastReceiver
     private var challengeTime = 0L
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -71,8 +59,6 @@ class MainActivityContainer() : AppCompatActivity() {
         }
         false
     }
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,14 +85,11 @@ class MainActivityContainer() : AppCompatActivity() {
 
             }
 
-            override fun onPageScrollStateChanged(state: Int) {
-
-            }
+            override fun onPageScrollStateChanged(state: Int) {}
 
         })
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-
         requestStoragePermission()
     }
 
@@ -119,10 +102,9 @@ class MainActivityContainer() : AppCompatActivity() {
         fragmentStat.putContext(applicationContext)
         viewPagerAdapter?.addFragment(fragmentStat)
 
-        if(singleton.ChallengeAccepted) {
+        if (singleton.ChallengeAccepted) {
             viewPagerAdapter?.addFragment(fragmentHome)
-        }
-        else {
+        } else {
             viewPagerAdapter?.addFragment(fragmentChallenge)
         }
         viewPagerAdapter?.addFragment(fragmentGallery)
@@ -137,55 +119,34 @@ class MainActivityContainer() : AppCompatActivity() {
         val intentFilter = IntentFilter()
         /** System Defined Broadcast */
         intentFilter.addAction(Intent.ACTION_USER_PRESENT)
-        intentFilter.addAction(Intent.ACTION_USER_UNLOCKED)
         intentFilter.addAction(Intent.ACTION_SCREEN_ON)
         intentFilter.addAction(Intent.ACTION_SCREEN_OFF)
 
         screenOnOffReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val action = intent?.action
-                Log.d("Intent", intent?.action.toString())
-
                 val keyguardManager = context?.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-                if (action == Intent.ACTION_USER_PRESENT ||
-                    action == Intent.ACTION_USER_UNLOCKED ||
-                    action == Intent.ACTION_SCREEN_OFF ||
-                    action == Intent.ACTION_SCREEN_ON ||
-                    action == Context.FINGERPRINT_SERVICE
-                )
-                    if (action == Intent.ACTION_SCREEN_ON) {
-                        Log.d("Screen","Screen turned on")
-                        if(keyguardManager.isKeyguardLocked){
-                            Log.d("Screen", "Screen locked")
-                            singleton.IsDeviceOn = true
-                            startOrResumeCountDownTimer()
-                        }
+                if (action == Intent.ACTION_SCREEN_ON) {
+                    if (keyguardManager.isKeyguardLocked) {
+                        singleton.IsDeviceOn = true
+                        startOrResumeCountDownTimer()
                     }
+                }
                 if (action == Intent.ACTION_USER_PRESENT) {
-                    Log.d("Screen", "Screen unlocked")
                     if (singleton.IsRunning) {
                         singleton.IsRunning = false
                         singleton.pauseCountDownTimer()
-                        //fragmentHome.updateTextView(singleton.formatTime(singleton.CurrentCountDownTimer))
                     }
                 }
                 if (action == Intent.ACTION_SCREEN_OFF) {
-                        Log.d("Screen", "Screen locked")
-                        Log.d("Screen", "Phone screen turned off")
-                        singleton.IsDeviceOn = false
-                        startOrResumeCountDownTimer()
-                    }
-//                val openMainActivity= Intent(context, MainActivityContainer::class.java)
-//                openMainActivity.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-//                startActivityIfNeeded(openMainActivity, 0)
+                    singleton.IsDeviceOn = false
+                    startOrResumeCountDownTimer()
+                }
             }
         }
         registerReceiver(screenOnOffReceiver, intentFilter)
     }
 
-    /**
-     * Start or resume countDownTimer
-     */
     private fun startOrResumeCountDownTimer() {
         if (!singleton.IsRunning) {
             singleton.IsRunning = true
@@ -197,16 +158,10 @@ class MainActivityContainer() : AppCompatActivity() {
         }
     }
 
-    /**
-     * Create an instance of the notification channel
-     */
     private fun createNotificationChannel() {
         singleton.initNotificationChannel(this, getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
     }
 
-    /**
-     * Create the notification
-     */
     private fun createNotification() {
         singleton.initNotification(
             this,
@@ -216,10 +171,6 @@ class MainActivityContainer() : AppCompatActivity() {
         )
     }
 
-    /**
-     * Draw part
-     * */
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
 
         sketch?.onRequestPermissionsResult(
@@ -227,7 +178,7 @@ class MainActivityContainer() : AppCompatActivity() {
         )
 
         when (requestCode) {
-            REQUEST_WRITE_STORAGE -> {
+            REQUEST_STORAGE_PERMISSION -> {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     challengeTime = singleton.ChallengeTime
@@ -236,7 +187,7 @@ class MainActivityContainer() : AppCompatActivity() {
                 } else {
                     Toast.makeText(
                         this,
-                        "Storage permission is required for saving picture in gallery",
+                        getString(R.string.StoragePermissionsWarning),
                         Toast.LENGTH_LONG
                     )
                         .show()
@@ -244,7 +195,6 @@ class MainActivityContainer() : AppCompatActivity() {
                 }
             }
         }
-
     }
 
     private fun initCountDownTimer() {
@@ -258,7 +208,7 @@ class MainActivityContainer() : AppCompatActivity() {
         sketch?.onNewIntent(intent)
     }
 
-    fun initSketch() {
+    private fun initSketch() {
         sketch = Sketch("", false)
         if (viewPagerAdapter == null) {
             setupViewPager(fragment_container)
@@ -272,7 +222,7 @@ class MainActivityContainer() : AppCompatActivity() {
         ActivityCompat.requestPermissions(
             this,
             arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-            REQUEST_WRITE_STORAGE
+            REQUEST_STORAGE_PERMISSION
         )
     }
 
@@ -286,7 +236,5 @@ class MainActivityContainer() : AppCompatActivity() {
         unregisterReceiver(screenOnOffReceiver)
         super.onDestroy()
     }
-
-
 
 }

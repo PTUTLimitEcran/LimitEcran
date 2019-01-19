@@ -46,19 +46,6 @@ class StatisticFragment : Fragment(), AdapterView.OnItemSelectedListener, PassCo
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-
-
-    /*mUsageStatsManager = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
-        mInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mPm = getPackageManager();
-
-        Spinner typeSpinner = (Spinner) findViewById(R.id.typeSpinner);
-        typeSpinner.setOnItemSelectedListener(this);
-
-        ListView listView = (ListView) findViewById(R.id.pkg_list);
-        mAdapter = new UsageStatsAdapter();
-        listView.setAdapter(mAdapter);*/
-
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -112,7 +99,6 @@ class StatisticFragment : Fragment(), AdapterView.OnItemSelectedListener, PassCo
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         mAdapter.sortList(position)
-        //parent?.refreshDrawableState()
     }
 
 

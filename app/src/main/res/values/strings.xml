@@ -30,4 +30,5 @@
     <string name="dateFilter">date</string>
     <string name="defaultTreeDateValue">jj/mm/aaaa</string>
     <string name="dateFormatForFile">yyyyMMddss</string>
+    <string name="StoragePermissionsWarning">Storage permission is required for saving picture in gallery</string>
 </resources>
