@@ -16,12 +16,12 @@
                 android:id="@+id/filterBy"
                 android:layout_width="0dp"
                 android:layout_height="29dp"
-                android:text="Gallery"
+                android:text="Trier par : "
                 android:layout_marginTop="60dp"
                 android:layout_marginBottom="8dp"
                 app:layout_constraintBottom_toTopOf="@+id/treeListRecyclerView"
                 app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toStartOf="@+id/dateFilterTextView"
-                android:layout_marginEnd="15dp"/>
+                android:layout_marginEnd="8dp"/>
 
         <android.support.v7.widget.RecyclerView
                 android:id="@+id/treeListRecyclerView"
