@@ -5,7 +5,7 @@
                                              android:layout_height="match_parent">
 
     <TextView
-            android:text="Relever un nouveau défi :"
+            android:text="@string/newChallengeTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/title" app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="114dp"
@@ -22,7 +22,7 @@
             app:layout_constraintEnd_toEndOf="parent">
 
         <Button
-                android:text="Défi: 30 minutes"
+                android:text="@string/Min30Challenge"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:id="@+id/challenge2"
@@ -31,7 +31,7 @@
                 app:layout_constraintStart_toStartOf="@+id/challenge4"
                 app:layout_constraintBottom_toBottomOf="@+id/challenge1"/>
         <Button
-                android:text="Défi: 2 heures"
+                android:text="@string/Hours2Challenge"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:id="@+id/challenge4"
@@ -40,7 +40,7 @@
                 android:layout_marginBottom="88dp" app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="20dp"/>
         <Button
-                android:text="Défi: 1 heure"
+                android:text="@string/Hour1Challenge"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:textColor="@color/textColor"
@@ -49,7 +49,7 @@
                 android:layout_marginBottom="88dp" app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="20dp"/>
         <Button
-                android:text="Défi: 15 minutes"
+                android:text="@string/Min15Challenge"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:textColor="@color/textColor"

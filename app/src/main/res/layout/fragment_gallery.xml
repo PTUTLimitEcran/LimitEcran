@@ -16,7 +16,7 @@
                 android:id="@+id/filterBy"
                 android:layout_width="0dp"
                 android:layout_height="29dp"
-                android:text="Trier par : "
+                android:text="@string/filterByGallery"
                 android:layout_marginTop="60dp"
                 android:layout_marginBottom="8dp"
                 app:layout_constraintBottom_toTopOf="@+id/treeListRecyclerView"

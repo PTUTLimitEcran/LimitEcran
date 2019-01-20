@@ -3,8 +3,8 @@
 
 
     <string-array name="usage_stats_display_order_types">
-        <item>Usage time</item>
-        <item>Last time used</item>
-        <item>App name</item>
+        <item>Temps d\'utilisation</item>
+        <item>Dernière fois utilisée</item>
+        <item>Nom de l\'application</item>
     </string-array>
 </resources>
