@@ -1,6 +1,7 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -82,7 +83,7 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
     private fun drawTree(gram: String, savePicture: Boolean) {
         var gramToDraw = ""
         if (singleton.FirstTime && singleton.CurrentCountDownTimer != 0L) {
-            val timeLeft = timerLength!!.toDouble()
+            val timeLeft = timerLength.toDouble()
             val ellapsedTime = timeLeft - singleton.CurrentCountDownTimer
             val coef = ellapsedTime / timeLeft
             val timeToStop = coef * gram.length
@@ -91,7 +92,7 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
                 gramToDraw = gram
                 singleton.CurrentCountDownTimer = 0L
                 singleton.FirstTime = false
-                //TODO: alertDialog
+                challengeSucceed()
             }
         }
 
@@ -105,6 +106,22 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
         frame.id = R.id.sketch_frame
         val pFragment = PFragment(sketch)
         fragmentManager?.beginTransaction()?.replace(frame.id, pFragment)?.commit()
+    }
+
+    private fun challengeSucceed() {
+        val builder: AlertDialog.Builder? = this.let {
+            AlertDialog.Builder(context!!)
+        }
+        builder?.setMessage("Félicitations !")
+            ?.setTitle("Challenge réussi !!!\n\nChoisissez une nouveau challenge dès à présent")
+            ?.setPositiveButton("J'y vais !") { dialog, id ->
+                run {
+                    (activity as MainActivityContainer).onBackPressed()
+                }
+            }
+
+        val dialog: AlertDialog? = builder?.create()
+        dialog?.show()
     }
 
 }
