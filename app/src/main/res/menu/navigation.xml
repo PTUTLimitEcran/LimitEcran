@@ -5,18 +5,18 @@
             android:id="@+id/navigation_stat"
             android:icon="@drawable/ic_insert_chart_black_24dp"
             android:iconTint="@color/colorPrimary"
-            android:title="Stat"/>
+            android:title="@string/statistiquesMenuTitle"/>
 
     <item
             android:id="@+id/navigation_home"
             android:icon="@drawable/ic_home_black_24dp"
             android:iconTint="@color/colorPrimary"
-            android:title="Home"/>
+            android:title="@string/accueilMenuTitle"/>
 
     <item
             android:id="@+id/navigation_gallery"
             android:icon="@drawable/ic_photo_library_black_24dp"
             android:iconTint="@color/colorPrimary"
-            android:title="Gallerie"/>
+            android:title="@string/gallerieMenuTitle"/>
 
 </menu>

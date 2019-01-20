@@ -17,7 +17,6 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.AppOpsManagerCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
@@ -52,8 +51,8 @@ class MainActivityContainer : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_gallery -> {
-                fragment_container.currentItem = 2
                 viewPagerAdapter?.notifyDataSetChanged()
+                fragment_container.currentItem = 2
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -79,7 +78,6 @@ class MainActivityContainer : AppCompatActivity() {
                 } else {
                     navigation.menu.getItem(1).isChecked = false
                 }
-                Log.d("page", "onPageSelected: $position")
                 navigation.menu.getItem(position).isChecked = true
                 prevMenuItem = navigation.menu.getItem(position)
 

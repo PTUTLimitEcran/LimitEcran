@@ -7,4 +7,7 @@
     <color name="textColor">#DCDCDC</color>
     <color name="backgroundButton">#565656</color>
     <color name="textColorChronometer">#DEF2F2F2</color>
+    <color name="backgroundColor">#77B32D</color>
+    <color name="lightGreen">#CDFF8E</color>
+    <color name="lightBlue">#00BCD4</color>
 </resources>

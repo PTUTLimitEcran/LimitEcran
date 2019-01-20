@@ -20,7 +20,7 @@ class ChallengeFragment : Fragment(), View.OnClickListener{
         val intent = Intent(requireContext(), MainActivityContainer::class.java )
         when(v) {
             challenge1 -> {
-                singleton.ChallengeTime = 5000L
+                singleton.ChallengeTime = fifteenMins
                 singleton.ChallengeAccepted = true
                 startActivity(intent)
             }

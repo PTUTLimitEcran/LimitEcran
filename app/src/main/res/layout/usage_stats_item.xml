@@ -61,8 +61,8 @@
                 android:layout_height="10dp"
                 app:autoProgress="true"
                 app:cornerRadius="10"
-                app:emptyColor="#618D2D"
-                app:loadedColor="#EA513F"
+                app:emptyColor="@color/backgroundColor"
+                app:loadedColor="@color/lightBlue"
                 app:maxProgress="100"/>
 
     </LinearLayout>

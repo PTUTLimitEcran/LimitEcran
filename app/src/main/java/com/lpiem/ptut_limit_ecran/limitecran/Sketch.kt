@@ -2,8 +2,6 @@ package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.graphics.Color
 import android.os.Environment
-import com.lpiem.melkius.testprocessing.LeafDirection
-import com.lpiem.melkius.testprocessing.Node
 import processing.core.PApplet
 import java.text.SimpleDateFormat
 import java.util.*

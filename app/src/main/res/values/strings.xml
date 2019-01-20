@@ -11,7 +11,7 @@
     <string name="last_time_used">"Dernière utilisation: "</string>
     <string name="time_span">"Time utilisé: "</string>
     <string name="Icon">Icône</string>
-    <string name="display_order_text">Trier par:</string>
+    <string name="display_order_text">Trier par :</string>
     <string name="app_name_label">Application</string>
     <string name="last_time_used_label">Dernière utilisation</string>
     <!-- label for usage time -->
@@ -25,7 +25,7 @@
     <string name="defaultCurrentChronometerValue">
         <b>00:00:00</b>
     </string>
-    <string name="filterByGallery">Trier par:</string>
+    <string name="galleryName">Gallerie</string>
     <string name="height">Taille</string>
     <string name="dateFilter">date</string>
     <string name="defaultTreeDateValue">jj/mm/aaaa</string>
@@ -37,4 +37,7 @@
     <string name="Hour1Challenge">Défi : 1 heure</string>
     <string name="Hours2Challenge">Défi : 2 heures</string>
     <string name="newChallengeTitle">Relever un nouveau défi :</string>
+    <string name="statistiquesMenuTitle">Statistiques</string>
+    <string name="accueilMenuTitle">Accueil</string>
+    <string name="gallerieMenuTitle">Gallerie</string>
 </resources>

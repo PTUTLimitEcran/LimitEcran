@@ -21,10 +21,4 @@ class ViewPagerAdapter(manager: FragmentManager) : FragmentPagerAdapter(manager)
         mFragmentList.add(fragment)
     }
 
-    fun replaceFragment(toDelete: Fragment, toAdd: Fragment) {
-        mFragmentList.add(1, toAdd)
-        mFragmentList.remove(toDelete)
-    }
-
-
 }

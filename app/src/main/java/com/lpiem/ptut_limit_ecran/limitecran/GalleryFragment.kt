@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,13 +17,14 @@ import kotlinx.android.synthetic.main.fragment_gallery.*
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-class GalleryFragment : Fragment() {
+class GalleryFragment : Fragment(){
 
     private lateinit var singleton: Singleton
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var treeAdapter:TreeAdapter
     private var initOnce = true
+
 
     companion object {
         @JvmStatic
@@ -37,7 +38,6 @@ class GalleryFragment : Fragment() {
     }
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         singleton = Singleton.getInstance(activity!!.applicationContext)
@@ -48,7 +48,6 @@ class GalleryFragment : Fragment() {
         singleton.loadImages()
 
         treeAdapter = TreeAdapter(getTreeList(),context!!)
-        treeAdapter.treeCollection = getTreeList()
     }
 
 
@@ -57,7 +56,7 @@ class GalleryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         treeAdapter.treeCollection = getTreeList()
         if (initOnce) {
-            treeListRecyclerView.layoutManager = GridLayoutManager(context, 3)
+            treeListRecyclerView.layoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
             treeListRecyclerView.itemAnimator = DefaultItemAnimator()
             treeListRecyclerView.adapter = treeAdapter
             treeListRecyclerView.addOnItemTouchListener(
@@ -102,7 +101,6 @@ class GalleryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        treeAdapter = TreeAdapter(getTreeList(),context!!)
         return inflater.inflate(R.layout.fragment_gallery, container, false)
     }
 
@@ -110,5 +108,8 @@ class GalleryFragment : Fragment() {
         super.onPause()
         initOnce = true
     }
+
+
+
 
 }

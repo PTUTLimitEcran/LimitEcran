@@ -34,10 +34,10 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
 
     private fun randomGrammarTree(): String {
         return when (timerLength) {
-            900000L -> ChallengeGrammarTree.QuarterHour.randomTree()
-            900000L * 2 -> ChallengeGrammarTree.HalfHour.randomTree()
-            900000L * 4 -> ChallengeGrammarTree.OneHour.randomTree()
-            900000L * 8 -> ChallengeGrammarTree.TwoHours.randomTree()
+            ChallengeGrammarTree.QuarterHour.challengeTime -> ChallengeGrammarTree.QuarterHour.randomTree()
+            ChallengeGrammarTree.HalfHour.challengeTime -> ChallengeGrammarTree.HalfHour.randomTree()
+            ChallengeGrammarTree.OneHour.challengeTime -> ChallengeGrammarTree.OneHour.randomTree()
+            ChallengeGrammarTree.TwoHours.challengeTime -> ChallengeGrammarTree.TwoHours.randomTree()
             else -> "S[L[L[C[LC[LC]R]]R[C[C[LCR]R]]]R[CR[C[CR]R]]"
         }
     }
