@@ -91,7 +91,7 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
                 gramToDraw = gram
                 singleton.CurrentCountDownTimer = 0L
                 singleton.FirstTime = false
-
+                //TODO: alertDialog
             }
         }
 

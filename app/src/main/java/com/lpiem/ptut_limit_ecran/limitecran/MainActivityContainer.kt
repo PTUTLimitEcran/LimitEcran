@@ -16,6 +16,7 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.AppOpsManagerCompat
 import android.support.v4.view.ViewPager
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.widget.Toast
@@ -212,7 +213,7 @@ class MainActivityContainer : AppCompatActivity() {
             setupViewPager(fragment_container)
         }
         if (!checkForPermission(applicationContext)) {
-            startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+            dialogViewForSystemAuth()
         }
     }
 
@@ -235,4 +236,22 @@ class MainActivityContainer : AppCompatActivity() {
         super.onDestroy()
     }
 
+    private fun dialogViewForSystemAuth() {
+
+        val builder: AlertDialog.Builder? = this.let {
+            AlertDialog.Builder(it)
+        }
+        builder?.setMessage(R.string.requestSystemAuth)
+            ?.setTitle(getString(R.string.systemPermissionRequestTitle))
+            ?.setPositiveButton("Go") { dialog, id ->
+                run {
+                    startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+                }
+            }
+
+
+        val dialog: AlertDialog? = builder?.create()
+        dialog?.show()
+
+    }
 }

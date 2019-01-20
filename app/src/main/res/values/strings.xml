@@ -40,4 +40,6 @@
     <string name="statistiquesMenuTitle">Statistiques</string>
     <string name="accueilMenuTitle">Accueil</string>
     <string name="gallerieMenuTitle">Gallerie</string>
+    <string name="requestSystemAuth">Vous allez être redirigé vers la page des autorisations afin de pouvoir afficher votre temps d\'utilisation passé dans chaque application.\n\nMerci de cliquer sur LimitEcran dans la liste.\n\nVeuillez ensuite sélectionner :\n\n“Autoriser l\'accès aux données d\'utilisation“\n\nVous pouvez ensuite revenir en arrière.\n\nMerci !</string>
+    <string name="systemPermissionRequestTitle">Statistiques des applications</string>
 </resources>
