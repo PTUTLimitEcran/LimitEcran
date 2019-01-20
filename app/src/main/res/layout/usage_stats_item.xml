@@ -8,16 +8,16 @@
 
 
     <LinearLayout
-         xmlns:android="http://schemas.android.com/apk/res/android"
-         xmlns:app="http://schemas.android.com/apk/res-auto"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:minHeight="?android:attr/listPreferredItemHeight"
-         android:orientation="horizontal"
-         android:layout_marginStart="8dp"
-         android:layout_marginEnd="8dp"
-         android:layout_marginTop="4dp"
-         android:layout_marginBottom="4dp">
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?android:attr/listPreferredItemHeight"
+            android:orientation="horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp">
 
         <ImageView
                 android:id="@+id/Icon"
@@ -32,6 +32,7 @@
                 android:maxLines="1"
                 android:paddingEnd="6dp"
                 android:paddingStart="12dp"
+                android:textColor="@color/black"
                 android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <TextView
@@ -41,6 +42,7 @@
                 android:maxLines="1"
                 android:paddingEnd="6dp"
                 android:paddingStart="12dp"
+                android:textColor="@color/black"
                 android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 
@@ -59,8 +61,8 @@
                 android:layout_height="10dp"
                 app:autoProgress="true"
                 app:cornerRadius="10"
-                app:emptyColor="#E6D9E0"
-                app:loadedColor="#5C9CB3"
+                app:emptyColor="#618D2D"
+                app:loadedColor="#EA513F"
                 app:maxProgress="100"/>
 
     </LinearLayout>
