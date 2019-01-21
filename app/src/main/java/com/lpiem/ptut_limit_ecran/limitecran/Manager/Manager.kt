@@ -155,6 +155,7 @@ class Manager(context: Context) {
 
     fun initNotificationChannel(context: Context, notificationService: NotificationManager) {
         // Create the NotificationManager, but only on API 26+ because
+        NotificationManager = notificationService
         // the NotificationManager class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Register the channel with the system
