@@ -30,6 +30,9 @@ import processing.core.PApplet
 
 
 class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, LifecycleObserver {
+    override fun setNewChallenge(challengeTime: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
 
 //    override fun setNewChallenge(challengeTime: Int) {
@@ -85,7 +88,9 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Lifec
         finish()
     }
 
-
+    private fun destroyNotification(){
+        singleton.NotificationChannel.cancelAll()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -211,16 +216,6 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Lifec
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        App.activityResumed()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        App.activityPaused()
-    }
-
     /**
      * Create an instance of the notification channel
      */
@@ -315,10 +310,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Lifec
 
     override fun onDestroy() {
         unregisterReceiver(screenOnOffReceiver)
-        singleton.destroyingNotification()
+        destroyNotification()
         super.onDestroy()
     }
-
-
-
 }
