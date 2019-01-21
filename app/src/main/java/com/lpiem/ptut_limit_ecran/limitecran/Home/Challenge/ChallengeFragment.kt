@@ -18,7 +18,7 @@ class ChallengeFragment : Fragment(), View.OnClickListener{
     private lateinit var manager: Manager
 
     override fun onClick(v: View?) {
-        val fifteenMins = 900000L
+        val fifteenMins = 10000L
         val intent = Intent(requireContext(), MainActivityContainer::class.java )
         when(v) {
             challenge1 -> {
