@@ -37,11 +37,12 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
     }
 
     private fun randomGrammarTree(): String {
+
         return when (timerLength) {
-            ChallengeGrammarTree.QuarterHour.challengeTime -> ChallengeGrammarTree.QuarterHour.randomTree()
-            ChallengeGrammarTree.HalfHour.challengeTime -> ChallengeGrammarTree.HalfHour.randomTree()
-            ChallengeGrammarTree.OneHour.challengeTime -> ChallengeGrammarTree.OneHour.randomTree()
-            ChallengeGrammarTree.TwoHours.challengeTime -> ChallengeGrammarTree.TwoHours.randomTree()
+            10000L -> ChallengeGrammarTree.QuarterHour.randomTree()
+            10000L*2 -> ChallengeGrammarTree.HalfHour.randomTree()
+            10000L*4 -> ChallengeGrammarTree.OneHour.randomTree()
+            10000L*8 -> ChallengeGrammarTree.TwoHours.randomTree()
             else -> "S[L[L[C[LC[LC]R]]R[C[C[LCR]R]]]R[CR[C[CR]R]]"
         }
     }
@@ -49,8 +50,8 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         manager = Manager.getInstance(activity?.applicationContext!!)
-        gram = randomGrammarTree()
         timerLength = manager.ChallengeTime
+        gram = randomGrammarTree()
         manager.CurrentCountDownTimer = timerLength
     }
 
