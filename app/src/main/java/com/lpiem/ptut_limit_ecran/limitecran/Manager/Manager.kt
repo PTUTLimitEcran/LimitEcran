@@ -1,5 +1,6 @@
 package com.lpiem.ptut_limit_ecran.limitecran.Manager
 
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
@@ -85,7 +86,7 @@ class Manager(context: Context) {
             notification = newValue
         }
 
-    var NotificationChannel: NotificationManager
+    var NotificationManager: NotificationManager
         get() = notificationManager
         set(newValue) {
             notificationManager = newValue
@@ -152,27 +153,27 @@ class Manager(context: Context) {
         }
     }
 
-
-
     fun initNotificationChannel(context: Context, notificationService: NotificationManager) {
-        NotificationChannel = notificationService
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
+        // Create the NotificationManager, but only on API 26+ because
+        // the NotificationManager class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Register the channel with the system
-            val notificationManager: NotificationManager = notificationService
-            notificationManager.createNotificationChannel(
-                android.app.NotificationChannel(
-                    context.getString(R.string.channelId),
-                    context.getString(R.string.app_name),
-                    NotificationManager.IMPORTANCE_DEFAULT
-                ).apply {
-                    description = context.getString(R.string.channel_description)
-                })
+            NotificationManager = notificationService
+            val name = context.getString(R.string.app_name)
+            val descriptionText = context.getString(R.string.channel_description)
+            val importance = android.app.NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(context.getString(R.string.channelId), name, importance)
+                .apply {
+                description = descriptionText
+            }
+            val notificationManager: NotificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
         }
+
         Notification.setDefaults(android.app.Notification.DEFAULT_LIGHTS or android.app.Notification.DEFAULT_SOUND)
             .setVibrate(longArrayOf(0L)) // Passing null here silently fails
-        NotificationChannel.notify(0, Notification.build())
+        NotificationManager.notify(0, Notification.build())
     }
 
     /**
@@ -201,7 +202,7 @@ class Manager(context: Context) {
 
     fun updateNotification(formattedTime: String) {
         manager.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono, formattedTime)
-        manager.NotificationChannel.notify(0, manager.Notification.build())
+        manager.NotificationManager.notify(0, manager.Notification.build())
     }
 
     fun formatTime(countDownTimer: Long): String {
@@ -235,6 +236,8 @@ class Manager(context: Context) {
             .setSmallIcon(R.drawable.ic_phonelink_erase_black_24dp)
             .setContentTitle(channelName)
             .setContentText(channelDescription)
+            .setSound(null)
+            .setVibrate(null)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCustomContentView(manager.SmallRemoteView)
     }
