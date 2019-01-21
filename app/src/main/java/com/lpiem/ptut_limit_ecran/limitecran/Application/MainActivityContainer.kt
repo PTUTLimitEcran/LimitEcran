@@ -4,10 +4,6 @@ import android.Manifest
 import android.app.AppOpsManager
 import android.app.KeyguardManager
 import android.app.NotificationManager
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.OnLifecycleEvent
-import android.arch.lifecycle.ProcessLifecycleOwner
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
