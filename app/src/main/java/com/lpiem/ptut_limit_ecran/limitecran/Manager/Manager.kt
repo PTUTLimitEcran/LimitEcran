@@ -175,6 +175,9 @@ class Manager(context: Context) {
         NotificationChannel.notify(0, Notification.build())
     }
 
+    /**
+     * Start the chronometer
+     */
     fun initCountDownTimer(countDownTimerTime: Long, currentFragment: TreeFragment) {
         manager.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono, formatTime(countDownTimerTime))
         notificationManager.notify(0, notification.build())
@@ -190,6 +193,10 @@ class Manager(context: Context) {
                 isRunning = false
             }
         }
+    }
+
+    fun destroyNotification(){
+        notificationManager.cancelAll()
     }
 
     fun updateNotification(formattedTime: String) {
@@ -227,7 +234,6 @@ class Manager(context: Context) {
         notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_phonelink_erase_black_24dp)
             .setContentTitle(channelName)
-            .setOngoing(true)
             .setContentText(channelDescription)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCustomContentView(manager.SmallRemoteView)

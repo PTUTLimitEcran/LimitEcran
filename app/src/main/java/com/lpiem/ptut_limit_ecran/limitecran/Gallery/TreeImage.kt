@@ -1,5 +1,7 @@
 package com.lpiem.ptut_limit_ecran.limitecran.Gallery
 
+import java.io.File
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -16,16 +18,20 @@ class TreeImage(filePath:String, fileDate: Date){
 
     fun formatDate():String{
 
-        val dateFile = filePath.subSequence(11..filePath.length-7)
+        /*val file:File = File(filePath)
+        file.lastModified()
+        val calendar = Calendar.getInstance()
+        calendar.time = Date(file.lastModified())
+
         val builder = StringBuilder()
-        builder.append(dateFile.substring(0..3))
+        builder.append(calendar.firstDayOfWeek)
             .append("-")
             .append(dateFile.substring(4..5))
             .append("-")
             .append(dateFile.substring(6..7))
 
-        val formattedDate = builder.toString()
+        val formattedDate = builder.toString()*/
 
-        return formattedDate
+        return ""
     }
 }

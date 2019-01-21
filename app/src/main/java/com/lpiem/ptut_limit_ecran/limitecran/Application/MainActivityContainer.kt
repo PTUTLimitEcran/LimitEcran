@@ -4,6 +4,10 @@ import android.Manifest
 import android.app.AppOpsManager
 import android.app.KeyguardManager
 import android.app.NotificationManager
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LifecycleObserver
+import android.arch.lifecycle.OnLifecycleEvent
+import android.arch.lifecycle.ProcessLifecycleOwner
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -238,9 +242,21 @@ class MainActivityContainer : AppCompatActivity() {
         return mode == AppOpsManagerCompat.MODE_ALLOWED
     }
 
+    override fun onStop() {
+        if(!manager.ChallengeAccepted){
+            Toast.makeText(this,"Application en fond : challenge annulé!",Toast.LENGTH_LONG).show()
+        }
+        super.onStop()
+    }
+
     override fun onDestroy() {
         unregisterReceiver(screenOnOffReceiver)
+        destroyNotification()
         super.onDestroy()
+    }
+
+    private fun destroyNotification(){
+        manager.destroyNotification()
     }
 
     private fun dialogViewForSystemAuth() {

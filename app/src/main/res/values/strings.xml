@@ -15,8 +15,8 @@
 
     <!-- Statistiques -->
     <string name="defaultValue">Temps passé sans le téléphone :</string>
-    <string name="last_time_used">"Dernière utilisation: "</string>
-    <string name="time_span">"Time utilisé: "</string>
+    <string name="last_time_used">Dernière utilisation: </string>
+    <string name="time_span">Temps utilisé: </string>
     <string name="display_order_text">Trier par :</string>
     <string name="last_time_used_label">Dernière utilisation</string>
     <string name="usage_time_label">Temps utilisation</string>
@@ -32,7 +32,7 @@
     <!-- Gallerie -->
     <string name="galleryName">Gallerie</string>
     <string name="height">Taille</string>
-    <string name="dateFilter">date</string>
+    <string name="dateFilter">Date</string>
     <string name="defaultTreeDateValue">jj/mm/aaaa</string>
     <string name="dateFormatForFile">yyyyMMddss</string>
     <string name="defaultDateValueGalleryFragment">01012018</string>
@@ -43,6 +43,7 @@
     <string name="Hour1Challenge">Défi : 1 heure</string>
     <string name="Hours2Challenge">Défi : 2 heures</string>
     <string name="newChallengeTitle">Relever un nouveau défi</string>
+    <string name="filterByGallery">Trier par :</string>
     <string name="Congrats">Félicitations !</string>
     <string name="ChallengeSucceed">Challenge réussi !!!\n\nChoisissez une nouveau challenge dès à présent</string>
 
@@ -56,4 +57,8 @@
     <string name="requestSystemAuth">Vous allez être redirigé vers la page des autorisations afin de pouvoir afficher votre temps d\'utilisation passé dans chaque application.\n\nMerci de cliquer sur LimitEcran dans la liste.\n\nVeuillez ensuite sélectionner :\n\n“Autoriser l\'accès aux données d\'utilisation“\n\nVous pouvez ensuite revenir en arrière.\n\nMerci !</string>
     <string name="systemPermissionRequestTitle">Statistiques des applications</string>
 
+    <string name="challenge15minutes">Défi : 15 minutes</string>
+    <string name="challenge30minutes">Défi : 30 minutes</string>
+    <string name="challenge1hour">Défi : 1 heure</string>
+    <string name="challenge2hours">Défi : 2 heures</string>
 </resources>
