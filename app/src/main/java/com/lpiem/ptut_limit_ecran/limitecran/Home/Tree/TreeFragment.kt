@@ -91,15 +91,23 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
             val coef = ellapsedTime / timeLeft
             val timeToStop = coef * gram.length
             gramToDraw = gram.subSequence(0 until timeToStop.toInt()).toString()
-            if (manager.CurrentCountDownTimer <= 1500L && manager.CurrentCountDownTimer != 0L) {
+            if (manager.CurrentCountDownTimer <= 2000L && manager.CurrentCountDownTimer != 0L) {
                 gramToDraw = gram
                 manager.CurrentCountDownTimer = 0L
                 manager.FirstTime = false
+
+                val sketch = Sketch(gramToDraw, savePicture)
+
+                val frame = FrameLayout(context)
+                frame.id = R.id.sketch_frame
+                val pFragment = PFragment(sketch)
+                fragmentManager?.beginTransaction()?.replace(frame.id, pFragment)?.commit()
+
                 challengeSucceed()
             }
         }
 
-        if (manager.CurrentCountDownTimer <= 1500L && !manager.FirstTime) {
+        if (manager.CurrentCountDownTimer <= 2000L && !manager.FirstTime) {
             gramToDraw = gram
         }
 
@@ -109,6 +117,8 @@ class TreeFragment : PFragment(), TimeManagmentInterface {
         frame.id = R.id.sketch_frame
         val pFragment = PFragment(sketch)
         fragmentManager?.beginTransaction()?.replace(frame.id, pFragment)?.commit()
+
+
     }
 
     private fun challengeSucceed() {
