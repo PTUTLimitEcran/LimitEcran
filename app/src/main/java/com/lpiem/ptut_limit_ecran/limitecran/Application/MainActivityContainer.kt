@@ -120,7 +120,6 @@ class MainActivityContainer : AppCompatActivity() {
         viewPagerAdapter?.addFragment(fragmentGallery)
         viewPager.adapter = viewPagerAdapter
         viewPager.currentItem = 1
-        isActivityLaunched = true
     }
 
     /**
@@ -254,6 +253,10 @@ class MainActivityContainer : AppCompatActivity() {
         unregisterReceiver(screenOnOffReceiver)
         destroyNotification()
         super.onDestroy()
+    }
+
+    private fun destroyNotification(){
+        manager.destroyNotification()
     }
 
     private fun dialogViewForSystemAuth() {

@@ -15,8 +15,8 @@
 
     <!-- Statistiques -->
     <string name="defaultValue">Temps passé sans le téléphone :</string>
-    <string name="last_time_used">"Dernière utilisation: "</string>
-    <string name="time_span">"Temps utilisé: "</string>
+    <string name="last_time_used">Dernière utilisation: </string>
+    <string name="time_span">Temps utilisé: </string>
     <string name="display_order_text">Trier par :</string>
     <string name="last_time_used_label">Dernière utilisation</string>
     <string name="usage_time_label">Temps utilisation</string>
@@ -43,6 +43,7 @@
     <string name="Hour1Challenge">Défi : 1 heure</string>
     <string name="Hours2Challenge">Défi : 2 heures</string>
     <string name="newChallengeTitle">Relever un nouveau défi</string>
+    <string name="filterByGallery">Trier par :</string>
     <string name="Congrats">Félicitations !</string>
     <string name="ChallengeSucceed">Challenge réussi !!!\n\nChoisissez une nouveau challenge dès à présent</string>
 
@@ -60,5 +61,4 @@
     <string name="challenge30minutes">Défi : 30 minutes</string>
     <string name="challenge1hour">Défi : 1 heure</string>
     <string name="challenge2hours">Défi : 2 heures</string>
-    <string name="newChallengeTitle">Relever un nouveau défi :</string>
 </resources>
