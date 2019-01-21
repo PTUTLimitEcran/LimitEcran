@@ -1,4 +1,4 @@
-package com.lpiem.ptut_limit_ecran.limitecran
+package com.lpiem.ptut_limit_ecran.limitecran.Stats
 
 import android.app.usage.UsageStats
 import android.app.usage.UsageStatsManager
@@ -14,6 +14,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.durranilab.labprogresslayout.LabProgressLayout
+import com.lpiem.ptut_limit_ecran.limitecran.R
 import java.util.*
 
 const val TAG = "TEST_WARN"
@@ -28,8 +29,10 @@ class UsageStatsAdapter(private var context: Context): BaseAdapter() {
 
     private var mInflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     private var mDisplayOrder = _DISPLAY_ORDER_USAGE_TIME
-    private val mLastTimeUsedComparator = LastTimeUsedComparator()
-    private val mUsageTimeComparator = UsageTimeComparator()
+    private val mLastTimeUsedComparator =
+        LastTimeUsedComparator()
+    private val mUsageTimeComparator =
+        UsageTimeComparator()
     private lateinit var mAppLabelComparator: AppNameComparator
     private var mAppLabelMap = ArrayMap<String, String>()
     private var mPackageStats = ArrayList<UsageStats>()
@@ -78,7 +81,8 @@ class UsageStatsAdapter(private var context: Context): BaseAdapter() {
                 totalMilli += mPackageStats[i].totalTimeInForeground
             }
 
-            mAppLabelComparator = AppNameComparator(mAppLabelMap)
+            mAppLabelComparator =
+                    AppNameComparator(mAppLabelMap)
             sortList()
         }
     }

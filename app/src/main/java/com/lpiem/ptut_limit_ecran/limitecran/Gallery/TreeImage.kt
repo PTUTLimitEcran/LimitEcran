@@ -1,4 +1,4 @@
-package com.lpiem.ptut_limit_ecran.limitecran.Model
+package com.lpiem.ptut_limit_ecran.limitecran.Gallery
 
 import java.util.*
 

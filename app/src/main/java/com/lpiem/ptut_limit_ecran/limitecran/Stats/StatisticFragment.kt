@@ -1,4 +1,4 @@
-package com.lpiem.ptut_limit_ecran.limitecran
+package com.lpiem.ptut_limit_ecran.limitecran.Stats
 
 import android.app.usage.UsageStatsManager
 import android.content.Context
@@ -9,12 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import kotlinx.android.synthetic.main.usage_stats.*
+import com.lpiem.ptut_limit_ecran.limitecran.R
+import kotlinx.android.synthetic.main.fragment_statistic.*
 
 private const val ARG_PARAM1 = "context"
 private const val ARG_PARAM2 = "param2"
 
-class StatisticFragment : Fragment(), AdapterView.OnItemSelectedListener, PassContext {
+class StatisticFragment : Fragment(), AdapterView.OnItemSelectedListener,
+    PassContext {
 
     override fun putContext(context: Context) {
         appContext = context

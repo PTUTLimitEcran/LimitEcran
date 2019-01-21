@@ -1,4 +1,4 @@
-package com.lpiem.ptut_limit_ecran.limitecran
+package com.lpiem.ptut_limit_ecran.limitecran.Gallery
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView

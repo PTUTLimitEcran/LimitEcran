@@ -1,4 +1,4 @@
-package com.lpiem.ptut_limit_ecran.limitecran
+package com.lpiem.ptut_limit_ecran.limitecran.Application
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager

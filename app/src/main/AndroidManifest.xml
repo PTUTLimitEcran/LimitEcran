@@ -31,7 +31,7 @@
             </meta-data>
         </provider>
         <activity
-                android:name=".SplashScreen"
+                android:name=".Application.SplashScreen"
                 android:screenOrientation="portrait"
                 android:theme="@style/SplashScreen">
             <intent-filter>
@@ -42,12 +42,12 @@
             </intent-filter>
         </activity>
         <activity
-                android:name=".MainActivityContainer"
+                android:name=".Application.MainActivityContainer"
                 android:label="@string/title_activity_main_container"
                 android:screenOrientation="portrait">
         </activity>
         <activity
-                android:name=".DetailAndShareTree"
+                android:name=".Gallery.DetailAndShareTree"
                 android:screenOrientation="portrait"/>
     </application>
 

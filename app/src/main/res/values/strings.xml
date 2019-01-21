@@ -1,45 +1,59 @@
 <resources>
+    <!-- App -->
     <string name="app_name">LimitEcran</string>
-    <string name="title_activity_main_container">MainContainer</string>
+    <string name="app_name_label">Application</string>
+    <string name="title_activity_main_container">Bienvenue</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="channel_description">Limitez votre usage de l\'écran!</string>
     <string name="parameters">Paramètres</string>
+    <string name="Icon">Icône</string>
+
+    <!-- Notification -->
+    <string name="title_notifications">Notifications</string>
     <string name="channelId">limitScreen</string>
+    <string name="channel_description">Limitez votre usage de l\'écran!</string>
+
+    <!-- Statistiques -->
     <string name="defaultValue">Temps passé sans le téléphone :</string>
     <string name="last_time_used">"Dernière utilisation: "</string>
     <string name="time_span">"Time utilisé: "</string>
-    <string name="Icon">Icône</string>
     <string name="display_order_text">Trier par :</string>
-    <string name="app_name_label">Application</string>
     <string name="last_time_used_label">Dernière utilisation</string>
-    <!-- label for usage time -->
     <string name="usage_time_label">Temps utilisation</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Chronomètre -->
     <string name="defaultWeeklyChronometerValue">
         <b>hebdo : 00:00:00</b>
     </string>
     <string name="defaultCurrentChronometerValue">
         <b>00:00:00</b>
     </string>
+
+    <!-- Gallerie -->
     <string name="galleryName">Gallerie</string>
     <string name="height">Taille</string>
     <string name="dateFilter">date</string>
     <string name="defaultTreeDateValue">jj/mm/aaaa</string>
     <string name="dateFormatForFile">yyyyMMddss</string>
-    <string name="StoragePermissionsWarning">La permission d\'accès au stockage du téléphone est nécessaire pour accéder à la gallerie.</string>
     <string name="defaultDateValueGalleryFragment">01012018</string>
+
+    <!-- Challenge -->
     <string name="Min15Challenge">Défi : 15 minutes</string>
     <string name="Min30Challenge">Défi : 30 minutes</string>
     <string name="Hour1Challenge">Défi : 1 heure</string>
     <string name="Hours2Challenge">Défi : 2 heures</string>
-    <string name="newChallengeTitle">Relever un nouveau défi :</string>
+    <string name="newChallengeTitle">Relever un nouveau défi</string>
+    <string name="Congrats">Félicitations !</string>
+    <string name="ChallengeSucceed">Challenge réussi !!!\n\nChoisissez une nouveau challenge dès à présent</string>
+
+    <!-- BottomNav -->
     <string name="statistiquesMenuTitle">Statistiques</string>
     <string name="accueilMenuTitle">Accueil</string>
     <string name="gallerieMenuTitle">Gallerie</string>
+
+    <!-- Permissions -->
+    <string name="StoragePermissionsWarning">La permission d\'accès au stockage du téléphone est nécessaire pour accéder à la gallerie.</string>
     <string name="requestSystemAuth">Vous allez être redirigé vers la page des autorisations afin de pouvoir afficher votre temps d\'utilisation passé dans chaque application.\n\nMerci de cliquer sur LimitEcran dans la liste.\n\nVeuillez ensuite sélectionner :\n\n“Autoriser l\'accès aux données d\'utilisation“\n\nVous pouvez ensuite revenir en arrière.\n\nMerci !</string>
     <string name="systemPermissionRequestTitle">Statistiques des applications</string>
+
 </resources>

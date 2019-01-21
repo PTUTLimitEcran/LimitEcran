@@ -1,4 +1,4 @@
-package com.lpiem.ptut_limit_ecran.limitecran
+package com.lpiem.ptut_limit_ecran.limitecran.Application
 
 import android.Manifest
 import android.app.AppOpsManager
@@ -20,7 +20,13 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.widget.Toast
-import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
+import com.lpiem.ptut_limit_ecran.limitecran.Gallery.GalleryFragment
+import com.lpiem.ptut_limit_ecran.limitecran.Home.Challenge.ChallengeFragment
+import com.lpiem.ptut_limit_ecran.limitecran.Home.Sketch.Sketch
+import com.lpiem.ptut_limit_ecran.limitecran.Home.Tree.TreeFragment
+import com.lpiem.ptut_limit_ecran.limitecran.Manager.Manager
+import com.lpiem.ptut_limit_ecran.limitecran.R
+import com.lpiem.ptut_limit_ecran.limitecran.Stats.StatisticFragment
 import kotlinx.android.synthetic.main.activity_main_container.*
 import processing.core.PApplet
 
@@ -32,7 +38,7 @@ class MainActivityContainer : AppCompatActivity() {
     private lateinit var fragmentStat: StatisticFragment
     private lateinit var fragmentGallery: GalleryFragment
     private lateinit var fragmentChallenge: ChallengeFragment
-    private lateinit var singleton: Singleton
+    private lateinit var manager: Manager
     private var sketch: PApplet? = null
     private val REQUEST_STORAGE_PERMISSION = 0
     private var viewPagerAdapter: ViewPagerAdapter? = null
@@ -63,7 +69,7 @@ class MainActivityContainer : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_container)
-        singleton = Singleton.getInstance(this)
+        manager = Manager.getInstance(this)
         createNotification()
         createNotificationChannel()
         registerBroadcastReceiver()
@@ -93,7 +99,8 @@ class MainActivityContainer : AppCompatActivity() {
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
-        if (viewPagerAdapter == null) viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
+        if (viewPagerAdapter == null) viewPagerAdapter =
+                ViewPagerAdapter(supportFragmentManager)
         fragmentHome = TreeFragment()
         fragmentStat = StatisticFragment()
         fragmentGallery = GalleryFragment()
@@ -101,7 +108,7 @@ class MainActivityContainer : AppCompatActivity() {
         fragmentStat.putContext(applicationContext)
         viewPagerAdapter?.addFragment(fragmentStat)
 
-        if (singleton.ChallengeAccepted) {
+        if (manager.ChallengeAccepted) {
             viewPagerAdapter?.addFragment(fragmentHome)
         } else {
             viewPagerAdapter?.addFragment(fragmentChallenge)
@@ -127,18 +134,18 @@ class MainActivityContainer : AppCompatActivity() {
                 val keyguardManager = context?.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
                 if (action == Intent.ACTION_SCREEN_ON) {
                     if (keyguardManager.isKeyguardLocked) {
-                        singleton.IsDeviceOn = true
+                        manager.IsDeviceOn = true
                         startOrResumeCountDownTimer()
                     }
                 }
                 if (action == Intent.ACTION_USER_PRESENT) {
-                    if (singleton.IsRunning) {
-                        singleton.IsRunning = false
-                        singleton.pauseCountDownTimer()
+                    if (manager.IsRunning) {
+                        manager.IsRunning = false
+                        manager.pauseCountDownTimer()
                     }
                 }
                 if (action == Intent.ACTION_SCREEN_OFF) {
-                    singleton.IsDeviceOn = false
+                    manager.IsDeviceOn = false
                     startOrResumeCountDownTimer()
                 }
             }
@@ -147,22 +154,22 @@ class MainActivityContainer : AppCompatActivity() {
     }
 
     private fun startOrResumeCountDownTimer() {
-        if (!singleton.IsRunning) {
-            singleton.IsRunning = true
-            if (singleton.CurrentCountDownTimer == 0L) {
-                singleton.startCountDownTimer()
+        if (!manager.IsRunning) {
+            manager.IsRunning = true
+            if (manager.CurrentCountDownTimer == 0L) {
+                manager.startCountDownTimer()
             } else {
-                singleton.resumeCountDownTimer(fragmentHome)
+                manager.resumeCountDownTimer(fragmentHome)
             }
         }
     }
 
     private fun createNotificationChannel() {
-        singleton.initNotificationChannel(this, getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+        manager.initNotificationChannel(this, getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
     }
 
     private fun createNotification() {
-        singleton.initNotification(
+        manager.initNotification(
             this,
             getString(R.string.app_name),
             getString(R.string.channelId),
@@ -180,7 +187,7 @@ class MainActivityContainer : AppCompatActivity() {
             REQUEST_STORAGE_PERMISSION -> {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    challengeTime = singleton.ChallengeTime
+                    challengeTime = manager.ChallengeTime
                     initSketch()
                     initCountDownTimer()
                 } else {
@@ -197,9 +204,9 @@ class MainActivityContainer : AppCompatActivity() {
     }
 
     private fun initCountDownTimer() {
-        if (singleton.ChallengeAccepted) {
-            singleton.initCountDownTimer(challengeTime, fragmentHome)
-            singleton.FirstTime = true
+        if (manager.ChallengeAccepted) {
+            manager.initCountDownTimer(challengeTime, fragmentHome)
+            manager.FirstTime = true
         }
     }
 

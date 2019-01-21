@@ -1,4 +1,4 @@
-package com.lpiem.ptut_limit_ecran.limitecran.Model
+package com.lpiem.ptut_limit_ecran.limitecran.Manager
 
 import android.app.NotificationManager
 import android.content.Context
@@ -9,16 +9,16 @@ import android.support.v4.app.NotificationCompat
 import android.util.Log
 import android.widget.Chronometer
 import android.widget.RemoteViews
+import com.lpiem.ptut_limit_ecran.limitecran.Gallery.TreeImage
+import com.lpiem.ptut_limit_ecran.limitecran.Home.Tree.TreeFragment
 import com.lpiem.ptut_limit_ecran.limitecran.R
-import com.lpiem.ptut_limit_ecran.limitecran.TreeFragment
 import java.io.File
 import java.util.*
 import kotlin.collections.HashMap
 
-class Singleton(context: Context) {
+class Manager(context: Context) {
 
     val timeInterval = 1000L
-
     private var firstime = false
     private var isDeviceOn = false
     private var currentCountDownTimer = 0L
@@ -27,60 +27,8 @@ class Singleton(context: Context) {
     private var challengeTime = 0L
     private var challengeAccepted = false
 
-    companion object {
-        private lateinit var notification: NotificationCompat.Builder
-        private lateinit var notificationManager: NotificationManager
-        private lateinit var treeList: HashMap<Date, ArrayList<TreeImage>>
-        private var isRunning: Boolean = false
-
-        private lateinit var context: Context
-        var loadingTreeImageRegex: String = "^wonder_tree.*[.png]"
-
-        private var initialized: Boolean = false
-
-        private lateinit var singleton: Singleton
-
-        private lateinit var chronometer: Chronometer
-
-        fun getInstance(context: Context): Singleton {
-            return if (initialized) {
-                singleton
-            } else {
-                initialized = true
-                singleton = Singleton(context)
-                singleton
-            }
-        }
-
-        fun importImageList() {
-            treeList = HashMap()
-            val list = File(Environment.getExternalStorageDirectory().absolutePath + "/LimitEcran").listFiles()
-            if (!list.isNullOrEmpty()) {
-                for (i in 0 until list.size) {
-                    if (Regex(loadingTreeImageRegex).matches(list[i].name)) {
-                        val date = Date(list[i].lastModified())
-                        date.minutes = 0
-                        date.seconds = 0
-                        date.hours = i
-                        if (!isDateIndexAlreadyPresentInArray(date)) {
-                            treeList[date] = ArrayList()
-                        }
-                        treeList[date]!!.add(TreeImage(list[i].name, date))
-                    } else {
-                        Log.d("SINGLETON", "out of regex")
-                    }
-                }
-            }
-        }
-
-        private fun isDateIndexAlreadyPresentInArray(date: Date): Boolean {
-            return treeList.containsKey(date)
-        }
-
-        fun initSingleton(newContext: Context) {
-            context = newContext
-            treeList = HashMap()
-        }
+    init {
+        initSingleton(context)
     }
 
     var IsDeviceOn: Boolean
@@ -88,10 +36,6 @@ class Singleton(context: Context) {
         set(value) {
             isDeviceOn = value
         }
-
-    init {
-        initSingleton(context)
-    }
 
     var ChallengeAccepted: Boolean
         get() = challengeAccepted
@@ -147,6 +91,69 @@ class Singleton(context: Context) {
             notificationManager = newValue
         }
 
+    companion object {
+        private lateinit var notification: NotificationCompat.Builder
+        private lateinit var notificationManager: NotificationManager
+        private lateinit var treeList: HashMap<Date, ArrayList<TreeImage>>
+        private var isRunning: Boolean = false
+
+        private lateinit var context: Context
+        var loadingTreeImageRegex: String = "^wonder_tree.*[.png]"
+
+        private var initialized: Boolean = false
+
+        private lateinit var manager: Manager
+
+        private lateinit var chronometer: Chronometer
+
+        fun getInstance(context: Context): Manager {
+            return if (initialized) {
+                manager
+            } else {
+                initialized = true
+                manager = Manager(context)
+                manager
+            }
+        }
+
+        fun importImageList() {
+            treeList = HashMap()
+            val list = File(Environment.getExternalStorageDirectory().absolutePath + "/LimitEcran").listFiles()
+            if (!list.isNullOrEmpty()) {
+                for (i in 0 until list.size) {
+                    if (Regex(loadingTreeImageRegex).matches(list[i].name)) {
+                        val date = Date(list[i].lastModified())
+                        date.minutes = 0
+                        date.seconds = 0
+                        date.hours = i
+                        if (!isDateIndexAlreadyPresentInArray(date)) {
+                            treeList[date] = ArrayList()
+                        }
+                        treeList[date]!!.add(
+                            TreeImage(
+                                list[i].name,
+                                date
+                            )
+                        )
+                    } else {
+                        Log.d("SINGLETON", "out of regex")
+                    }
+                }
+            }
+        }
+
+        private fun isDateIndexAlreadyPresentInArray(date: Date): Boolean {
+            return treeList.containsKey(date)
+        }
+
+        fun initSingleton(newContext: Context) {
+            context = newContext
+            treeList = HashMap()
+        }
+    }
+
+
+
     fun initNotificationChannel(context: Context, notificationService: NotificationManager) {
         NotificationChannel = notificationService
         // Create the NotificationChannel, but only on API 26+ because
@@ -169,7 +176,7 @@ class Singleton(context: Context) {
     }
 
     fun initCountDownTimer(countDownTimerTime: Long, currentFragment: TreeFragment) {
-        singleton.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono, formatTime(countDownTimerTime))
+        manager.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono, formatTime(countDownTimerTime))
         notificationManager.notify(0, notification.build())
         countDownTimer = object : CountDownTimer(countDownTimerTime, timeInterval) {
             override fun onTick(millisUntilFinished: Long) {
@@ -186,8 +193,8 @@ class Singleton(context: Context) {
     }
 
     fun updateNotification(formattedTime: String) {
-        singleton.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono, formattedTime)
-        singleton.NotificationChannel.notify(0, singleton.Notification.build())
+        manager.SmallRemoteView.setTextViewText(R.id.smallNotificationChrono, formattedTime)
+        manager.NotificationChannel.notify(0, manager.Notification.build())
     }
 
     fun formatTime(countDownTimer: Long): String {
@@ -223,7 +230,7 @@ class Singleton(context: Context) {
             .setOngoing(true)
             .setContentText(channelDescription)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setCustomContentView(singleton.SmallRemoteView)
+            .setCustomContentView(manager.SmallRemoteView)
     }
 
     fun loadImages() {

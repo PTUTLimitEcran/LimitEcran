@@ -1,7 +1,8 @@
-package com.lpiem.ptut_limit_ecran.limitecran
+package com.lpiem.ptut_limit_ecran.limitecran.Home.Sketch
 
 import android.graphics.Color
 import android.os.Environment
+import com.lpiem.ptut_limit_ecran.limitecran.R
 import processing.core.PApplet
 import java.text.SimpleDateFormat
 import java.util.*
@@ -116,10 +117,18 @@ class Sketch(private var gram: String, private var toSave: Boolean) : PApplet() 
                 stack.peek().coordY - bigOffset
             )
             LeafDirection.LEFT -> {
-                return Node(nodeValue, stack.peek().coordX - smallOffset, stack.peek().coordY - bigOffset)
+                return Node(
+                    nodeValue,
+                    stack.peek().coordX - smallOffset,
+                    stack.peek().coordY - bigOffset
+                )
             }
             LeafDirection.RIGHT -> {
-                return Node(nodeValue, stack.peek().coordX + smallOffset, stack.peek().coordY - bigOffset)
+                return Node(
+                    nodeValue,
+                    stack.peek().coordX + smallOffset,
+                    stack.peek().coordY - bigOffset
+                )
             }
             LeafDirection.CENTER -> Node(
                 nodeValue,

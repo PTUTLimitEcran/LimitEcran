@@ -1,4 +1,4 @@
-package com.lpiem.ptut_limit_ecran.limitecran
+package com.lpiem.ptut_limit_ecran.limitecran.Gallery
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.os.Environment
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.lpiem.ptut_limit_ecran.limitecran.R
 import kotlinx.android.synthetic.main.activity_detail_and_share_tree.*
 import java.io.File
 

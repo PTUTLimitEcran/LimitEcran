@@ -1,4 +1,4 @@
-package com.lpiem.ptut_limit_ecran.limitecran.Model
+package com.lpiem.ptut_limit_ecran.limitecran.Home.Challenge
 
 enum class ChallengeGrammarTree(val challengeTime: Long) {
     QuarterHour(900000){
