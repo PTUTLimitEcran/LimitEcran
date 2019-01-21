@@ -232,9 +232,9 @@ class Manager(context: Context) {
     }
 
     fun initNotification(context: Context, channelId: String, channelName: String, channelDescription: String) {
-        smallRemoteView.setImageViewResource(R.id.notificationIcon, R.drawable.ic_phonelink_erase_black_24dp)
+        smallRemoteView.setImageViewResource(R.id.notificationIcon, R.drawable.logo_arbre)
         notification = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.ic_phonelink_erase_black_24dp)
+            .setSmallIcon(R.drawable.logo_arbre)
             .setContentTitle(channelName)
             .setContentText(channelDescription)
             .setSound(null)
