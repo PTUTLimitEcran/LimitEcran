@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:minHeight="?android:attr/listPreferredItemHeight"
-              android:orientation="vertical">
-
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?android:attr/listPreferredItemHeight"
+        android:orientation="vertical">
 
     <LinearLayout
-         xmlns:android="http://schemas.android.com/apk/res/android"
-         xmlns:app="http://schemas.android.com/apk/res-auto"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:minHeight="?android:attr/listPreferredItemHeight"
-         android:orientation="horizontal"
-         android:layout_marginStart="8dp"
-         android:layout_marginEnd="8dp"
-         android:layout_marginTop="4dp"
-         android:layout_marginBottom="4dp">
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?android:attr/listPreferredItemHeight"
+            android:orientation="horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp">
 
         <ImageView
                 android:id="@+id/Icon"
@@ -32,6 +32,7 @@
                 android:maxLines="1"
                 android:paddingEnd="6dp"
                 android:paddingStart="12dp"
+                android:textColor="@color/black"
                 android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <TextView
@@ -41,17 +42,19 @@
                 android:maxLines="1"
                 android:paddingEnd="6dp"
                 android:paddingStart="12dp"
+                android:textColor="@color/black"
                 android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 
     </LinearLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  xmlns:app="http://schemas.android.com/apk/res-auto"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:minHeight="?android:attr/listPreferredItemHeight"
-                  android:orientation="horizontal">
+    <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?android:attr/listPreferredItemHeight"
+            android:orientation="horizontal">
 
         <com.durranilab.labprogresslayout.LabProgressLayout
                 android:id="@+id/labProgressLayout"
@@ -59,11 +62,12 @@
                 android:layout_height="10dp"
                 app:autoProgress="true"
                 app:cornerRadius="10"
-                app:emptyColor="#E6D9E0"
-                app:loadedColor="#5C9CB3"
+                app:emptyColor="@color/backgroundColor"
+                app:loadedColor="@color/lightBlue"
                 app:maxProgress="100"/>
 
     </LinearLayout>
+
 </LinearLayout>
 
 

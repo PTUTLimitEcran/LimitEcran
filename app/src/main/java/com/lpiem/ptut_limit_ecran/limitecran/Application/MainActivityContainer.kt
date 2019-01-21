@@ -1,4 +1,4 @@
-package com.lpiem.ptut_limit_ecran.limitecran
+package com.lpiem.ptut_limit_ecran.limitecran.Application
 
 import android.Manifest
 import android.app.AppOpsManager
@@ -20,43 +20,33 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.AppOpsManagerCompat
 import android.support.v4.view.ViewPager
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
-import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
+import com.lpiem.ptut_limit_ecran.limitecran.Gallery.GalleryFragment
+import com.lpiem.ptut_limit_ecran.limitecran.Home.Challenge.ChallengeFragment
+import com.lpiem.ptut_limit_ecran.limitecran.Home.Sketch.Sketch
+import com.lpiem.ptut_limit_ecran.limitecran.Home.Tree.TreeFragment
+import com.lpiem.ptut_limit_ecran.limitecran.Manager.Manager
+import com.lpiem.ptut_limit_ecran.limitecran.R
+import com.lpiem.ptut_limit_ecran.limitecran.Stats.StatisticFragment
 import kotlinx.android.synthetic.main.activity_main_container.*
 import processing.core.PApplet
 
 
-class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, LifecycleObserver {
-    override fun setNewChallenge(challengeTime: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-
-//    override fun setNewChallenge(challengeTime: Int) {
-//        viewPagerAdapter?.replaceFragment(fragmentChallenge, fragmentHome)
-//        viewPagerAdapter?.notifyDataSetChanged()
-//        val intent = Intent(applicationContext, MainActivityContainer::class.java )
-//        intent.putExtra("challenge", true)
-//        intent.putExtra("ChallengeTime", challengeTime)
-//        startActivity(intent)
-//        finish()
-//    }
-
+class MainActivityContainer : AppCompatActivity() {
 
     private var prevMenuItem: MenuItem? = null
     private lateinit var fragmentHome: TreeFragment
     private lateinit var fragmentStat: StatisticFragment
     private lateinit var fragmentGallery: GalleryFragment
     private lateinit var fragmentChallenge: ChallengeFragment
-    private lateinit var singleton: Singleton
-    private var isActivityLaunched = false
+    private lateinit var manager: Manager
     private var sketch: PApplet? = null
-    private val REQUEST_WRITE_STORAGE = 0
+    private val REQUEST_STORAGE_PERMISSION = 0
     private var viewPagerAdapter: ViewPagerAdapter? = null
-    private lateinit var screenOnOffReceiver:BroadcastReceiver
+    private lateinit var screenOnOffReceiver: BroadcastReceiver
     private var challengeTime = 0L
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -72,30 +62,18 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Lifec
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_gallery -> {
-                fragment_container.currentItem = 2
                 viewPagerAdapter?.notifyDataSetChanged()
+                fragment_container.currentItem = 2
                 return@OnNavigationItemSelectedListener true
             }
         }
         false
     }
 
-    override fun newChallenge(){
-        viewPagerAdapter?.newChallengeFragment(fragmentHome, fragmentGallery, fragmentStat, fragmentChallenge)
-        viewPagerAdapter?.notifyDataSetChanged()
-        val intent = Intent(applicationContext, MainActivityContainer::class.java )
-        startActivity(intent)
-        finish()
-    }
-
-    private fun destroyNotification(){
-        singleton.NotificationChannel.cancelAll()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_container)
-        singleton = Singleton.getInstance(this)
+        manager = Manager.getInstance(this)
         createNotification()
         createNotificationChannel()
         registerBroadcastReceiver()
@@ -111,36 +89,32 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Lifec
                 } else {
                     navigation.menu.getItem(1).isChecked = false
                 }
-                Log.d("page", "onPageSelected: $position")
                 navigation.menu.getItem(position).isChecked = true
                 prevMenuItem = navigation.menu.getItem(position)
 
             }
 
-            override fun onPageScrollStateChanged(state: Int) {
-
-            }
+            override fun onPageScrollStateChanged(state: Int) {}
 
         })
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         requestStoragePermission()
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
-        if (viewPagerAdapter == null) viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
-        fragmentHome = TreeFragment.newInstance(challengeTime)
+        if (viewPagerAdapter == null) viewPagerAdapter =
+                ViewPagerAdapter(supportFragmentManager)
+        fragmentHome = TreeFragment()
         fragmentStat = StatisticFragment()
         fragmentGallery = GalleryFragment()
         fragmentChallenge = ChallengeFragment()
         fragmentStat.putContext(applicationContext)
         viewPagerAdapter?.addFragment(fragmentStat)
 
-        if(singleton.ChallengeAccepted) {
+        if (manager.ChallengeAccepted) {
             viewPagerAdapter?.addFragment(fragmentHome)
-        }
-        else {
+        } else {
             viewPagerAdapter?.addFragment(fragmentChallenge)
         }
         viewPagerAdapter?.addFragment(fragmentGallery)
@@ -156,88 +130,57 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Lifec
         val intentFilter = IntentFilter()
         /** System Defined Broadcast */
         intentFilter.addAction(Intent.ACTION_USER_PRESENT)
-        intentFilter.addAction(Intent.ACTION_USER_UNLOCKED)
         intentFilter.addAction(Intent.ACTION_SCREEN_ON)
         intentFilter.addAction(Intent.ACTION_SCREEN_OFF)
 
         screenOnOffReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val action = intent?.action
-                Log.d("Intent", intent?.action.toString())
-
                 val keyguardManager = context?.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-                if (action == Intent.ACTION_USER_PRESENT ||
-                    action == Intent.ACTION_USER_UNLOCKED ||
-                    action == Intent.ACTION_SCREEN_OFF ||
-                    action == Intent.ACTION_SCREEN_ON ||
-                    action == Context.FINGERPRINT_SERVICE
-                )
-                    if (action == Intent.ACTION_SCREEN_ON) {
-                        Log.d("Screen","Screen turned on")
-                        if(keyguardManager.isKeyguardLocked){
-                            Log.d("Screen", "Screen locked")
-                            singleton.IsDeviceOn = true
-                            startOrResumeCountDownTimer()
-                        }
+                if (action == Intent.ACTION_SCREEN_ON) {
+                    if (keyguardManager.isKeyguardLocked) {
+                        manager.IsDeviceOn = true
+                        startOrResumeCountDownTimer()
                     }
+                }
                 if (action == Intent.ACTION_USER_PRESENT) {
-                    Log.d("Screen", "Screen unlocked")
-                    if (singleton.IsRunning) {
-                        singleton.IsRunning = false
-                        singleton.pauseCountDownTimer()
-                        //fragmentHome.updateTextView(singleton.formatTime(singleton.CurrentCountDownTimer))
+                    if (manager.IsRunning) {
+                        manager.IsRunning = false
+                        manager.pauseCountDownTimer()
                     }
                 }
                 if (action == Intent.ACTION_SCREEN_OFF) {
-                        Log.d("Screen", "Screen locked")
-                        Log.d("Screen", "Phone screen turned off")
-                        singleton.IsDeviceOn = false
-                        startOrResumeCountDownTimer()
-                    }
-//                val openMainActivity= Intent(context, MainActivityContainer::class.java)
-//                openMainActivity.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-//                startActivityIfNeeded(openMainActivity, 0)
+                    manager.IsDeviceOn = false
+                    startOrResumeCountDownTimer()
+                }
             }
         }
         registerReceiver(screenOnOffReceiver, intentFilter)
     }
 
-    /**
-     * Start or resume countDownTimer
-     */
     private fun startOrResumeCountDownTimer() {
-        if (!singleton.IsRunning) {
-            singleton.IsRunning = true
-            if (singleton.CurrentCountDownTimer == 0L) {
-                singleton.startCountDownTimer()
+        if (!manager.IsRunning) {
+            manager.IsRunning = true
+            if (manager.CurrentCountDownTimer == 0L) {
+                manager.startCountDownTimer()
             } else {
-                singleton.resumeCountDownTimer(fragmentHome)
+                manager.resumeCountDownTimer(fragmentHome)
             }
         }
     }
 
-    /**
-     * Create an instance of the notification channel
-     */
     private fun createNotificationChannel() {
-        singleton.initNotificationChannel(this, getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+        manager.initNotificationChannel(this, getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
     }
 
-    /**
-     * Create the notification
-     */
     private fun createNotification() {
-        singleton.initNotification(
+        manager.initNotification(
             this,
             getString(R.string.app_name),
             getString(R.string.channelId),
             getString(R.string.channel_description)
         )
     }
-
-    /**
-     * Draw part
-     * */
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
 
@@ -246,16 +189,16 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Lifec
         )
 
         when (requestCode) {
-            REQUEST_WRITE_STORAGE -> {
+            REQUEST_STORAGE_PERMISSION -> {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    challengeTime = singleton.ChallengeTime
+                    challengeTime = manager.ChallengeTime
                     initSketch()
                     initCountDownTimer()
                 } else {
                     Toast.makeText(
                         this,
-                        "La permission pour accéder au stockage est nécessaire pour lancer l'application.",
+                        getString(R.string.StoragePermissionsWarning),
                         Toast.LENGTH_LONG
                     )
                         .show()
@@ -263,13 +206,12 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Lifec
                 }
             }
         }
-
     }
 
     private fun initCountDownTimer() {
-        if (singleton.ChallengeAccepted) {
-            singleton.initCountDownTimer(challengeTime, fragmentHome)
-            singleton.FirstTime = true
+        if (manager.ChallengeAccepted) {
+            manager.initCountDownTimer(challengeTime, fragmentHome)
+            manager.FirstTime = true
         }
     }
 
@@ -277,13 +219,13 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Lifec
         sketch?.onNewIntent(intent)
     }
 
-    fun initSketch() {
+    private fun initSketch() {
         sketch = Sketch("", false)
         if (viewPagerAdapter == null) {
             setupViewPager(fragment_container)
         }
         if (!checkForPermission(applicationContext)) {
-            startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+            dialogViewForSystemAuth()
         }
     }
 
@@ -291,7 +233,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Lifec
         ActivityCompat.requestPermissions(
             this,
             arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-            REQUEST_WRITE_STORAGE
+            REQUEST_STORAGE_PERMISSION
         )
     }
 
@@ -302,7 +244,7 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Lifec
     }
 
     override fun onStop() {
-        if(!singleton.ChallengeAccepted){
+        if(!manager.ChallengeAccepted){
             Toast.makeText(this,"Application en fond : challenge annulé!",Toast.LENGTH_LONG).show()
         }
         super.onStop()
@@ -312,5 +254,24 @@ class MainActivityContainer : AppCompatActivity(), ChallengeUpdateManager, Lifec
         unregisterReceiver(screenOnOffReceiver)
         destroyNotification()
         super.onDestroy()
+    }
+
+    private fun dialogViewForSystemAuth() {
+
+        val builder: AlertDialog.Builder? = this.let {
+            AlertDialog.Builder(it)
+        }
+        builder?.setMessage(R.string.requestSystemAuth)
+            ?.setTitle(getString(R.string.systemPermissionRequestTitle))
+            ?.setPositiveButton("Go") { dialog, id ->
+                run {
+                    startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+                }
+            }
+
+
+        val dialog: AlertDialog? = builder?.create()
+        dialog?.show()
+
     }
 }

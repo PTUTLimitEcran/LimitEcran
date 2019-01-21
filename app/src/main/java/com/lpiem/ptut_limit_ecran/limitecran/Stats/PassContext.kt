@@ -1,4 +1,4 @@
-package com.lpiem.ptut_limit_ecran.limitecran
+package com.lpiem.ptut_limit_ecran.limitecran.Stats
 
 import android.content.Context
 

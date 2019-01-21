@@ -1,4 +1,4 @@
-package com.lpiem.ptut_limit_ecran.limitecran
+package com.lpiem.ptut_limit_ecran.limitecran.Home.Challenge
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,37 +6,39 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
+import com.lpiem.ptut_limit_ecran.limitecran.Application.MainActivityContainer
+import com.lpiem.ptut_limit_ecran.limitecran.Manager.Manager
+import com.lpiem.ptut_limit_ecran.limitecran.R
 import kotlinx.android.synthetic.main.fragment_challenge.*
 
 private const val ARG_PARAM1 = "param1"
 
-class ChallengeFragment() : Fragment(), View.OnClickListener{
+class ChallengeFragment : Fragment(), View.OnClickListener{
 
-    private lateinit var singleton: Singleton
+    private lateinit var manager: Manager
 
     override fun onClick(v: View?) {
         val fifteenMins = 900000L
         val intent = Intent(requireContext(), MainActivityContainer::class.java )
         when(v) {
             challenge1 -> {
-                singleton.ChallengeTime = 5000L
-                singleton.ChallengeAccepted = true
+                manager.ChallengeTime = fifteenMins
+                manager.ChallengeAccepted = true
                 startActivity(intent)
             }
             challenge2 -> {
-                singleton.ChallengeTime = fifteenMins*2
-                singleton.ChallengeAccepted = true
+                manager.ChallengeTime = fifteenMins*2
+                manager.ChallengeAccepted = true
                 startActivity(intent)
             }
             challenge3 -> {
-                singleton.ChallengeTime = fifteenMins*4
-                singleton.ChallengeAccepted = true
+                manager.ChallengeTime = fifteenMins*4
+                manager.ChallengeAccepted = true
                 startActivity(intent)
             }
             challenge4 -> {
-                singleton.ChallengeTime = fifteenMins*8
-                singleton.ChallengeAccepted = true
+                manager.ChallengeTime = fifteenMins*8
+                manager.ChallengeAccepted = true
                 startActivity(intent)
             }
         }
@@ -61,7 +63,7 @@ class ChallengeFragment() : Fragment(), View.OnClickListener{
             param = it.getString(ARG_PARAM1) as String
             param
         }
-        singleton = Singleton.getInstance(requireContext())
+        manager = Manager.getInstance(requireContext())
 
     }
 

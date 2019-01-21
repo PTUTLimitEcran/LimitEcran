@@ -1,4 +1,4 @@
-package com.lpiem.ptut_limit_ecran.limitecran
+package com.lpiem.ptut_limit_ecran.limitecran.Stats
 
 import android.app.usage.UsageStats
 import android.app.usage.UsageStatsManager
@@ -14,6 +14,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.durranilab.labprogresslayout.LabProgressLayout
+import com.lpiem.ptut_limit_ecran.limitecran.R
 import java.util.*
 
 const val TAG = "TEST_WARN"
@@ -28,8 +29,10 @@ class UsageStatsAdapter(private var context: Context): BaseAdapter() {
 
     private var mInflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     private var mDisplayOrder = _DISPLAY_ORDER_USAGE_TIME
-    private val mLastTimeUsedComparator = LastTimeUsedComparator()
-    private val mUsageTimeComparator = UsageTimeComparator()
+    private val mLastTimeUsedComparator =
+        LastTimeUsedComparator()
+    private val mUsageTimeComparator =
+        UsageTimeComparator()
     private lateinit var mAppLabelComparator: AppNameComparator
     private var mAppLabelMap = ArrayMap<String, String>()
     private var mPackageStats = ArrayList<UsageStats>()
@@ -40,13 +43,11 @@ class UsageStatsAdapter(private var context: Context): BaseAdapter() {
 
         val cal = Calendar.getInstance()
         cal.add(Calendar.DAY_OF_YEAR, -5)
-
         val stats = mUsageStatsManager.queryUsageStats(
             UsageStatsManager.INTERVAL_BEST,
             cal.timeInMillis, System.currentTimeMillis()
         )
         if (stats != null) {
-
 
             val map = ArrayMap<String, UsageStats>()
             val statCount = stats.size
@@ -54,7 +55,6 @@ class UsageStatsAdapter(private var context: Context): BaseAdapter() {
             for (i in 0 until statCount) {
                 val pkgStats = stats[i]
 
-                // load application labels for each application
                 try {
                     val pkgName = pkgStats.packageName
                     val appInfo = mPm.getApplicationInfo(pkgName, 0)
@@ -73,19 +73,16 @@ class UsageStatsAdapter(private var context: Context): BaseAdapter() {
                 } catch (e: PackageManager.NameNotFoundException) {
                     // This package may be gone.
                 }
-
             }
 
             mPackageStats.addAll(map.values)
-
 
             for (i in mPackageStats.indices) {
                 totalMilli += mPackageStats[i].totalTimeInForeground
             }
 
-
-            // Sort list
-            mAppLabelComparator = AppNameComparator(mAppLabelMap)
+            mAppLabelComparator =
+                    AppNameComparator(mAppLabelMap)
             sortList()
         }
     }
@@ -93,35 +90,24 @@ class UsageStatsAdapter(private var context: Context): BaseAdapter() {
 
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        // A ViewHolder keeps references to children views to avoid unneccessary calls
-        // to findViewById() on each row.
         val holder: AppViewHolder?
-        var viewToReturn: View
+        val viewToReturn: View
 
-        // When convertView is not null, we can reuse it directly, there is no need
-        // to reinflate it. We only inflate a new View when the convertView supplied
-        // by ListView is null.
         if (convertView == null) {
             viewToReturn = mInflater.inflate(R.layout.usage_stats_item, null)
 
-            // Creates a ViewHolder and store references to the two children views
-            // we want to bind data to.
             holder = AppViewHolder()
 
             holder.Icon = viewToReturn.findViewById(R.id.Icon) as ImageView?
             holder.pkgName = viewToReturn.findViewById(R.id.package_name) as TextView?
-            //holder.lastTimeUsed = (TextView) convertView.findViewById(R.id.last_time_used);
             holder.usageTime = viewToReturn.findViewById(R.id.usage_time) as TextView?
             holder.labProgressLayout = viewToReturn.findViewById(R.id.labProgressLayout) as LabProgressLayout?
             viewToReturn?.tag = holder
         } else {
             viewToReturn = convertView
-            // Get the ViewHolder back to get fast access to the TextView
-            // and the ImageView.
             holder = convertView.tag as AppViewHolder?
         }
 
-        // Bind the data efficiently with the holder
         val pkgStats = mPackageStats[position]
         if (pkgStats != null) {
             val label = mAppLabelMap[pkgStats.packageName]
@@ -136,11 +122,9 @@ class UsageStatsAdapter(private var context: Context): BaseAdapter() {
             }
 
             holder?.pkgName?.text = label
-            /* holder.lastTimeUsed.setText(DateUtils.formatSameDayTime(pkgStats.getLastTimeUsed(),
-                        System.currentTimeMillis(), DateFormat.MEDIUM, DateFormat.MEDIUM));*/
             holder?.usageTime?.text = DateUtils.formatElapsedTime(pkgStats.totalTimeInForeground / 1000)
             val totalApp = pkgStats.totalTimeInForeground.toFloat()
-            val percent = (totalApp / totalMilli * 100).toInt()/*floatPercent*/
+            val percent = (totalApp / totalMilli * 100).toInt()
             holder?.labProgressLayout?.setCurrentProgress(percent)
 
         } else {
@@ -167,7 +151,6 @@ class UsageStatsAdapter(private var context: Context): BaseAdapter() {
 
     fun sortList(sortOrder: Int) {
         if (mDisplayOrder == sortOrder) {
-            // do nothing
             return
         }
         mDisplayOrder = sortOrder
@@ -176,15 +159,19 @@ class UsageStatsAdapter(private var context: Context): BaseAdapter() {
 
     private fun sortList() {
 
-        if (mDisplayOrder == _DISPLAY_ORDER_USAGE_TIME) {
-            if (localLOGV) Log.i(TAG, "Sorting by usage time")
-            Collections.sort(mPackageStats, mUsageTimeComparator)
-        } else if (mDisplayOrder == _DISPLAY_ORDER_LAST_TIME_USED) {
-            if (localLOGV) Log.i(TAG, "Sorting by last time used")
-            Collections.sort(mPackageStats, mLastTimeUsedComparator)
-        } else if (mDisplayOrder == _DISPLAY_ORDER_APP_NAME) {
-            if (localLOGV) Log.i(TAG, "Sorting by application name")
-            Collections.sort(mPackageStats, mAppLabelComparator)
+        when (mDisplayOrder) {
+            _DISPLAY_ORDER_USAGE_TIME -> {
+                if (localLOGV) Log.i(TAG, "Sorting by usage time")
+                Collections.sort(mPackageStats, mUsageTimeComparator)
+            }
+            _DISPLAY_ORDER_LAST_TIME_USED -> {
+                if (localLOGV) Log.i(TAG, "Sorting by last time used")
+                Collections.sort(mPackageStats, mLastTimeUsedComparator)
+            }
+            _DISPLAY_ORDER_APP_NAME -> {
+                if (localLOGV) Log.i(TAG, "Sorting by application name")
+                Collections.sort(mPackageStats, mAppLabelComparator)
+            }
         }
 
         notifyDataSetChanged()
@@ -202,7 +189,6 @@ class UsageStatsAdapter(private var context: Context): BaseAdapter() {
 
     class LastTimeUsedComparator : Comparator<UsageStats> {
         override fun compare(a: UsageStats, b: UsageStats): Int {
-            // return by descending order
             return (b.lastTimeUsed - a.lastTimeUsed).toInt()
         }
     }
@@ -213,11 +199,9 @@ class UsageStatsAdapter(private var context: Context): BaseAdapter() {
         }
     }
 
-    // View Holder used when displaying views
     internal class AppViewHolder {
         var Icon: ImageView? = null
         var pkgName: TextView? = null
-        //TextView lastTimeUsed;
         var usageTime: TextView? = null
         var labProgressLayout: LabProgressLayout? = null
     }

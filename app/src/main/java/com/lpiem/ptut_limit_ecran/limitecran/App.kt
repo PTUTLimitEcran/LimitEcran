@@ -1,14 +1,14 @@
 package com.lpiem.ptut_limit_ecran.limitecran
 
 import android.app.Application
-import com.lpiem.ptut_limit_ecran.limitecran.Model.Singleton
+import com.lpiem.ptut_limit_ecran.limitecran.Manager.Manager
 
 class App : Application() {
 
-    private lateinit var singleton: Singleton
+    private lateinit var manager: Manager
 
     override fun onCreate() {
         super.onCreate()
-        singleton = Singleton(this)
+        manager = Manager(this)
     }
 }

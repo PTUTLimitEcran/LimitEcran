@@ -1,4 +1,4 @@
-package com.lpiem.ptut_limit_ecran.limitecran
+package com.lpiem.ptut_limit_ecran.limitecran.Stats
 
 import android.app.usage.UsageStatsManager
 import android.content.Context
@@ -9,24 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import kotlinx.android.synthetic.main.usage_stats.*
+import com.lpiem.ptut_limit_ecran.limitecran.R
+import kotlinx.android.synthetic.main.fragment_statistic.*
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "context"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [StatisticFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [StatisticFragment.newInstance] factory method to
- * create an instance of this fragment.
- *
- */
-class StatisticFragment : Fragment(), AdapterView.OnItemSelectedListener, PassContext {
+class StatisticFragment : Fragment(), AdapterView.OnItemSelectedListener,
+    PassContext {
 
     override fun putContext(context: Context) {
         appContext = context
@@ -46,29 +36,7 @@ class StatisticFragment : Fragment(), AdapterView.OnItemSelectedListener, PassCo
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-
-
-    /*mUsageStatsManager = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
-        mInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mPm = getPackageManager();
-
-        Spinner typeSpinner = (Spinner) findViewById(R.id.typeSpinner);
-        typeSpinner.setOnItemSelectedListener(this);
-
-        ListView listView = (ListView) findViewById(R.id.pkg_list);
-        mAdapter = new UsageStatsAdapter();
-        listView.setAdapter(mAdapter);*/
-
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment StatisticFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             StatisticFragment().apply {
@@ -79,7 +47,6 @@ class StatisticFragment : Fragment(), AdapterView.OnItemSelectedListener, PassCo
             }
     }
 
-    // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
@@ -96,7 +63,6 @@ class StatisticFragment : Fragment(), AdapterView.OnItemSelectedListener, PassCo
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_statistic, container, false)
     }
 
@@ -112,7 +78,6 @@ class StatisticFragment : Fragment(), AdapterView.OnItemSelectedListener, PassCo
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         mAdapter.sortList(position)
-        //parent?.refreshDrawableState()
     }
 
 
